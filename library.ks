@@ -135,6 +135,43 @@ function slopeInterceptValue
 	}
 }
 
+function slopeInterceptLex2
+{
+	parameter input1, output1, input2, output2, doClamp.
+
+	// slope
+	local slope is (output2-output1)/(input2-input1).
+
+	// intercept
+	local intercept is output2 - slope * input2.
+
+	return lex(
+		"slope",slope,
+		"intercept",intercept,
+		"input1", input1,
+		"output1", output1,
+		"input2", input2,
+		"output2", output2,
+		"clamp", doClamp
+	).
+}
+
+function slopeInterceptCalc2
+{
+	parameter sil, val.
+	
+	local result is sil["slope"] * val + sil["intercept"].
+	
+	if sil["clamp"]
+	{
+		return clamp(result,sil["output1"],sil["output2"]).
+	}
+	else
+	{
+		return result.
+	}
+}
+
 function clamp
 {
 	parameter val, c1, c2.
