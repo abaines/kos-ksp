@@ -10,3 +10,7 @@ print "retrograde.ks".
 
 lock steering to -1*ship:srfprograde:vector.
 
+until false
+{
+	wait 0.1.
+}
