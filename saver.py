@@ -28,7 +28,7 @@ def findSave(name):
 
     dirname = os.path.dirname(name)
     prefix = os.path.basename(name)[0] + '_'
-    print("findSave :", dirname, prefix )
+    print("dirname :", dirname, " prefix :", prefix )
 
     maxFound = -1
 
@@ -68,9 +68,21 @@ def scan():
         #print( sha1,lastMod, len(currentFile) )
 
         if (value is "None") or (value != sha1):
+            winsound.Beep(120,60)
+            print( "key :", key )
+            newsave = findSave(key)
+            print( "findSave :" + newsave )
 
-            print( key )
-            print( findSave(key) )
+            shutil.copy2(key,newsave)
+
+            files2watch[key] = sha1
+            winsound.Beep(320,60)
 
 
-scan()
+def scanThread():
+    threading.Timer(3.0,scanThread).start()
+
+    scan()
+
+
+scanThread()
