@@ -38,7 +38,7 @@ def findSave(name):
         basename = os.path.basename(file)
         #print(file)
         digits = re.findall(r'\d+',basename)
-        print(digits)
+        #print(digits)
         if (len(digits)==1):
             num = int(digits[0])
             #print(num)
@@ -62,18 +62,26 @@ def scan():
         lastMod = lastModified(key)
         
         currentFile = open(key,'rb').read()
+        #print(type(currentFile))
 
         sha1 = hashSha1(currentFile)
 
         #print( sha1,lastMod, len(currentFile) )
 
-        if (value is "None") or (value != sha1):
+        if (value is None):
+            files2watch[key] = sha1
+            
+        elif (value != sha1):
             winsound.Beep(120,60)
             print( "key :", key )
             newsave = findSave(key)
             print( "findSave :" + newsave )
 
-            shutil.copy2(key,newsave)
+            #shutil.copy2(key,newsave)
+            
+            fout = open(newsave, 'wb')
+            fout.write(currentFile)
+            fout.close()
 
             files2watch[key] = sha1
             winsound.Beep(320,60)
@@ -86,3 +94,6 @@ def scanThread():
 
 
 scanThread()
+
+print("Scanning started")
+
