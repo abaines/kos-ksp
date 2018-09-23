@@ -16,7 +16,7 @@ lock steering to steer.
 
 // this logic matches navball
 global sil_steering_alt to slopeInterceptLex2(1000,90,41000,0,true).
-global sil_steering_apo to slopeInterceptLex2(1000,90,75000,0,false).
+global sil_steering_apo to slopeInterceptLex2(1000,90,80000,0,false).
 
 global behavior to "d".
 
@@ -39,6 +39,10 @@ when terminal:input:haschar then
 		set behavior to newchar.
 	}
 	if newchar = "f" // forward horizontal (east)
+	{
+		set behavior to newchar.
+	}
+	if newchar = "u" // up (towards sky) (away from planet)
 	{
 		set behavior to newchar.
 	}
@@ -80,6 +84,11 @@ until false
 	{
 		set steer to Up + R(0,-90,-90).
 		print "forward (east) !        " at(45,45).
+	}
+	else if behavior = "u"
+	{
+		set steer to Up + R(0,0,-90).
+		print "up (away from planet) ! " at(45,45).
 	}
 	else
 	{
