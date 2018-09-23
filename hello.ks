@@ -6,16 +6,7 @@ runoncepath("library").
 
 librarysetup().
 
-print "hello.ks 7".
-
-
-//lock steering to 1*ship:srfprograde:vector.
-
-until true
-{
-	wait 1.
-}
-
+print "hello.ks 8".
 
 //global throt to 1.0.
 //lock throttle to throt.
@@ -23,26 +14,33 @@ until true
 global steer to Up + R(0,0,-90).
 lock steering to steer.
 
-// TODO: flip logic for 0->90 to 90->0 to match navball
-global sil_steering_alt to slopeInterceptLex2(10000,90,41000,0,true).
-global sil_steering_apo to slopeInterceptLex2(20000,90,75000,0,true).
+// this logic matches navball
+global sil_steering_alt to slopeInterceptLex2(1000,90,41000,0,true).
+global sil_steering_apo to slopeInterceptLex2(1000,90,75000,0,false).
 
-global retrotime to false.
-global nodetime to false.
+global behavior to "d".
 
 when terminal:input:haschar then
 {
 	local newchar is terminal:input:getchar().
 	
-	print "newchar : " + newchar at(45,2).
+	print "newchar : " + newchar at(45,0).
 	
-	if newchar = "r"
+	if newchar = "r" // retrograde
 	{
-		set retrotime to true.
+		set behavior to newchar.
 	}
-	if newchar = "n"
+	if newchar = "n" // maneuver node
 	{
-		set nodetime to true.
+		set behavior to newchar.
+	}
+	if newchar = "d" // default behavior
+	{
+		set behavior to newchar.
+	}
+	if newchar = "f" // forward horizontal (east)
+	{
+		set behavior to newchar.
 	}
 
 	wait 0.
@@ -51,43 +49,49 @@ when terminal:input:haschar then
 
 until false
 {
-	print "speed : " + ship:velocity:surface:mag at(45,0).
+	print "speed : " + ship:velocity:surface:mag at(45,1).
 	
 	//local si_speed to slopeintercept(580,1,680,0).
 	//set throt to slopeInterceptValue(si_speed,ship:velocity:surface:mag,true).
 	
 	local sic_steering_alt to slopeInterceptCalc2(sil_steering_alt,ship:ALTITUDE).
-	local sic_steering_apo to slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS).
+	local sic_steering_apo to min(slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS),90).
 	
-	print "sic_steering_alt : " + sic_steering_alt at(45,2).
-	print "sic_steering_apo : " + sic_steering_apo at(45,3).
+	print "sic_steering_alt : " + sic_steering_alt at(45,3).
+	print "sic_steering_apo : " + sic_steering_apo at(45,4).
 	
 	local steering_math to (sic_steering_alt + sic_steering_apo) / 2.0.
-	print "steering_math : " + steering_math at(45,5).
+	print "steering_math : " + steering_math at(45,6).
 	
-	if nodetime
+	if behavior = "n"
 	{
 		local nextN to nextnode. 
 		local burn_vector to nextN:BURNVECTOR.
-		lock steering to burn_vector.
+		set steer to burn_vector.
 		sas off.
 		print "node time !             " at(45,45).
 	}
-	else if retrotime
+	else if behavior = "r"
 	{
-		lock steering to -1*ship:srfprograde:vector.
+		set steer to -1*ship:srfprograde:vector.
 		print "retrotime !             " at(45,45).
+	}
+	else if behavior = "f"
+	{
+		set steer to Up + R(0,-90,-90).
+		print "forward (east) !        " at(45,45).
 	}
 	else
 	{
 		// using weird command orientation (east)
-		// set steer to Up + R(0,steering_math,-90).
+		set steer to Up + R(0,(steering_math-90),-90).
 		
 		// using "accepted" command orientation (east)
 		//set steer to Up + R(0,steering_math,180).
 		
-		// going north
-		set steer to Up + R(-1*(steering_math-90),0,180).
+		// going north/south
+		//set steer to Up + R(-1*(steering_math-90),0,180).
+		
 		print "default !               " at(45,45).
 	}
 	
@@ -95,4 +99,4 @@ until false
 	wait 0.1.
 }
 
-print "hello.ks 7 end".
+print "hello.ks 8 end".
