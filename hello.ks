@@ -23,10 +23,12 @@ until true
 global steer to Up + R(0,0,-90).
 lock steering to steer.
 
-global sil_steering_alt to slopeInterceptLex2(1000,0,41000,-90,true).
-global sil_steering_apo to slopeInterceptLex2(1000,0,75000,-90,true).
+// TODO: flip logic for 0->90 to 90->0 to match navball
+global sil_steering_alt to slopeInterceptLex2(10000,90,41000,0,true).
+global sil_steering_apo to slopeInterceptLex2(20000,90,75000,0,true).
 
 global retrotime to false.
+global nodetime to false.
 
 when terminal:input:haschar then
 {
@@ -37,7 +39,10 @@ when terminal:input:haschar then
 	if newchar = "r"
 	{
 		set retrotime to true.
-		print "retrotime ! " at(45,3).
+	}
+	if newchar = "n"
+	{
+		set nodetime to true.
 	}
 
 	wait 0.
@@ -57,23 +62,33 @@ until false
 	print "sic_steering_alt : " + sic_steering_alt at(45,2).
 	print "sic_steering_apo : " + sic_steering_apo at(45,3).
 	
-	local steering_avg to min(sic_steering_alt , sic_steering_apo) .
-	print "steering_math : " + steering_avg at(45,5).
+	local steering_math to (sic_steering_alt + sic_steering_apo) / 2.0.
+	print "steering_math : " + steering_math at(45,5).
 	
-	if retrotime
+	if nodetime
+	{
+		local nextN to nextnode. 
+		local burn_vector to nextN:BURNVECTOR.
+		lock steering to burn_vector.
+		sas off.
+		print "node time !             " at(45,45).
+	}
+	else if retrotime
 	{
 		lock steering to -1*ship:srfprograde:vector.
+		print "retrotime !             " at(45,45).
 	}
 	else
 	{
 		// using weird command orientation (east)
-		// set steer to Up + R(0,steering_avg,-90).
+		// set steer to Up + R(0,steering_math,-90).
 		
 		// using "accepted" command orientation (east)
-		//set steer to Up + R(0,steering_avg,180).
+		//set steer to Up + R(0,steering_math,180).
 		
 		// going north
-		set steer to Up + R(steering_avg,0,180).
+		set steer to Up + R(-1*(steering_math-90),0,180).
+		print "default !               " at(45,45).
 	}
 	
 
