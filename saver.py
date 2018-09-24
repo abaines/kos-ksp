@@ -28,7 +28,7 @@ def findSave(name):
 
     dirname = os.path.dirname(name)
     prefix = os.path.basename(name)[0] + '_'
-    print("dirname :", dirname, " prefix :", prefix )
+    #print("dirname :", dirname, " prefix :", prefix )
 
     maxFound = -1
 
@@ -46,7 +46,7 @@ def findSave(name):
                 maxFound = num
     
     maxFound = 1 + maxFound
-    print("maxFound :" , maxFound)
+    #print("maxFound :" , maxFound)
 
     maxFound = str(maxFound).zfill(6)
     new = os.path.join( dirname , prefix + maxFound + ".sfs" )
@@ -73,9 +73,9 @@ def scan():
             
         elif (value != sha1):
             winsound.Beep(120,60)
-            print( "key :", key )
+            print( "change detected :", key )
             newsave = findSave(key)
-            print( "findSave :" + newsave )
+            print( "new save name   :" + newsave )
 
             #shutil.copy2(key,newsave)
             
