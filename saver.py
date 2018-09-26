@@ -27,21 +27,25 @@ def findSave(name):
     #print(name)
 
     dirname = os.path.dirname(name)
-    prefix = os.path.basename(name)[0] + '_'
-    #print("dirname :", dirname, " prefix :", prefix )
-
     maxFound = -1
 
-    search = os.path.join( dirname , prefix + "*.sfs" )
-    #print(search)
+    prefix1 = os.path.basename(name)[0] + '_'
+    search = os.path.join( dirname , prefix1 + "*.sfs" )
     for file in glob.glob(search):
         basename = os.path.basename(file)
-        #print(file)
         digits = re.findall(r'\d+',basename)
-        #print(digits)
         if (len(digits)==1):
             num = int(digits[0])
-            #print(num)
+            if num>maxFound:
+                maxFound = num
+
+    prefix2 = "$" + os.path.basename(name)[:5] + '_'
+    search = os.path.join( dirname , prefix2 + "*.sfs" )
+    for file in glob.glob(search):
+        basename = os.path.basename(file)
+        digits = re.findall(r'\d+',basename)
+        if (len(digits)==1):
+            num = int(digits[0])
             if num>maxFound:
                 maxFound = num
     
@@ -49,7 +53,9 @@ def findSave(name):
     #print("maxFound :" , maxFound)
 
     maxFound = str(maxFound).zfill(6)
-    new = os.path.join( dirname , prefix + maxFound + ".sfs" )
+    newFile = prefix2 + maxFound + ".sfs"
+    print(maxFound,newFile)
+    new = os.path.join( dirname , newFile )
     return new
 
     
