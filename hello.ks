@@ -6,19 +6,15 @@ runoncepath("library").
 
 librarysetup().
 
-print "hello.ks 8".
+print "hello.ks 9".
 
-//global throt to 1.0.
-//lock throttle to throt.
+global throt to 0.5.
+lock throttle to throt.
 
 global steer to Up + R(0,0,-90).
 lock steering to steer.
 
-// this logic matches navball
-global sil_steering_alt to slopeInterceptLex2(1000,90,41000,0,true).
-global sil_steering_apo to slopeInterceptLex2(1000,90,80000,0,false).
-
-global behavior to "d".
+global behavior to "f".
 
 when terminal:input:haschar then
 {
@@ -37,6 +33,7 @@ when terminal:input:haschar then
 	if newchar = "d" // default behavior
 	{
 		set behavior to newchar.
+		unlock THROTTLE.
 	}
 	if newchar = "f" // forward horizontal (east)
 	{
@@ -46,17 +43,40 @@ when terminal:input:haschar then
 	{
 		set behavior to newchar.
 	}
+	if newchar = "q" // quest
+	{
+		set behavior to newchar.
+		lock THROTTLE to sic_speed.
+	}
 
 	wait 0.
 	PRESERVE.
 }
 
+// this logic matches navball
+global sil_steering_alt to slopeInterceptLex2(1000,90,41000,0,true).
+global sil_steering_apo to slopeInterceptLex2(1000,90,80000,0,false).
+
+local sil_speed to slopeInterceptLex2(1240,1,1260,0,true).
+
+
 until false
 {
 	print "speed : " + ship:velocity:surface:mag at(45,1).
 	
-	//local si_speed to slopeintercept(580,1,680,0).
-	//set throt to slopeInterceptValue(si_speed,ship:velocity:surface:mag,true).
+	//if behavior = "q"
+	//{
+	set throt to slopeInterceptCalc2(sil_speed,velocity:surface:mag).
+	print throt + "            " at(45,42).
+	//}
+	//else
+	//{
+	//	//SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
+	//	//unset THROTTLE.
+	//	//UNLOCK THROTTLE.
+	//	print "                        " at(45,42).
+	//	print "unlock                  " at(45,43).
+	//}
 	
 	local sic_steering_alt to slopeInterceptCalc2(sil_steering_alt,ship:ALTITUDE).
 	local sic_steering_apo to min(slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS),90).
@@ -108,4 +128,9 @@ until false
 	wait 0.1.
 }
 
-print "hello.ks 8 end".
+wait until behavior <> "q".
+
+SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
+UNLOCK THROTTLE.
+
+print "hello.ks 9 end".
