@@ -9,12 +9,15 @@ librarysetup().
 print "hello.ks 9".
 
 global throt to 0.5.
-lock throttle to throt.
+if false
+{
+	lock throttle to throt.
+}
 
 global steer to Up + R(0,0,-90).
 lock steering to steer.
 
-global behavior to "f".
+global behavior to "d".
 
 when terminal:input:haschar then
 {
@@ -22,7 +25,15 @@ when terminal:input:haschar then
 	
 	print "newchar : " + newchar at(45,0).
 	
+	if newchar = "t" // target
+	{
+		set behavior to newchar.
+	}
 	if newchar = "r" // retrograde
+	{
+		set behavior to newchar.
+	}
+	if newchar = "p" // prograde
 	{
 		set behavior to newchar.
 	}
@@ -36,6 +47,10 @@ when terminal:input:haschar then
 		unlock THROTTLE.
 	}
 	if newchar = "f" // forward horizontal (east)
+	{
+		set behavior to newchar.
+	}
+	if newchar = "b" // backward horizontal (west)
 	{
 		set behavior to newchar.
 	}
@@ -64,19 +79,8 @@ until false
 {
 	print "speed : " + ship:velocity:surface:mag at(45,1).
 	
-	//if behavior = "q"
-	//{
 	set throt to slopeInterceptCalc2(sil_speed,velocity:surface:mag).
 	print throt + "            " at(45,42).
-	//}
-	//else
-	//{
-	//	//SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
-	//	//unset THROTTLE.
-	//	//UNLOCK THROTTLE.
-	//	print "                        " at(45,42).
-	//	print "unlock                  " at(45,43).
-	//}
 	
 	local sic_steering_alt to slopeInterceptCalc2(sil_steering_alt,ship:ALTITUDE).
 	local sic_steering_apo to min(slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS),90).
@@ -100,15 +104,30 @@ until false
 		set steer to -1*ship:srfprograde:vector.
 		print "retrotime !             " at(45,45).
 	}
+	else if behavior = "p"
+	{
+		set steer to 1*ship:srfprograde:vector.
+		print "prograde !              " at(45,45).
+	}
 	else if behavior = "f"
 	{
 		set steer to Up + R(0,-90,-90).
 		print "forward (east) !        " at(45,45).
 	}
+	else if behavior = "b"
+	{
+		set steer to Up + R(0,90,90).
+		print "backward (west) !       " at(45,45).
+	}
 	else if behavior = "u"
 	{
 		set steer to Up + R(0,0,-90).
 		print "up (away from planet) ! " at(45,45).
+	}
+	else if behavior = "t"
+	{
+		set steer to (target:position - ship:position).
+		print "target !                " at(45,45).
 	}
 	else
 	{
