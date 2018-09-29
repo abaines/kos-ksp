@@ -21,13 +21,16 @@ lock steering to steer.
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow","5").
+scriptState:add("stageAllow",2).
 scriptState:add("questThrottle",false).
 
-local jsonRead TO READJSON("1:scriptState.json").
-FOR key IN jsonRead:KEYS
+if exists("1:scriptState.json")
 {
-	set scriptState[key] to jsonRead[key].
+	local jsonRead TO READJSON("1:scriptState.json").
+	FOR key IN jsonRead:KEYS
+	{
+		set scriptState[key] to jsonRead[key].
+	}
 }
 
 
@@ -73,11 +76,11 @@ when terminal:input:haschar then
 
 	if newchar = "s" // stage
 	{
-		scriptState:add("stageAllow",scriptState["stageAllow"] + 1).
+		set scriptState["stageAllow"] to scriptState["stageAllow"] + 1.
 	}
 	if newchar = "q" // quest
 	{
-		scriptState:add("questThrottle",not scriptState["questThrottle"]).
+		set scriptState["questThrottle"] to not scriptState["questThrottle"].
 	}
 	
 	WRITEJSON(scriptState, "1:scriptState.json").
@@ -173,8 +176,11 @@ until false
 	}
 	else if behavior = "t"
 	{
-		set steer to (target:position - ship:position).
-		print "target !                      " at(0,20).
+		if hastarget
+		{
+			set steer to (target:position - ship:position).
+			print "target !                      " at(0,20).
+		}
 	}
 	else
 	{
@@ -187,7 +193,10 @@ until false
 		// going north/south
 		//set steer to Up + R(-1*(steering_math-90),0,180).
 		
-		set steer to Up + R(1*(steering_math-90),0,180).
+		//set steer to Up + R(1*(steering_math-90),0,180).
+		
+		// south east
+		set steer to Up + R(-1*(steering_math-90),1*(steering_math-90),180).
 		
 		print "default !                     " at(0,20).
 	}
@@ -201,14 +210,16 @@ until false
 		print "stage allowed "+ stageAllow + "            " at(0,16).
 		local liquidfuel is GetStageLowestResource("liquidfuel").
 		local oxidizer is GetStageLowestResource("oxidizer").
-		print "" + ROUND(liquidfuel,4) + " " +  ROUND(oxidizer,4) + "          " at(0,17).
+		local solidfuel is GetStageLowestResource("solidfuel").
+		print "" + ROUND(liquidfuel,4) + " " +  ROUND(oxidizer,4) + " " +  ROUND(solidfuel,4) + "          " at(0,17).
 		
-		if liquidfuel<=0.01 or oxidizer<=0.01
+		if liquidfuel<=0.01 or oxidizer<=0.01 or solidfuel<=0.01
 		{
-			set stageAllow to stageAllow - 1.
 			beep(440,0.05,0.001).
 			wait 0.1.
+			set scriptState["stageAllow"] to scriptState["stageAllow"] - 1.
 			stage.
+			WRITEJSON(scriptState, "1:scriptState.json").
 			print "staged !                      " at(0,18).
 		}
 	}
