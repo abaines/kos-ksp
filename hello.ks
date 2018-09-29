@@ -104,7 +104,11 @@ set desiredVecDraw:startupdater to { return ship:position. }.
 set desiredVecDraw:vecupdater to { return desiredVec:normalized*50. }.
 //set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
 
-WRITEJSON(ship:position - body:position, "experiment.json").
+until false
+{
+	WRITEJSON(ship:position - body:position, "experiment.json").
+	wait 3.
+}
 
 until false
 {
