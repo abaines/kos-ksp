@@ -21,7 +21,7 @@ lock steering to steer.
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",2).
+scriptState:add("stageAllow",1).
 scriptState:add("questThrottle",false).
 
 if exists("1:scriptState.json")
@@ -103,7 +103,7 @@ until false
 	local stageAllow is scriptState["stageAllow"].
 	local questThrottle is scriptState["questThrottle"].
 	
-	print "speed : " + ship:velocity:surface:mag at(0,3).
+	print "speed : " + ship:velocity:surface:mag + "                 " at(0,3).
 	
 	if questThrottle
 	{
@@ -129,16 +129,16 @@ until false
 	{
 		set throt to 0.
 	}
-	print throt + "            " at(0,4).
+	print "t: " + throt + "                 " at(0,4).
 	
 	local sic_steering_alt to slopeInterceptCalc2(sil_steering_alt,ship:ALTITUDE).
 	local sic_steering_apo to min(slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS),90).
 	
-	print "sic_steering_alt : " + sic_steering_alt at(0,10).
-	print "sic_steering_apo : " + sic_steering_apo at(0,11).
+	print "sic_steering_alt : " + sic_steering_alt + "                 " at(0,10).
+	print "sic_steering_apo : " + sic_steering_apo + "                 " at(0,11).
 	
 	local steering_math to max(min(sic_steering_alt, sic_steering_apo),-45).
-	print "steering_math : " + steering_math at(0,12).
+	print "steering_math : " + steering_math + "                 " at(0,12).
 	
 	
 	if behavior = "n"
@@ -195,14 +195,25 @@ until false
 		
 		//set steer to Up + R(1*(steering_math-90),0,180).
 		
+		// navball angle
+		local angle to 135.
+		// 45 is north east
+		// 90 is east*
+		// -90 or 270 is west
+		// 0 is north*
+		// 180 is south*
+		
+		local ns_angle to cos(angle) * (steering_math-90).
+		local ew_angle to sin(angle) * (steering_math-90).
+		
 		// south east
-		set steer to Up + R(-1*(steering_math-90),1*(steering_math-90),180).
+		set steer to Up + R(ns_angle,ew_angle,180).
 		
 		print "default !                     " at(0,20).
 	}
 	
 	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
-	print retroError + "               " at(0,8).
+	print "ret err:" + retroError + "                 " at(0,8).
 	
 	
 	if stageAllow > 0
@@ -211,7 +222,8 @@ until false
 		local liquidfuel is GetStageLowestResource("liquidfuel").
 		local oxidizer is GetStageLowestResource("oxidizer").
 		local solidfuel is GetStageLowestResource("solidfuel").
-		print "" + ROUND(liquidfuel,4) + " " +  ROUND(oxidizer,4) + " " +  ROUND(solidfuel,4) + "          " at(0,17).
+		local lowestResource is min(solidfuel,min(liquidfuel,oxidizer)).
+		print "lowest fuel: " + ROUND(lowestResource,4) + "          " at(0,17).
 		
 		if liquidfuel<=0.01 or oxidizer<=0.01 or solidfuel<=0.01
 		{
@@ -229,6 +241,8 @@ until false
 }
 
 wait until behavior <> "q".
+
+wait until false.
 
 SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
 UNLOCK THROTTLE.
