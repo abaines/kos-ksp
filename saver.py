@@ -48,6 +48,15 @@ def findSave(name):
             num = int(digits[0])
             if num>maxFound:
                 maxFound = num
+                
+    search = os.path.join( dirname , "$*_*.sfs" )
+    for file in glob.glob(search):
+        basename = os.path.basename(file)
+        digits = re.findall(r'\d+',basename)
+        if (len(digits)==1):
+            num = int(digits[0])
+            if num>maxFound:
+                maxFound = num
     
     maxFound = 1 + maxFound
     #print("maxFound :" , maxFound)
