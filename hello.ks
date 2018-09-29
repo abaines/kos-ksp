@@ -97,6 +97,15 @@ global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
 global sil_apo_throttle to slopeInterceptLex2(70000,1,76000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
+// dark orange: desired vector
+global desiredVec to V(0,0,0).
+global desiredVecDraw to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "", 1.0, true,1).
+set desiredVecDraw:startupdater to { return ship:position. }.
+set desiredVecDraw:vecupdater to { return desiredVec:normalized*50. }.
+//set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
+
+WRITEJSON(ship:up:vector, "experiment.json").
+
 until false
 {
 	local behavior is scriptState["behavior"].
@@ -195,6 +204,7 @@ until false
 		
 		//set steer to Up + R(1*(steering_math-90),0,180).
 		
+		
 		// navball angle
 		local angle to 135.
 		// 45 is north east
@@ -202,12 +212,30 @@ until false
 		// -90 or 270 is west
 		// 0 is north*
 		// 180 is south*
-		
+
 		local ns_angle to cos(angle) * (steering_math-90).
 		local ew_angle to sin(angle) * (steering_math-90).
+
+		set desiredVec to BetweenVector(v(0,1,0),ship:up:vector,steering_math-90).
+		set desiredVec to v(-1,0,-1).
+		set desiredVec to v(0,1,0).
+		set desiredVec to v(0.9,0,-0.25).
 		
-		// south east
-		set steer to Up + R(ns_angle,ew_angle,180).
+		
+		// at launch pad
+		// v(0,1,0) is north
+		// v(-1,0,-1) is up'ish and little west
+		
+		
+		
+		if (ship:ALTITUDE<1000)
+		{
+			set steer to Up + R(0,0,180).
+		}
+		else
+		{
+			set steer to desiredVec.
+		}
 		
 		print "default !                     " at(0,20).
 	}
@@ -239,6 +267,8 @@ until false
 
 	wait 0.1.
 }
+
+
 
 wait until behavior <> "q".
 
