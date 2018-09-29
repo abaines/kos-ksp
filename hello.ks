@@ -97,17 +97,20 @@ global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
 global sil_apo_throttle to slopeInterceptLex2(70000,1,76000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
+global launchPadUp to v(462749.88644960814,-1018.0680322776617,-382064.61318457028).
+
 // dark orange: desired vector
 global desiredVec to V(0,0,0).
 global desiredVecDraw to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "", 1.0, true,1).
 set desiredVecDraw:startupdater to { return ship:position. }.
-set desiredVecDraw:vecupdater to { return desiredVec:normalized*50. }.
+set desiredVecDraw:vecupdater to { return desiredVec:normalized*600000. }.
 //set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
 
-until false
+when true then
 {
 	WRITEJSON(ship:position - body:position, "experiment.json").
 	wait 3.
+	PRESERVE.
 }
 
 until false
@@ -223,7 +226,9 @@ until false
 		set desiredVec to BetweenVector(v(0,1,0),ship:up:vector,steering_math-90).
 		set desiredVec to v(-1,0,-1).
 		set desiredVec to v(0,1,0).
-		set desiredVec to v(0.9,0,-0.25).
+		set desiredVec to launchPadUp.
+		
+		set desiredVec to vcrs(launchPadUp,v(0,1,0)).
 		
 		
 		// at launch pad
