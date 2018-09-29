@@ -9,19 +9,27 @@ librarysetup().
 set terminal:width to 45.
 set terminal:height to 20.
 
-print "hello.ks 9" at(0,0).
-print "hello.ks 9" at(0,21).
+print "hello.ks 10" at(0,0).
+print "hello.ks 10" at(0,21).
 
 global throt to 0.0.
 lock throttle to throt.
 
-global steer to Up + R(0,0,-90).
+global steer to "kill".
 lock steering to steer.
 
-global behavior to "d".
 
-global stageAllow to 5.
-global questThrottle to false.
+global scriptState to lex().
+scriptState:add("behavior","d").
+scriptState:add("stageAllow","5").
+scriptState:add("questThrottle",false).
+
+local jsonRead TO READJSON("1:scriptState.json").
+FOR key IN jsonRead:KEYS
+{
+	set scriptState[key] to jsonRead[key].
+}
+
 
 when terminal:input:haschar then
 {
@@ -31,46 +39,48 @@ when terminal:input:haschar then
 	
 	if newchar = "t" // target
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 	if newchar = "r" // retrograde
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 	if newchar = "p" // prograde
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 	if newchar = "n" // maneuver node
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 	if newchar = "d" // default behavior
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 		unlock THROTTLE.
 	}
 	if newchar = "f" // forward horizontal (east)
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 	if newchar = "b" // backward horizontal (west)
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 	if newchar = "u" // up (towards sky) (away from planet)
 	{
-		set behavior to newchar.
+		set scriptState["behavior"] to newchar.
 	}
 
 	if newchar = "s" // stage
 	{
-		set stageAllow to stageAllow + 1.
+		scriptState:add("stageAllow",scriptState["stageAllow"] + 1).
 	}
 	if newchar = "q" // quest
 	{
-		set questThrottle to not questThrottle.
+		scriptState:add("questThrottle",not scriptState["questThrottle"]).
 	}
+	
+	WRITEJSON(scriptState, "1:scriptState.json").
 
 	wait 0.
 	PRESERVE.
@@ -86,11 +96,23 @@ global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
 until false
 {
+	local behavior is scriptState["behavior"].
+	local stageAllow is scriptState["stageAllow"].
+	local questThrottle is scriptState["questThrottle"].
+	
 	print "speed : " + ship:velocity:surface:mag at(0,3).
 	
 	if questThrottle
 	{
 		set throt to slopeInterceptCalc2(sil_quest_throttle,velocity:surface:mag).
+	}
+	else if behavior = "r" or behavior = "b"  or behavior = "u" 
+	{
+		
+	}
+	else if behavior <> "d"
+	{
+		// bad state
 	}
 	else if ship:ALTITUDE < 70000
 	{
@@ -114,6 +136,7 @@ until false
 	
 	local steering_math to max(min(sic_steering_alt, sic_steering_apo),-45).
 	print "steering_math : " + steering_math at(0,12).
+	
 	
 	if behavior = "n"
 	{
@@ -164,10 +187,14 @@ until false
 		// going north/south
 		//set steer to Up + R(-1*(steering_math-90),0,180).
 		
-		set steer to Up + R(0,(steering_math-90),-90).
+		set steer to Up + R(1*(steering_math-90),0,180).
 		
 		print "default !                     " at(0,20).
 	}
+	
+	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
+	print retroError + "               " at(0,8).
+	
 	
 	if stageAllow > 0
 	{
@@ -195,4 +222,4 @@ wait until behavior <> "q".
 SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
 UNLOCK THROTTLE.
 
-print "hello.ks 9 end".
+print "hello.ks 10 end".
