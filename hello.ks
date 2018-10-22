@@ -21,8 +21,9 @@ lock steering to steer.
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",1).
+scriptState:add("stageAllow",2).
 scriptState:add("questThrottle",false).
+scriptState:add("vesselName",ship:name).
 
 if exists("1:scriptState.json")
 {
@@ -90,11 +91,11 @@ when terminal:input:haschar then
 }
 
 // this logic matches navball
-global sil_steering_alt to slopeInterceptLex2(1000,90,40000,0,true).
-global sil_steering_apo to slopeInterceptLex2(1000,90,76000,0,false).
+global sil_steering_alt to slopeInterceptLex2(1000,90,42500,0,true).
+global sil_steering_apo to slopeInterceptLex2(1000,90,78000,0,false).
 
 global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
-global sil_apo_throttle to slopeInterceptLex2(70000,1,76000,0,true).
+global sil_apo_throttle to slopeInterceptLex2(70000,1,78000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
 global launchPad_North to v(0,1,0).
@@ -109,9 +110,15 @@ set desiredVecDraw:startupdater to { return ship:position. }.
 set desiredVecDraw:vecupdater to { return desiredVec:normalized*600000. }.
 //set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
 
-when true then
+global experimentState to lex().
+experimentState:add("ship:position - body:position",ship:position - body:position).
+experimentState:add("ship:name",ship:name).
+WRITEJSON(experimentState, "experiment.json").
+
+when false then
 {
-	WRITEJSON(ship:position - body:position, "experiment.json").
+	experimentState:add("ship:position - body:position",ship:position - body:position).
+	WRITEJSON(experimentState, "experiment.json").
 	wait 3.
 	PRESERVE.
 }
@@ -216,7 +223,7 @@ until false
 		
 		
 		// navball angle
-		local angle to 135.
+		local angle to 90.
 		// 45 is north east
 		// 90 is east*
 		// -90 or 270 is west
@@ -242,23 +249,24 @@ until false
 		
 		if (ship:ALTITUDE<1000)
 		{
-			set steer to Up + R(0,0,180).
+			set steer to Up + R(0,0,-90).
+			print "default ! low                 " at(0,20).
 		}
 		else
 		{
-			set steer to desiredVec.
+			//set steer to desiredVec.
+			set steer to Up + R(0,(steering_math-90),-90).
+			print "default ! high                " at(0,20).
 		}
-		
-		print "default !                     " at(0,20).
 	}
 	
 	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
 	print "ret err:" + retroError + "                 " at(0,8).
 	
 	
+	print "stage allowed "+ stageAllow + "            " at(0,16).
 	if stageAllow > 0
 	{
-		print "stage allowed "+ stageAllow + "            " at(0,16).
 		local liquidfuel is GetStageLowestResource("liquidfuel").
 		local oxidizer is GetStageLowestResource("oxidizer").
 		local solidfuel is GetStageLowestResource("solidfuel").
@@ -271,6 +279,7 @@ until false
 			wait 0.1.
 			set scriptState["stageAllow"] to scriptState["stageAllow"] - 1.
 			stage.
+			print "staged                        " at(0,18).
 			WRITEJSON(scriptState, "1:scriptState.json").
 			print "staged !                      " at(0,18).
 		}
@@ -280,7 +289,7 @@ until false
 	wait 0.1.
 }
 
-
+print "default ! derp                " at(0,20).
 
 wait until behavior <> "q".
 

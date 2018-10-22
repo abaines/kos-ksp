@@ -1,6 +1,14 @@
 {
-    "x": 462749.88590587646,
-    "y": -1018.0680454298921,
-    "z": -382064.61365495616,
-    "$type": "kOS.Suffixed.Vector"
+    "entries": [
+        "ship:position - body:position",
+        {
+            "x": 166251.16665516043,
+            "y": -1018.0819353328941,
+            "z": 576594.67028698348,
+            "$type": "kOS.Suffixed.Vector"
+        },
+        "ship:name",
+        "ISV Cold Apollo-I"
+    ],
+    "$type": "kOS.Safe.Encapsulation.Lexicon"
 }
