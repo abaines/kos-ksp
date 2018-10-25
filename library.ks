@@ -99,6 +99,18 @@ function eta_apoapsis
 	}
 }
 
+function eta_periapsis
+{
+	if ETA:PERIAPSIS < ETA:APOAPSIS
+	{
+		return ETA:PERIAPSIS.
+	}
+	else
+	{
+		return ETA:PERIAPSIS - ship:orbit:period.
+	}
+}
+
 function slopeIntercept
 {
 	parameter x, y, a, b.

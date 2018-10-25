@@ -142,7 +142,7 @@ until false
 	local stageAllow is scriptState["stageAllow"].
 	local questThrottle is scriptState["questThrottle"].
 	
-	print "speed : " + ship:velocity:surface:mag + "                 " at(0,3).
+	print "speed : " + round(ship:velocity:surface:mag,2) + "                 " at(0,3).
 	
 	if questThrottle
 	{
@@ -150,8 +150,19 @@ until false
 	}
 	else if scriptState["electricThrottle"]
 	{
-		print "e: " + electricchargepercent + "                 " at(0,5).
-		set throt to slopeInterceptCalc2(sil_electric_throttle,electricchargepercent).
+		print "electric charge%: " + round(electricchargepercent*100,3) + "                 " at(0,5).
+		print "ship:orbit:period: " + round((ship:orbit:period/(60*60*6))*100,3) + "  " at(0,6).
+		
+		print "p:" + round(abs(eta_periapsis())) + " a:" + round(abs(eta_apoapsis())) + "  " at(0,2).
+		
+		if ship:orbit:period < 60*60*6 and abs(eta_periapsis()) > abs(eta_apoapsis())
+		{
+			set throt to slopeInterceptCalc2(sil_electric_throttle,electricchargepercent).
+		}
+		else
+		{
+			set throt to 0.
+		}
 	}
 	else if behavior = "r" or behavior = "b"  or behavior = "u" 
 	{
@@ -173,7 +184,7 @@ until false
 	{
 		set throt to 0.
 	}
-	print "t: " + throt + "                 " at(0,4).
+	print "throt: " + round(throt*100,3) + "                 " at(0,4).
 	
 	local sic_steering_alt to slopeInterceptCalc2(sil_steering_alt,ship:ALTITUDE).
 	local sic_steering_apo to min(slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS),90).
@@ -187,11 +198,14 @@ until false
 	
 	if behavior = "n"
 	{
-		local nextN to nextnode. 
-		local burn_vector to nextN:BURNVECTOR.
-		set steer to burn_vector.
-		sas off.
-		print "node time !                   " at(0,20).
+		if ALLNODES:LENGTH>0
+		{
+			local nextN to nextnode. 
+			local burn_vector to nextN:BURNVECTOR.
+			set steer to burn_vector.
+			sas off.
+			print "node time !                   " at(0,20).
+		}
 	}
 	else if behavior = "r"
 	{
@@ -284,7 +298,7 @@ until false
 	}
 	
 	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
-	print "ret err:" + retroError + "                 " at(0,8).
+	print "ret err:" + round(retroError,3) + "                 " at(0,8).
 	
 	
 	print "stage allowed "+ stageAllow + "            " at(0,16).
