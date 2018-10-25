@@ -21,8 +21,9 @@ lock steering to steer.
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",2).
+scriptState:add("stageAllow",1).
 scriptState:add("questThrottle",false).
+scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
 
 if exists("1:scriptState.json")
@@ -78,6 +79,10 @@ when terminal:input:haschar then
 	{
 		set scriptState["behavior"] to newchar.
 	}
+	if newchar = "e" // electric
+	{
+		set scriptState["electricThrottle"] to not scriptState["electricThrottle"].
+	}
 
 	if newchar = "s" // stage
 	{
@@ -102,6 +107,8 @@ global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
 global sil_apo_throttle to slopeInterceptLex2(70000,1,78000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
+global sil_electric_throttle to slopeInterceptLex2(0.15,0,0.25,0.04,true).
+
 global launchPad_North to v(0,1,0).
 global launchPad_South to v(0,-1,0).
 global launchPad_Up to v(462749.88644960814,-1018.0680322776617,-382064.61318457028).
@@ -113,6 +120,8 @@ global desiredVecDraw to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "", 1
 set desiredVecDraw:startupdater to { return ship:position. }.
 set desiredVecDraw:vecupdater to { return desiredVec:normalized*600000. }.
 //set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
+
+lock electricchargepercent to GetShipResourcePercent("electriccharge").
 
 global experimentState to lex().
 experimentState:add("ship:position - body:position",ship:position - body:position).
@@ -138,6 +147,11 @@ until false
 	if questThrottle
 	{
 		set throt to slopeInterceptCalc2(sil_quest_throttle,velocity:surface:mag).
+	}
+	else if scriptState["electricThrottle"]
+	{
+		print "e: " + electricchargepercent + "                 " at(0,5).
+		set throt to slopeInterceptCalc2(sil_electric_throttle,electricchargepercent).
 	}
 	else if behavior = "r" or behavior = "b"  or behavior = "u" 
 	{

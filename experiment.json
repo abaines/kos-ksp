@@ -2,13 +2,13 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -594018.34040058358,
-            "y": -2495.3633619564284,
-            "z": 100698.60697823757,
+            "x": -2199.6848840555135,
+            "y": 899.2428775173604,
+            "z": -681468.445652387,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "ISV Cold Apollo II-I"
+        "KSP Dark Dragon-I"
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"
 }
