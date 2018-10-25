@@ -74,6 +74,10 @@ when terminal:input:haschar then
 	{
 		set scriptState["behavior"] to newchar.
 	}
+	if newchar = "k" // kill
+	{
+		set scriptState["behavior"] to newchar.
+	}
 
 	if newchar = "s" // stage
 	{
@@ -207,6 +211,11 @@ until false
 			set steer to (target:position - ship:position).
 			print "target !                      " at(0,20).
 		}
+	}
+	else if behavior = "k"
+	{
+		set steer to "kill".
+		print "kill                          " at(0,20).
 	}
 	else
 	{
