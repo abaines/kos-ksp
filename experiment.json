@@ -2,13 +2,13 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -615688.62698056514,
-            "y": 3.4646213541884707,
-            "z": 456766.250594951,
+            "x": -600069.47836235689,
+            "y": -1017.8802037504886,
+            "z": 2930.653346916697,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "KSP Dark Dragon-I"
+        "ID Happiness-Sunshine-I"
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"
 }

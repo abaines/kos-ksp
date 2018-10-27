@@ -326,7 +326,8 @@ function manageFuelCells
 	
 	lock electricchargepercent to GetShipResourcePercent("electriccharge").
 	lock t to time:seconds.
-	local deployed is true.
+
+	local cellsDeployed is false.
 	local protector to t + 1.
 	
 	when true then
@@ -335,19 +336,19 @@ function manageFuelCells
 		{
 			// wait
 		}
-		else if electricchargepercent < threshold and not deployed
+		else if electricchargepercent < threshold and not cellsDeployed
 		{
 			stopwarp().
 			FUELCELLS ON.
 			print "fuelcells on.".
-			set deployed to true.
+			set cellsDeployed to true.
 			set protector to t + 2.
 		}
-		else if electricchargepercent > threshold and deployed
+		else if electricchargepercent > threshold and cellsDeployed
 		{
 			FUELCELLS OFF.
 			print "fuelcells off.".
-			set deployed to false.
+			set cellsDeployed to false.
 			set protector to t + 2.
 		}
 		else

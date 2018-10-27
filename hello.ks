@@ -18,10 +18,16 @@ lock throttle to throt.
 global steer to "kill".
 lock steering to steer.
 
+rcs off.
+sas off.
+
+managePanelsAndAntenna().
+
+manageFuelCells().
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",1).
+scriptState:add("stageAllow",2).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
@@ -61,7 +67,6 @@ when terminal:input:haschar then
 	if newchar = "d" // default behavior
 	{
 		set scriptState["behavior"] to newchar.
-		unlock THROTTLE.
 	}
 	if newchar = "f" // forward horizontal (east)
 	{
@@ -79,11 +84,15 @@ when terminal:input:haschar then
 	{
 		set scriptState["behavior"] to newchar.
 	}
+
+	if newchar = "u" // unlock
+	{
+		unlock THROTTLE.
+	}
 	if newchar = "e" // electric
 	{
 		set scriptState["electricThrottle"] to not scriptState["electricThrottle"].
 	}
-
 	if newchar = "s" // stage
 	{
 		set scriptState["stageAllow"] to scriptState["stageAllow"] + 1.
@@ -92,7 +101,7 @@ when terminal:input:haschar then
 	{
 		set scriptState["questThrottle"] to not scriptState["questThrottle"].
 	}
-	
+
 	WRITEJSON(scriptState, "1:scriptState.json").
 
 	wait 0.
@@ -107,7 +116,7 @@ global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
 global sil_apo_throttle to slopeInterceptLex2(70000,1,78000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
-global sil_electric_throttle to slopeInterceptLex2(0.15,0,0.25,0.04,true).
+global sil_electric_throttle to slopeInterceptLex2(0.10,0,0.90,0.02,true).
 
 global launchPad_North to v(0,1,0).
 global launchPad_South to v(0,-1,0).
@@ -116,7 +125,7 @@ global launchPad_East to vcrs(launchPad_Up,launchPad_North).
 
 // dark orange: desired vector
 global desiredVec to V(0,0,0).
-global desiredVecDraw to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "", 1.0, true,1).
+global desiredVecDraw to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "", 1.0, false,1).
 set desiredVecDraw:startupdater to { return ship:position. }.
 set desiredVecDraw:vecupdater to { return desiredVec:normalized*600000. }.
 //set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
@@ -155,7 +164,11 @@ until false
 		
 		print "p:" + round(abs(eta_periapsis())) + " a:" + round(abs(eta_apoapsis())) + "  " at(0,2).
 		
-		if ship:orbit:period < 60*60*6 and abs(eta_periapsis()) > abs(eta_apoapsis())
+		if ship:orbit:period >= 60*60*6
+		{
+			set throt to 0.
+		}
+		else if abs(eta_periapsis()) > abs(eta_apoapsis()) or ship:APOAPSIS < ship:PERIAPSIS*1.02
 		{
 			set throt to slopeInterceptCalc2(sil_electric_throttle,electricchargepercent).
 		}
@@ -286,13 +299,13 @@ until false
 		
 		if (ship:ALTITUDE<1000)
 		{
-			set steer to Up + R(0,0,-90).
+			set steer to Up + R(0,0,180).
 			print "default ! low                 " at(0,20).
 		}
 		else
 		{
 			//set steer to desiredVec.
-			set steer to Up + R(0,(steering_math-90),-90).
+			set steer to Up + R(0,(steering_math-90),180).
 			print "default ! high                " at(0,20).
 		}
 	}
