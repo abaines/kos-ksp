@@ -2,13 +2,13 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -325214.33207759354,
-            "y": 0.4010668441067799,
-            "z": 596054.7720075245,
+            "x": 221513.95060515907,
+            "y": -188655.33278118589,
+            "z": -610483.14230814972,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "Rescue I-I"
+        "MSP Engine's Rose-I Ship"
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"
 }

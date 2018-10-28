@@ -27,7 +27,7 @@ manageFuelCells().
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",4).
+scriptState:add("stageAllow",5).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
@@ -370,7 +370,7 @@ until false
 		else
 		{
 			//set steer to desiredVec.
-			set steer to Up + R(0,(steering_math-90),180).
+			set steer to Up + R((steering_math-90),0,180).
 			print "default ! high                " at(0,20).
 		}
 	}
