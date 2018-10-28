@@ -27,7 +27,7 @@ manageFuelCells().
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",2).
+scriptState:add("stageAllow",4).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
@@ -84,6 +84,10 @@ when terminal:input:haschar then
 	{
 		set scriptState["behavior"] to newchar.
 	}
+	if newchar = "c" // rescue
+	{
+		set scriptState["behavior"] to newchar.
+	}
 
 	if newchar = "z" // unlock
 	{
@@ -131,6 +135,53 @@ global desiredVecDraw to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "", 1
 set desiredVecDraw:startupdater to { return ship:position. }.
 set desiredVecDraw:vecupdater to { return desiredVec:normalized*600000. }.
 //set desiredVecDraw:vecupdater to { return ship:facing:vector:normalized*150. }.
+
+
+// wait target
+global futureTargetTime to 200.
+global shipDraw to VECDRAWARGS(body:position, ship:position - body:position, RGB(0,0,1), "", 1.1, true).
+global targDraw to VECDRAWARGS(body:position, body:position, RGB(0,1,0), "", 1, true).
+global futrDraw to VECDRAWARGS(body:position, body:position, RGB(1,0,0), "", 1, true).
+
+set shipDraw:startupdater to { return body:position. }.
+set targDraw:startupdater to { return body:position. }.
+set futrDraw:startupdater to { return body:position. }.
+
+set shipDraw:vecupdater to
+{
+	if scriptState["behavior"] = "c"
+	{
+		return ship:position - body:position.
+	}
+	else
+	{
+		return v(0,0,0).
+	}
+}.
+set targDraw:vecupdater to 
+{
+	if HASTARGET and scriptState["behavior"] = "c"
+	{
+		return target:position - body:position.
+	}
+	else
+	{
+		return v(0,0,0).
+	}
+}.
+set futrDraw:vecupdater to
+{
+	if HASTARGET and scriptState["behavior"] = "c"
+	{
+		return positionat(target,time:seconds + futureTargetTime) - body:position.
+	}
+	else
+	{
+		return v(0,0,0).
+	}
+}.
+
+
 
 lock electricchargepercent to GetShipResourcePercent("electriccharge").
 
@@ -210,8 +261,20 @@ until false
 	local steering_math to max(min(sic_steering_alt, sic_steering_apo),-45).
 	print "steering_math : " + steering_math + "                 " at(0,12).
 	
-	
-	if behavior = "n"
+	if behavior = "c" and HASTARGET
+	{
+		local targetFutureDistanceB is (positionat(target,time:seconds + futureTargetTime - 2) - ship:position):mag.
+		local targetFutureDistance0 is (positionat(target,time:seconds + futureTargetTime + 0) - ship:position):mag.
+		local targetFutureDistanceA is (positionat(target,time:seconds + futureTargetTime + 2) - ship:position):mag.
+		print "targetFutureDistance: " + round(targetFutureDistance0,3) + "                 " at(0,5).
+		if (targetFutureDistance0 < targetFutureDistanceB and targetFutureDistance0 < targetFutureDistanceA)
+		{
+			stopwarp().
+			stage.
+			set scriptState["behavior"] to "d".
+		}
+	}
+	else if behavior = "n"
 	{
 		if ALLNODES:LENGTH>0
 		{

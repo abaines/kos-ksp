@@ -2,13 +2,13 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": 7274024.1651225137,
-            "y": -10930712.075772671,
-            "z": 2795178.178701445,
+            "x": -325214.33207759354,
+            "y": 0.4010668441067799,
+            "z": 596054.7720075245,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "Potoo 2b"
+        "Rescue I-I"
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"
 }
