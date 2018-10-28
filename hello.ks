@@ -85,8 +85,10 @@ when terminal:input:haschar then
 		set scriptState["behavior"] to newchar.
 	}
 
-	if newchar = "u" // unlock
+	if newchar = "z" // unlock
 	{
+		set throt to 0.0.
+		SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
 		unlock THROTTLE.
 	}
 	if newchar = "e" // electric

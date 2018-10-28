@@ -2,13 +2,13 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -600069.47836235689,
-            "y": -1017.8802037504886,
-            "z": 2930.653346916697,
+            "x": 7274024.1651225137,
+            "y": -10930712.075772671,
+            "z": 2795178.178701445,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "ID Happiness-Sunshine-I"
+        "Potoo 2b"
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"
 }
