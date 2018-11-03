@@ -91,6 +91,7 @@ when terminal:input:haschar then
 	if newchar = "y" // waypoint
 	{
 		set scriptState["behavior"] to newchar.
+		unlock THROTTLE.
 	}
 
 	if newchar = "z" // unlock
@@ -190,11 +191,17 @@ set futrDraw:vecupdater to
 
 
 global testGeo to LATLNG(0,-74).
+global testGeo to LATLNG(-0.03,-74.7).
 global testGeo to waypoint("TMA"):GEOPOSITION.
 // dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
 global testGeoVecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "way", 1.0, true,1).
 set testGeoVecDrawA:startupdater to { return ship:position. }.
-set testGeoVecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+100)-SHIP:POSITION. }.
+set testGeoVecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+900)-SHIP:POSITION. }.
+
+// dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
+global testGeo0VecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.9), "", 1.0, true,1).
+set testGeo0VecDrawA:startupdater to { return ship:position. }.
+set testGeo0VecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE)-SHIP:POSITION. }.
 
 
 
@@ -206,6 +213,7 @@ global experimentState to lex().
 experimentState:add("ship:position - body:position",ship:position - body:position).
 experimentState:add("ship:name",ship:name).
 experimentState:add("SHIP:GEOPOSITION",SHIP:GEOPOSITION).
+experimentState:add("waypoint(TMA):GEOPOSITION",waypoint("TMA"):GEOPOSITION).
 WRITEJSON(experimentState, "experiment.json").
 
 when false then
@@ -217,8 +225,20 @@ when false then
 }
 
 
-global thrustPID TO PIDLOOP(1/5, 0, 1/1000, 0, 1).
-set thrustPID:SETPOINT to -1.
+global hoverEngines to ship:partstagged("hover").
+
+function hoverThrust
+{
+	parameter t.
+	
+	for he in hoverEngines
+	{
+		set he:thrustlimit to t.
+	}
+}
+
+global thrustPID TO PIDLOOP(20, 0, 1/100, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set thrustPID:SETPOINT to -2.
 
 function mainLoop
 {
@@ -230,9 +250,16 @@ function mainLoop
 	
 	if behavior = "y"
 	{
-		set steer to testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+1000).
-		set tpid to thrustPID:update(time:second,eta_apoapsis()).
-		
+		local terrainheight to SHIP:GEOPOSITION:TERRAINHEIGHT.
+		local dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - terrainheight).
+		set thrustPID:SETPOINT to min(-2,dist2ground / -50).
+		local tpid to 1.
+		set steer to testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+900).
+		set tpid to thrustPID:update(time:second,ship:VERTICALSPEED).
+		hoverThrust(tpid).
+		print "tpid: " + round(tpid,4) + "                 " at(0,5).
+		print "thrustPID:setpoint: " + round(thrustPID:setpoint,4) + "                 " at(0,6).
+		print "hover !                   " at(0,20).
 		return.
 	}
 	

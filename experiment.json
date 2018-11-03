@@ -2,17 +2,27 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -169660.00087802272,
-            "y": -509.34240181204922,
-            "z": -575589.593226126,
+            "x": -345902.8196741984,
+            "y": 1172.84652949708,
+            "z": -491086.11650677893,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
         "MLV Horizon-Globe 3-I",
         "SHIP:GEOPOSITION",
         {
-            "lat": -0.048632668884362608,
-            "lng": -74.712651333108568,
+            "lat": 0.1118719945708708,
+            "lng": -74.564209314637637,
+            "body": {
+                "name": "Kerbin",
+                "$type": "kOS.Suffixed.BodyTarget"
+            },
+            "$type": "kOS.Suffixed.GeoCoordinates"
+        },
+        "waypoint(TMA):GEOPOSITION",
+        {
+            "lat": 0.10227297919058,
+            "lng": -74.5684338987643,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
