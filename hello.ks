@@ -26,8 +26,8 @@ managePanelsAndAntenna().
 manageFuelCells().
 
 global scriptState to lex().
-scriptState:add("behavior","d").
-scriptState:add("stageAllow",5).
+scriptState:add("behavior","u").
+scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
@@ -188,6 +188,7 @@ lock electricchargepercent to GetShipResourcePercent("electriccharge").
 global experimentState to lex().
 experimentState:add("ship:position - body:position",ship:position - body:position).
 experimentState:add("ship:name",ship:name).
+experimentState:add("SHIP:GEOPOSITION",SHIP:GEOPOSITION).
 WRITEJSON(experimentState, "experiment.json").
 
 when false then

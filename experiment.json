@@ -2,13 +2,23 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": 221513.95060515907,
-            "y": -188655.33278118589,
-            "z": -610483.14230814972,
+            "x": -104118.54039915676,
+            "y": -509.342182282564,
+            "z": -590971.4473931914,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "MSP Engine's Rose-I Ship"
+        "MLV Horizon-Globe 3-I",
+        "SHIP:GEOPOSITION",
+        {
+            "lat": -0.048632647088119166,
+            "lng": -74.712651333556124,
+            "body": {
+                "name": "Kerbin",
+                "$type": "kOS.Suffixed.BodyTarget"
+            },
+            "$type": "kOS.Suffixed.GeoCoordinates"
+        }
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"
 }
