@@ -88,6 +88,10 @@ when terminal:input:haschar then
 	{
 		set scriptState["behavior"] to newchar.
 	}
+	if newchar = "y" // waypoint
+	{
+		set scriptState["behavior"] to newchar.
+	}
 
 	if newchar = "z" // unlock
 	{
@@ -183,6 +187,19 @@ set futrDraw:vecupdater to
 
 
 
+
+
+global testGeo to LATLNG(0,-74).
+global testGeo to waypoint("TMA"):GEOPOSITION.
+// dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
+global testGeoVecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "way", 1.0, true,1).
+set testGeoVecDrawA:startupdater to { return ship:position. }.
+set testGeoVecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+100)-SHIP:POSITION. }.
+
+
+
+
+
 lock electricchargepercent to GetShipResourcePercent("electriccharge").
 
 global experimentState to lex().
@@ -199,13 +216,25 @@ when false then
 	PRESERVE.
 }
 
-until false
+
+global thrustPID TO PIDLOOP(1/5, 0, 1/1000, 0, 1).
+set thrustPID:SETPOINT to -1.
+
+function mainLoop
 {
 	local behavior is scriptState["behavior"].
 	local stageAllow is scriptState["stageAllow"].
 	local questThrottle is scriptState["questThrottle"].
 	
 	print "speed : " + round(ship:velocity:surface:mag,2) + "                 " at(0,3).
+	
+	if behavior = "y"
+	{
+		set steer to testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+1000).
+		set tpid to thrustPID:update(time:second,eta_apoapsis()).
+		
+		return.
+	}
 	
 	if questThrottle
 	{
@@ -400,8 +429,11 @@ until false
 			print "staged !                      " at(0,18).
 		}
 	}
-	
+}
 
+until false
+{
+	mainLoop().
 	wait 0.1.
 }
 
