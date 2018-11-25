@@ -26,12 +26,12 @@ managePanelsAndAntenna().
 manageFuelCells().
 
 global scriptState to lex().
-scriptState:add("behavior","c").
+scriptState:add("behavior","d").
 scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
-scriptState:add("engineModeAlt",700).
+scriptState:add("engineModeAlt",800).
 
 if exists("1:scriptState.json")
 {
@@ -189,21 +189,22 @@ set futrDraw:vecupdater to
 
 
 
+// waypoint experiments
+if false
+{
+	global testGeo to LATLNG(0,-74).
+	global testGeo to LATLNG(-0.03,-74.7).
+	//global testGeo to waypoint("TMA"):GEOPOSITION.
+	// dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
+	global testGeoVecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "way", 1.0, true,1).
+	set testGeoVecDrawA:startupdater to { return ship:position. }.
+	set testGeoVecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+900)-SHIP:POSITION. }.
 
-
-global testGeo to LATLNG(0,-74).
-global testGeo to LATLNG(-0.03,-74.7).
-//global testGeo to waypoint("TMA"):GEOPOSITION.
-// dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
-global testGeoVecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "way", 1.0, true,1).
-set testGeoVecDrawA:startupdater to { return ship:position. }.
-set testGeoVecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE+900)-SHIP:POSITION. }.
-
-// dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
-global testGeo0VecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.9), "", 1.0, true,1).
-set testGeo0VecDrawA:startupdater to { return ship:position. }.
-set testGeo0VecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE)-SHIP:POSITION. }.
-
+	// dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
+	global testGeo0VecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.9), "", 1.0, true,1).
+	set testGeo0VecDrawA:startupdater to { return ship:position. }.
+	set testGeo0VecDrawA:vecupdater to { return testGeo:ALTITUDEPOSITION(SHIP:ALTITUDE)-SHIP:POSITION. }.
+}
 
 
 
@@ -230,8 +231,11 @@ for alti IN RANGE(-1000,10000,100)
 	ispData:add(alti, engine0:ISPAT(pressure)).
 }
 
-experimentState:add("ispData",ispData).
-experimentState:add("pressureData",pressureData).
+if false
+{
+	experimentState:add("ispData",ispData).
+	experimentState:add("pressureData",pressureData).
+}
 
 WRITEJSON(experimentState, "experiment.json").
 
@@ -279,6 +283,7 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 	HUDTEXT(" "+modeEnginesText+" ", 15, 4, 15, YELLOW, false).
 
 	set scriptState["engineModeAlt"] to -1.
+	WRITEJSON(scriptState, "1:scriptState.json").
 
 	wait 0.
 	PRESERVE.
@@ -474,13 +479,15 @@ function mainLoop
 		
 		if (ship:ALTITUDE<1000)
 		{
-			set steer to Up + R(0,0,180).
+			//set steer to Up + R(0,0,180). // (default rotation)
+			set steer to Up + R(0,0,-90). // (q-rotation)
 			print "default ! low                 " at(0,20).
 		}
 		else
 		{
 			//set steer to desiredVec.
-			set steer to Up + R(0,steering_math-90,180). // east (probe)
+			//set steer to Up + R(0,steering_math-90,180). // east (probe)
+			set steer to Up + R(0,(steering_math-90),-90). // east (q-rotation)
 			print "default ! high                " at(0,20).
 		}
 	}

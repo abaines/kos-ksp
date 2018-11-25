@@ -400,14 +400,23 @@ function GetShipResourcePercent
 {
 	parameter resourceType.
 	
+	local ramount is 0.
+	local rcapacity is 0.
+	
 	for r in ship:RESOURCES
 	{
 		if r:name = resourceType
 		{
-			return r:amount / r:capacity.
+			set ramount to r:amount + ramount.
+			set rcapacity to r:capacity + rcapacity.
 		}
 	}
-	return -1.
+
+	if (rcapacity = 0)
+	{
+		return -1.
+	}
+	return ramount / rcapacity.
 }
 
 FUNCTION MANEUVER_TIME
