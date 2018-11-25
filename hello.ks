@@ -26,7 +26,7 @@ managePanelsAndAntenna().
 manageFuelCells().
 
 global scriptState to lex().
-scriptState:add("behavior","d").
+scriptState:add("behavior","c").
 scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
@@ -144,7 +144,7 @@ set desiredVecDraw:vecupdater to { return desiredVec:normalized*600000. }.
 
 
 // wait target
-global futureTargetTime to 200.
+global futureTargetTime to 120.
 global shipDraw to VECDRAWARGS(body:position, ship:position - body:position, RGB(0,0,1), "", 1.1, true).
 global targDraw to VECDRAWARGS(body:position, body:position, RGB(0,1,0), "", 1, true).
 global futrDraw to VECDRAWARGS(body:position, body:position, RGB(1,0,0), "", 1, true).
@@ -379,6 +379,11 @@ function mainLoop
 			set scriptState["behavior"] to "d".
 		}
 	}
+	else if behavior = "c"
+	{
+		// wait for target
+		print "waiting for target               " at(0,5).
+	}
 	else if behavior = "n"
 	{
 		if ALLNODES:LENGTH>0
@@ -509,6 +514,8 @@ function mainLoop
 		}
 	}
 }
+
+ag9 on. // on launch pad activate action group 9.
 
 until false
 {

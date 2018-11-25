@@ -2,17 +2,17 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -939351.65445690276,
-            "y": 4612.8715638667154,
-            "z": -2964771.5376618542,
+            "x": 677723.19606984977,
+            "y": -10.839384965535482,
+            "z": 73620.509771751822,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "HPD Tiny Relay-I",
+        "HPD Rescuer-II",
         "SHIP:GEOPOSITION",
         {
-            "lat": 0.0849825746927625,
-            "lng": 117.25334371964379,
+            "lat": -0.00091101919299583307,
+            "lng": -101.81588380343655,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
