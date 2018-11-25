@@ -304,7 +304,10 @@ function managePanelsAndAntenna
 		else if alt<spaceAlt and deployed
 		{
 			stopwarp().
-			print "Air!".
+			HUDTEXT("Air!1", 15, 1, 15, CYAN, false).
+			HUDTEXT("Air!2", 15, 2, 15, CYAN, false).
+			HUDTEXT("Air!3", 15, 3, 15, CYAN, false).
+			HUDTEXT("Air!4", 15, 4, 15, CYAN, false).
 			panels off.
 			setantenna(false).
 			set deployed to false.
