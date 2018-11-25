@@ -26,7 +26,7 @@ managePanelsAndAntenna().
 manageFuelCells().
 
 global scriptState to lex().
-scriptState:add("behavior","u").
+scriptState:add("behavior","d").
 scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
@@ -192,7 +192,7 @@ set futrDraw:vecupdater to
 
 global testGeo to LATLNG(0,-74).
 global testGeo to LATLNG(-0.03,-74.7).
-global testGeo to waypoint("TMA"):GEOPOSITION.
+//global testGeo to waypoint("TMA"):GEOPOSITION.
 // dark orange: test vector : VECDRAWARGS(start, vec, color, label, scale, show, width)
 global testGeoVecDrawA to VECDRAWARGS(V(0,0,0), V(0,0,0), RGB(0.5,0.2,0.0), "way", 1.0, true,1).
 set testGeoVecDrawA:startupdater to { return ship:position. }.
@@ -213,7 +213,25 @@ global experimentState to lex().
 experimentState:add("ship:position - body:position",ship:position - body:position).
 experimentState:add("ship:name",ship:name).
 experimentState:add("SHIP:GEOPOSITION",SHIP:GEOPOSITION).
-experimentState:add("waypoint(TMA):GEOPOSITION",waypoint("TMA"):GEOPOSITION).
+//experimentState:add("waypoint(TMA):GEOPOSITION",waypoint("TMA"):GEOPOSITION).
+
+global ispData to lex().
+global pressureData to lex().
+
+local myVariable to list().
+LIST ENGINES IN myVariable.
+global engine0 to myVariable[0].
+
+for alti IN RANGE(-2000,72000,1000)
+{
+	local pressure is body:atm:ALTITUDEPRESSURE(alti).
+	pressureData:add(alti, pressure).
+	ispData:add(alti, engine0:ISPAT(pressure)).
+}
+
+experimentState:add("ispData",ispData).
+experimentState:add("pressureData",pressureData).
+
 WRITEJSON(experimentState, "experiment.json").
 
 when false then
@@ -223,6 +241,8 @@ when false then
 	wait 3.
 	PRESERVE.
 }
+
+print "experimentState written                  " at(0,1).
 
 
 global hoverEngines to ship:partstagged("hover").
@@ -380,7 +400,7 @@ function mainLoop
 		set steer to "kill".
 		print "kill                          " at(0,20).
 	}
-	else
+	else if behavior = "d"
 	{
 		// using weird command orientation (east)
 		//set steer to Up + R(0,(steering_math-90),-90).
@@ -430,6 +450,10 @@ function mainLoop
 			set steer to Up + R((steering_math-90),0,180).
 			print "default ! high                " at(0,20).
 		}
+	}
+	else
+	{
+		print "unknown behavior: " + behavior + "            " at(0,20).
 	}
 	
 	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
