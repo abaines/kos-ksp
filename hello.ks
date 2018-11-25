@@ -31,7 +31,7 @@ scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
-scriptState:add("engineModeAlt",800).
+scriptState:add("engineModeAlt",700).
 
 if exists("1:scriptState.json")
 {
@@ -47,7 +47,7 @@ when terminal:input:haschar then
 {
 	local newchar is terminal:input:getchar().
 	
-	print "newchar : " + newchar at(0,1).
+	print "newchar : " + newchar + "            " at(0,1).
 	
 	if newchar = "t" // target
 	{
