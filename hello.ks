@@ -31,6 +31,7 @@ scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
+scriptState:add("engineModeAlt",2000).
 
 if exists("1:scriptState.json")
 {
@@ -218,11 +219,11 @@ experimentState:add("SHIP:GEOPOSITION",SHIP:GEOPOSITION).
 global ispData to lex().
 global pressureData to lex().
 
-local myVariable to list().
-LIST ENGINES IN myVariable.
-global engine0 to myVariable[0].
+global myEngines to list().
+LIST ENGINES IN myEngines.
+global engine0 to myEngines[0].
 
-for alti IN RANGE(-2000,72000,1000)
+for alti IN RANGE(-1000,10000,100)
 {
 	local pressure is body:atm:ALTITUDEPRESSURE(alti).
 	pressureData:add(alti, pressure).
@@ -256,6 +257,33 @@ function hoverThrust
 		set he:thrustlimit to t.
 	}
 }
+
+
+
+when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and SHIP:ALTITUDE>scriptState["engineModeAlt"] then
+{
+	local modeEngines to 0.
+	FOR eng IN myEngines
+	{
+		if eng:MULTIMODE
+		{
+			eng:TOGGLEMODE.
+			set modeEngines to 1 + modeEngines.
+		}
+	}.
+
+	local modeEnginesText to "modeEngines#" + modeEngines + "  " + SHIP:ALTITUDE.
+	HUDTEXT("" +modeEnginesText+"" , 15, 1, 15, YELLOW, false).
+	HUDTEXT("" +modeEnginesText+" ", 15, 2, 15, YELLOW, false).
+	HUDTEXT(" "+modeEnginesText+"" , 15, 3, 15, YELLOW, false).
+	HUDTEXT(" "+modeEnginesText+" ", 15, 4, 15, YELLOW, false).
+
+	set scriptState["engineModeAlt"] to -1.
+
+	wait 0.
+	PRESERVE.
+}
+
 
 global thrustPID TO PIDLOOP(20, 0, 1/100, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set thrustPID:SETPOINT to -2.
@@ -447,7 +475,7 @@ function mainLoop
 		else
 		{
 			//set steer to desiredVec.
-			set steer to Up + R((steering_math-90),0,180).
+			set steer to Up + R(0,steering_math-90,180). // east (probe)
 			print "default ! high                " at(0,20).
 		}
 	}
