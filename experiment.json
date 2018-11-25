@@ -2,17 +2,17 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": 534712.91860592156,
-            "y": -1018.1821852218754,
-            "z": 272449.32042584015,
+            "x": 598028.82112718851,
+            "y": -1018.1828249829533,
+            "z": 50080.737733273527,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "HPD Tiny Test 1-I",
+        "HPD Tiny Test 2-I",
         "SHIP:GEOPOSITION",
         {
-            "lat": -0.0972093620318466,
-            "lng": -74.557678778473658,
+            "lat": -0.097209421267573648,
+            "lng": -74.557672763284259,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
