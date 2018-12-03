@@ -2,17 +2,17 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": 558606.71342069167,
-            "y": -124.28794975105194,
-            "z": 379991.68482091575,
+            "x": 524642.95621128322,
+            "y": -1018.2582938786051,
+            "z": -291286.56060949981,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "HPD Sword-Thunder-I",
+        "x17-I",
         "SHIP:GEOPOSITION",
         {
-            "lat": -0.010540522021484566,
-            "lng": -174.04654997125368,
+            "lat": -0.097223137007468069,
+            "lng": -74.55766797263459,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"

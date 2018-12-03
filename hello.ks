@@ -237,6 +237,12 @@ if false
 	experimentState:add("pressureData",pressureData).
 }
 
+global antennae to ship:partsTagged("a").
+// experimentState:add("antennae",antennae).
+local a1 to antennae[0].
+local m1 to a1:GETMODULE("ModuleRTAntenna").
+m1:setField("target","ID Happiness-Sunshine-I Relay").
+
 WRITEJSON(experimentState, "experiment.json").
 
 when false then
@@ -250,7 +256,7 @@ when false then
 print "experimentState written                  " at(0,1).
 
 
-global hoverEngines to ship:partstagged("hover").
+global hoverEngines to ship:partsTagged("hover").
 
 function hoverThrust
 {
