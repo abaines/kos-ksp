@@ -29,7 +29,7 @@ global scriptState to lex().
 scriptState:add("behavior","d").
 scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
-scriptState:add("electricThrottle",false).
+scriptState:add("electricThrottle",true).
 scriptState:add("vesselName",ship:name).
 scriptState:add("engineModeAlt",800).
 
@@ -128,7 +128,7 @@ global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
 global sil_apo_throttle to slopeInterceptLex2(70000,1,78000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
-global sil_electric_throttle to slopeInterceptLex2(0.10,0,0.90,0.02,true).
+global sil_electric_throttle to slopeInterceptLex2(0.1,0.0,0.9,1.0,true).
 
 global launchPad_North to v(0,1,0).
 global launchPad_South to v(0,-1,0).
@@ -546,3 +546,8 @@ SET SHIP:CONTROL:NEUTRALIZE TO TRUE.
 UNLOCK THROTTLE.
 
 print "hello.ks 10 end".
+
+
+// ~1400 dv to go from LKO to edge of SOI orbit and back?
+// Kerbin: Sphere of influence 84,159,286 m (measured from center)
+// Kerbin: Equatorial radius 600,000 m
