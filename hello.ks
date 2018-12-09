@@ -551,3 +551,4 @@ print "hello.ks 10 end".
 // ~1400 dv to go from LKO to edge of SOI orbit and back?
 // Kerbin: Sphere of influence 84,159,286 m (measured from center)
 // Kerbin: Equatorial radius 600,000 m
+// Minmus: Semi-major axis|Apoapsis|Periapsis is 47,000,000 m (measured from center)
