@@ -321,7 +321,7 @@ function managePanelsAndAntenna
 			set protector to t + 1.
 		}
 
-		wait 0.
+		wait 1.5.
 		PRESERVE.
 	}
 }
@@ -362,7 +362,7 @@ function manageFuelCells
 			set protector to t + 1.
 		}
 	
-		wait 0.
+		wait 0.5.
 		PRESERVE.
 	}
 }

@@ -6,6 +6,8 @@ runoncepath("library").
 
 librarysetup().
 
+PARAMETER PARAMETER1 is " ".
+
 set terminal:width to 45.
 set terminal:height to 20.
 
@@ -40,6 +42,13 @@ if exists("1:scriptState.json")
 	{
 		set scriptState[key] to jsonRead[key].
 	}
+}
+
+if PARAMETER1<>" "
+{
+	print "newchar! : " + PARAMETER1 + "            " at(0,1).
+	set scriptState["behavior"] to PARAMETER1.
+	WRITEJSON(scriptState, "1:scriptState.json").
 }
 
 
@@ -116,7 +125,7 @@ when terminal:input:haschar then
 
 	WRITEJSON(scriptState, "1:scriptState.json").
 
-	wait 0.
+	wait 0.05.
 	PRESERVE.
 }
 
@@ -238,10 +247,11 @@ if false
 }
 
 global antennae to ship:partsTagged("a").
-// experimentState:add("antennae",antennae).
-local a1 to antennae[0].
-local m1 to a1:GETMODULE("ModuleRTAntenna").
-m1:setField("target","ID Happiness-Sunshine-I Relay").
+for antennaI in antennae
+{
+	local gmodule to antennaI:GETMODULE("ModuleRTAntenna").
+	gmodule:setField("target","ID Happiness-Sunshine-I Relay").
+}
 
 WRITEJSON(experimentState, "experiment.json").
 
@@ -291,7 +301,7 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 	set scriptState["engineModeAlt"] to -1.
 	WRITEJSON(scriptState, "1:scriptState.json").
 
-	wait 0.
+	wait 15.0.
 	PRESERVE.
 }
 
@@ -346,7 +356,7 @@ function mainLoop
 			set throt to 0.
 		}
 	}
-	else if behavior = "r" or behavior = "b"  or behavior = "u" 
+	else if behavior = "r" or behavior = "b" or behavior = "u"
 	{
 		
 	}
