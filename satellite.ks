@@ -220,7 +220,7 @@ if 1 // TODO: wait for launch Window !
 	
 	print " ! ! ! Warp Complete ! ! !".
 
-	waitUntilSteady(5).
+	delayUntilSteady(5).
 
 	wait until etaAN < launchWindow + 0.
 	stopWarp().
@@ -228,7 +228,7 @@ if 1 // TODO: wait for launch Window !
 }
 else // TODO: wait for launch Window !
 {
-	waitUntilSteady(9).
+	delayUntilSteady(9).
 }
 
 wait 0.

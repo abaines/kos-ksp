@@ -301,13 +301,15 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 	set scriptState["engineModeAlt"] to -1.
 	WRITEJSON(scriptState, "1:scriptState.json").
 
-	wait 15.0.
+	wait 60.0.
 	PRESERVE.
 }
 
 
 global thrustPID TO PIDLOOP(20, 0, 1/100, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set thrustPID:SETPOINT to -2.
+
+global mainLoopCount is 0.
 
 function mainLoop
 {
@@ -536,6 +538,9 @@ function mainLoop
 			print "staged !                      " at(0,18).
 		}
 	}
+	
+	set mainLoopCount to 1 + mainLoopCount.
+	print "" + mod(mainLoopCount,10) at(43,21).
 }
 
 ag9 on. // on launch pad activate action group 9.
@@ -543,7 +548,7 @@ ag9 on. // on launch pad activate action group 9.
 until false
 {
 	mainLoop().
-	wait 0.1.
+	wait 0.001.
 }
 
 print "default ! derp                " at(0,20).

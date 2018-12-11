@@ -249,7 +249,7 @@ function orbitSpeed
 }
 
 
-function waitUntilSteady
+function delayUntilSteady
 {
 	parameter duration is 10, maxSpeed is 0.009, printat is 4.
 	
@@ -290,7 +290,7 @@ function managePanelsAndAntenna
 	{
 		if t < protector
 		{
-			// wait
+			// delay
 		}
 		else if alt>spaceAlt and not deployed
 		{
@@ -321,7 +321,7 @@ function managePanelsAndAntenna
 			set protector to t + 1.
 		}
 
-		wait 1.5.
+		wait 0.
 		PRESERVE.
 	}
 }
@@ -340,7 +340,7 @@ function manageFuelCells
 	{
 		if t < protector
 		{
-			// wait
+			// delay
 		}
 		else if electricchargepercent < threshold and not cellsDeployed
 		{
@@ -362,7 +362,7 @@ function manageFuelCells
 			set protector to t + 1.
 		}
 	
-		wait 0.5.
+		wait 0.
 		PRESERVE.
 	}
 }

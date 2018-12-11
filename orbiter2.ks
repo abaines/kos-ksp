@@ -88,7 +88,7 @@ lock throttle to 1.
 
 print "script time : " + (time:seconds - scriptEpoch).
 
-waitUntilSteady(6).
+delayUntilSteady(6).
 
 wait 0.
 print " ! ! ! Launching ! ! !".
