@@ -279,18 +279,20 @@ function hoverThrust
 	}
 }
 
-
-when scriptState["deployFairingAlt"]>0 and SHIP:ALTITUDE>scriptState["deployFairingAlt"] then
+if scriptState["deployFairingAlt"]>0
 {
-	hudtext("deploying fairings", 15, 4, 15, white, false).
-	
-	for modulefairing in ship:modulesnamed("moduleproceduralfairing")
+	when SHIP:ALTITUDE>scriptState["deployFairingAlt"] then
 	{
-		modulefairing:doevent("deploy").
-	}.
+		hudtext("deploying fairings", 15, 4, 15, white, false).
 
-	set scriptState["deployFairingAlt"] to -1.
-	WRITEJSON(scriptState, "1:scriptState.json").
+		for modulefairing in ship:modulesnamed("moduleproceduralfairing")
+		{
+			modulefairing:doevent("deploy").
+		}.
+
+		set scriptState["deployFairingAlt"] to -1.
+		WRITEJSON(scriptState, "1:scriptState.json").
+	}
 }
 
 when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and SHIP:ALTITUDE>scriptState["engineModeAlt"] then
@@ -351,26 +353,6 @@ function mainLoop
 	{
 		set throt to slopeInterceptCalc2(sil_quest_throttle,velocity:surface:mag).
 	}
-	else if scriptState["electricThrottle"]
-	{
-		print "electric charge%: " + round(electricchargepercent*100,3) + "                 " at(0,5).
-		print "ship:orbit:period: " + round((ship:orbit:period/(60*60*6))*100,3) + "  " at(0,6).
-		
-		print "p:" + round(abs(eta_periapsis())) + " a:" + round(abs(eta_apoapsis())) + "  " at(0,2).
-		
-		if ship:orbit:period >= 60*60*6
-		{
-			set throt to 0.
-		}
-		else if abs(eta_periapsis()) > abs(eta_apoapsis()) or ship:APOAPSIS < ship:PERIAPSIS*1.02
-		{
-			set throt to slopeInterceptCalc2(sil_electric_throttle,electricchargepercent).
-		}
-		else
-		{
-			set throt to 0.
-		}
-	}
 	else if behavior = "r" or behavior = "b" or behavior = "u"
 	{
 		
@@ -390,6 +372,28 @@ function mainLoop
 	else
 	{
 		set throt to 0.
+	}
+	if scriptState["electricThrottle"]
+	{
+		print "electric charge%: " + round(electricchargepercent*100,3) + "                 " at(0,5).
+		print "ship:orbit:period: " + round((ship:orbit:period/(60*60*6))*100,3) + "  " at(0,6).
+		
+		print "p:" + round(abs(eta_periapsis())) + " a:" + round(abs(eta_apoapsis())) + "  " at(0,2).
+		
+		local electricThrot to 0.
+		if ship:orbit:period >= 60*60*6
+		{
+			set electricThrot to 0.
+		}
+		else if abs(eta_periapsis()) > abs(eta_apoapsis()) or ship:APOAPSIS < ship:PERIAPSIS*1.02
+		{
+			set electricThrot to slopeInterceptCalc2(sil_electric_throttle,electricchargepercent).
+		}
+		else
+		{
+			set electricThrot to 0.
+		}
+		set throt to min(throt,electricThrot).
 	}
 	print "throt: " + round(throt*100,3) + "                 " at(0,4).
 	
