@@ -33,8 +33,8 @@ scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",true).
 scriptState:add("vesselName",ship:name).
-scriptState:add("engineModeAlt",2800). // 800 ideal for ips
-scriptState:add("deployFairingAlt",55000).
+scriptState:add("engineModeAlt",3800). // 800 ideal for ips
+scriptState:add("deployFairingAlt",61000).
 
 if exists("1:scriptState.json")
 {
@@ -247,13 +247,6 @@ if false
 	experimentState:add("pressureData",pressureData).
 }
 
-global antennae to ship:partsTagged("a").
-for antennaI in antennae
-{
-	local gmodule to antennaI:GETMODULE("ModuleRTAntenna").
-	gmodule:setField("target","ID Happiness-Sunshine-I Relay").
-}
-
 WRITEJSON(experimentState, "experiment.json").
 
 when false then
@@ -319,6 +312,10 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 	wait 60.0.
 	PRESERVE.
 }
+
+
+setupRemoteTechAntenna("a1","ID Happiness-Sunshine-I Relay").
+setupRemoteTechAntenna("a2","Potoo 1").
 
 
 global thrustPID TO PIDLOOP(20, 0, 1/100, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)

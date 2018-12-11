@@ -763,6 +763,20 @@ function EtaAscendingNode
 }
 
 
+function setupRemoteTechAntenna
+{
+	parameter partTagText, satelliteName.
+	
+	local antennae to ship:partsTagged(partTagText).
+	for antennaI in antennae
+	{
+		local gmodule to antennaI:GETMODULE("ModuleRTAntenna").
+		gmodule:setField("target",satelliteName).
+	}
+	hudtext("" + satelliteName + " #"+antennae:length, 15, 4, 15, white, false).
+}
+
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

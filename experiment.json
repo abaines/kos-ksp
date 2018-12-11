@@ -2,17 +2,17 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": 101837.01870015448,
-            "y": -1018.305428308542,
-            "z": 591405.5832239287,
+            "x": 590943.75190689927,
+            "y": -1018.3145036614902,
+            "z": 104483.60538687443,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
         "x20a2-I",
         "SHIP:GEOPOSITION",
         {
-            "lat": -0.097223179486070455,
-            "lng": -74.557671608199144,
+            "lat": -0.09722404602995191,
+            "lng": -74.557675616086016,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
