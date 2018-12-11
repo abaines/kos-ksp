@@ -33,7 +33,8 @@ scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",true).
 scriptState:add("vesselName",ship:name).
-scriptState:add("engineModeAlt",800).
+scriptState:add("engineModeAlt",2800). // 800 ideal for ips
+scriptState:add("deployFairingAlt",55000).
 
 if exists("1:scriptState.json")
 {
@@ -279,6 +280,18 @@ function hoverThrust
 }
 
 
+when scriptState["deployFairingAlt"]>0 and SHIP:ALTITUDE>scriptState["deployFairingAlt"] then
+{
+	hudtext("deploying fairings", 15, 4, 15, white, false).
+	
+	for modulefairing in ship:modulesnamed("moduleproceduralfairing")
+	{
+		modulefairing:doevent("deploy").
+	}.
+
+	set scriptState["deployFairingAlt"] to -1.
+	WRITEJSON(scriptState, "1:scriptState.json").
+}
 
 when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and SHIP:ALTITUDE>scriptState["engineModeAlt"] then
 {
