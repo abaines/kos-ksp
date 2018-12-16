@@ -126,7 +126,7 @@ when terminal:input:haschar then
 
 	WRITEJSON(scriptState, "1:scriptState.json").
 
-	wait 0.05.
+	wait 0.
 	PRESERVE.
 }
 
@@ -251,9 +251,10 @@ WRITEJSON(experimentState, "experiment.json").
 
 when false then
 {
+	// TODO: design this to use an alterate method of delaying, like measuring time.
 	experimentState:add("ship:position - body:position",ship:position - body:position).
 	WRITEJSON(experimentState, "experiment.json").
-	wait 3.
+	wait 0.
 	PRESERVE.
 }
 
@@ -309,7 +310,7 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 	set scriptState["engineModeAlt"] to -1.
 	WRITEJSON(scriptState, "1:scriptState.json").
 
-	wait 60.0.
+	wait 0.
 	PRESERVE.
 }
 
@@ -544,7 +545,7 @@ function mainLoop
 		if liquidfuel<=0.01 or oxidizer<=0.01 or solidfuel<=0.01
 		{
 			beep(440,0.05,0.001).
-			wait 0.1.
+			wait 0.
 			set scriptState["stageAllow"] to scriptState["stageAllow"] - 1.
 			stage.
 			print "staged                        " at(0,18).
@@ -562,7 +563,7 @@ ag9 on. // on launch pad activate action group 9.
 until false
 {
 	mainLoop().
-	wait 0.001.
+	wait 0.
 }
 
 print "default ! derp                " at(0,20).
@@ -581,3 +582,5 @@ print "hello.ks 10 end".
 // Kerbin: Sphere of influence 84,159,286 m (measured from center)
 // Kerbin: Equatorial radius 600,000 m
 // Minmus: Semi-major axis|Apoapsis|Periapsis is 47,000,000 m (measured from center)
+
+// chute around 16km and 600m/s
