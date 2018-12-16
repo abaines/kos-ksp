@@ -199,6 +199,32 @@ set futrDraw:vecupdater to
 
 
 
+
+
+function predictKspLandLatLng
+{
+	parameter etaLand.
+	local kspLng is -74.55767.
+	local secondsPerDay is 60*60*6.
+	local newKspLngDelta is etaLand * 360 / secondsPerDay.
+	local newKspLng is kspLng + newKspLngDelta.
+	return LATLNG(0,newKspLng).
+}
+
+global kspLandDraw to VECDRAWARGS(body:position, body:position, RGB(0,0,1), "", 1.0, true).
+set kspLandDraw:startupdater to { return body:position. }.
+set kspLandDraw:vecupdater to { return predictKspLandLatLng(ETA:PERIAPSIS):ALTITUDEPOSITION(140000) - body:position. }.
+
+global kspLandDraw2 to VECDRAWARGS(body:position, body:position, RGB(0.3,0.3,1), "", 1.0, true).
+set kspLandDraw2:startupdater to { return body:position. }.
+set kspLandDraw2:vecupdater to { return predictKspLandLatLng(ETA:PERIAPSIS+ship:orbit:period):ALTITUDEPOSITION(140000) - body:position. }.
+
+
+
+
+
+
+
 // waypoint experiments
 if false
 {
