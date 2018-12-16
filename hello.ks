@@ -281,7 +281,10 @@ if scriptState["deployFairingAlt"]>0
 
 		for modulefairing in ship:modulesnamed("moduleproceduralfairing")
 		{
-			modulefairing:doevent("deploy").
+			if modulefairing:HASEVENT("deploy")
+			{
+				modulefairing:doevent("deploy").
+			}
 		}.
 
 		set scriptState["deployFairingAlt"] to -1.
