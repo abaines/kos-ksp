@@ -29,12 +29,12 @@ manageFuelCells().
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",0).
+scriptState:add("stageAllow",1).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",true).
 scriptState:add("vesselName",ship:name).
-scriptState:add("engineModeAlt",3800). // 800 ideal for ips
-scriptState:add("deployFairingAlt",61000).
+scriptState:add("engineModeAlt",29000). // 800 ideal for ips
+scriptState:add("deployFairingAlt",66000).
 
 if exists("1:scriptState.json")
 {
