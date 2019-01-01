@@ -138,7 +138,7 @@ global sil_quest_throttle to slopeInterceptLex2(1240,1,1260,0,true).
 global sil_apo_throttle to slopeInterceptLex2(70000,1,78000,0,true).
 global sil_eta_apo_throttle to slopeInterceptLex2(0,1,45,0,true).
 
-global sil_electric_throttle to slopeInterceptLex2(0.1,0.0,0.9,1.0,true).
+global sil_electric_throttle to slopeInterceptLex2(0.1,0.0,0.2,1.0,true).
 
 global launchPad_North to v(0,1,0).
 global launchPad_South to v(0,-1,0).
