@@ -192,8 +192,8 @@ when true then
 
 		until ship:orbit:period <= 1944000.0014
 		{
-		lock throttle to over*0.0001.
-		wait 0.
+			lock throttle to over*0.0001.
+			wait 0.
 		}
 		lock throttle to 0.00000.
 
