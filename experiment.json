@@ -2,17 +2,17 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -649476.313637303,
-            "y": -1091.4591547657667,
-            "z": 192538.42412946082,
+            "x": -446150.11445687967,
+            "y": -1018.2351026180575,
+            "z": 401340.61087305611,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
-        "SOL COM Sat Lifter-I",
+        "Mun Lander Rocket-I",
         "SHIP:GEOPOSITION",
         {
-            "lat": -0.092314350754135618,
-            "lng": -56.50438624013087,
+            "lat": -0.097217427722480154,
+            "lng": -74.557669528502615,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"

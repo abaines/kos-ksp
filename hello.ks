@@ -31,9 +31,9 @@ global scriptState to lex().
 scriptState:add("behavior","d").
 scriptState:add("stageAllow",1).
 scriptState:add("questThrottle",false).
-scriptState:add("electricThrottle",true).
+scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
-scriptState:add("engineModeAlt",29000). // 800 ideal for ips
+scriptState:add("engineModeAlt",-1). // 800 ideal for ips
 scriptState:add("deployFairingAlt",66000).
 
 if exists("1:scriptState.json")
