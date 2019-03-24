@@ -29,7 +29,7 @@ manageFuelCells().
 
 global scriptState to lex().
 scriptState:add("behavior","d").
-scriptState:add("stageAllow",1).
+scriptState:add("stageAllow",0).
 scriptState:add("questThrottle",false).
 scriptState:add("electricThrottle",false).
 scriptState:add("vesselName",ship:name).
@@ -344,8 +344,10 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 }
 
 
-setupRemoteTechAntenna("a1","ID Happiness-Sunshine-I Relay").
-setupRemoteTechAntenna("a2","Potoo 1").
+setupRemoteTechAntenna("a1","ID Happiness-Sunshine-I Relay",true).
+setupRemoteTechAntenna("a2","Potoo 1",true).
+setupRemoteTechAntenna("a3","active-vessel",true).
+setupRemoteTechAntenna("a4","Mission Control",true).
 
 
 global thrustPID TO PIDLOOP(20, 0, 1/100, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
@@ -561,6 +563,18 @@ function mainLoop
 	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
 	print "ret err:" + round(retroError,3) + "                 " at(0,8).
 	
+	
+	
+	local stageAutoParts to ship:partsTagged("sa").
+	for stageAutoPart in stageAutoParts
+	{
+		local resource0 to stageAutoPart:RESOURCES[0]:amount.
+		
+		if resource0 <= 0.1
+		{
+			stageAutoPart:GetModule("ModuleAnchoredDecoupler"):doevent("decouple").
+		}
+	}
 	
 	print "stage allowed "+ stageAllow + "            " at(0,16).
 	if stageAllow > 0

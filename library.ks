@@ -765,13 +765,19 @@ function EtaAscendingNode
 
 function setupRemoteTechAntenna
 {
-	parameter partTagText, satelliteName.
+	// https://ksp-kos.github.io/KOS/addons/RemoteTech.html?highlight=modulertantenna#antennas
+	// "no-target", "active-vessel", a Body, a Vessel, "Mission Control"
+	parameter partTagText, satelliteName, shouldActivate.
 	
 	local antennae to ship:partsTagged(partTagText).
 	for antennaI in antennae
 	{
 		local gmodule to antennaI:GETMODULE("ModuleRTAntenna").
 		gmodule:setField("target",satelliteName).
+		if shouldActivate
+		{
+			gmodule:DOEVENT("activate").
+		}
 	}
 	hudtext("" + satelliteName + " #"+antennae:length, 15, 4, 15, white, false).
 }
