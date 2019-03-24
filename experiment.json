@@ -2,17 +2,17 @@
     "entries": [
         "ship:position - body:position",
         {
-            "x": -236371.45261747873,
-            "y": -1018.0915985042444,
-            "z": 551563.78133251891,
+            "x": 607620.18611855549,
+            "y": -118963.87759916713,
+            "z": 159364.2506950821,
             "$type": "kOS.Suffixed.Vector"
         },
         "ship:name",
         "KSC WildCat's Meow-I",
         "SHIP:GEOPOSITION",
         {
-            "lat": -0.0972077946720046,
-            "lng": -74.5576765839795,
+            "lat": -10.723746842396027,
+            "lng": -118.87735116021985,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"

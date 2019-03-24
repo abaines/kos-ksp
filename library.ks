@@ -774,7 +774,7 @@ function setupRemoteTechAntenna
 	{
 		local gmodule to antennaI:GETMODULE("ModuleRTAntenna").
 		gmodule:setField("target",satelliteName).
-		if shouldActivate
+		if shouldActivate and gmodule:HasEvent("activate")
 		{
 			gmodule:DOEVENT("activate").
 		}

@@ -566,6 +566,7 @@ function mainLoop
 	
 	
 	local stageAutoParts to ship:partsTagged("sa").
+	local didStageAutoParts to false.
 	for stageAutoPart in stageAutoParts
 	{
 		local resource0 to stageAutoPart:RESOURCES[0]:amount.
@@ -573,7 +574,12 @@ function mainLoop
 		if resource0 <= 0.1
 		{
 			stageAutoPart:GetModule("ModuleAnchoredDecoupler"):doevent("decouple").
+			set didStageAutoParts to true.
 		}
+	}
+	if didStageAutoParts
+	{
+		beep(440,0.05,0.001).
 	}
 	
 	print "stage allowed "+ stageAllow + "            " at(0,16).
