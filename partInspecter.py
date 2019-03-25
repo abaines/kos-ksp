@@ -33,15 +33,11 @@ interestingParts = []
 
 for filename in glob.iglob('../../GameData/**/*.cfg', recursive=True):
    abspath = os.path.abspath(filename)
-   ##print(abspath)
    interestingParts.append(abspath)
-##   print(filename)
 
 def shortname(filename):
-   #print(filename)
    key = "\\GameData\\"
    idx = filename.find(key)+1
-   #print(idx)
    return filename[idx:]
 
 
@@ -83,13 +79,10 @@ for filename in interestingParts:
       LiquidFuel_count = len(re.findall(r'name.*=.*LiquidFuel',fileContents))
       Oxidizer_count = len(re.findall(r'name.*=.*Oxidizer',fileContents))
 
-      
-      
-
       if ModuleEnginesFX_count>0 and LiquidFuel_count>Oxidizer_count:
-
          engineObject = Engine(filename, fileContents, IntakeAir_count,LiquidFuel_count,Oxidizer_count)
          engineObjects.append(engineObject)
+
    except:
       failedFiles.append(shortname(filename))
       pass
@@ -107,7 +100,7 @@ for filename in failedFiles:
       print(filename)
 
 
-for engine in engineObjects:
+for engine in sorted(engineObjects, key=lambda engine: max(engine.engineAccelerationSpeed)):
    print(engine)
    print(engine.name)
    print(shortname(engine.filename))
