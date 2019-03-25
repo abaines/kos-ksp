@@ -11,6 +11,24 @@ import glob
 import re
 
 
+class Engine:
+   def __init__(self, filename, fileContents, IntakeAir_count, LiquidFuel_count, Oxidizer_count):
+
+      self.filename = filename
+      self.IntakeAir_count = IntakeAir_count
+      self.LiquidFuel_count = LiquidFuel_count
+      self.Oxidizer_count = Oxidizer_count
+
+      self.title = partTitle(fileContents)
+      self.name = partName(fileContents)
+
+      self.engineAccelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineAccelerationSpeed')
+      self.engineDecelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed')
+
+   def __repr__(self):
+      return self.title
+
+
 interestingParts = []
 
 for filename in glob.iglob('../../GameData/**/*.cfg', recursive=True):
@@ -48,6 +66,8 @@ def doubleValuesFromKeyValueAssignment(fileContents,key):
 
 failedFiles = []
 
+engineObjects = []
+
 for filename in interestingParts:
    statinfo = os.stat(filename)
 
@@ -68,19 +88,11 @@ for filename in interestingParts:
 
       if ModuleEnginesFX_count>0 and LiquidFuel_count>Oxidizer_count:
 
-         print(partTitle(fileContents))
-         print(partName(fileContents))
-         print(IntakeAir_count,LiquidFuel_count,Oxidizer_count,shortname(filename))
-
-         print(doubleValuesFromKeyValueAssignment(fileContents,'engineAccelerationSpeed'))
-         print(doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed'))
-
-         print()
+         engineObject = Engine(filename, fileContents, IntakeAir_count,LiquidFuel_count,Oxidizer_count)
+         engineObjects.append(engineObject)
    except:
       failedFiles.append(shortname(filename))
       pass
-
-
 
 
 
@@ -93,3 +105,14 @@ for filename in failedFiles:
       pass
    else:
       print(filename)
+
+
+for engine in engineObjects:
+   print(engine)
+   print(engine.name)
+   print(shortname(engine.filename))
+   print(engine.IntakeAir_count, engine.LiquidFuel_count, engine.Oxidizer_count)
+   print(engine.engineAccelerationSpeed)
+   print(engine.engineDecelerationSpeed)
+
+   print()
