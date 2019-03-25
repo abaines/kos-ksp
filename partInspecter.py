@@ -36,7 +36,17 @@ def partName(fileContents):
    return firstName[firstName.rfind('=')+1:].strip()
 
 def doubleValuesFromKeyValueAssignment(fileContents,key):
-   return re.findall(r'engineAccelerationSpeed.*=.*',fileContents)
+   fa = re.findall(r'engineAccelerationSpeed.*=.*',fileContents)
+
+   doubles = []
+
+   for m in fa:
+      s = m[m.rfind('=')+1:].strip()
+      doubles.append(float(s))
+
+   return doubles
+
+failedFiles = []
 
 for filename in interestingParts:
    statinfo = os.stat(filename)
@@ -67,4 +77,19 @@ for filename in interestingParts:
 
          print()
    except:
+      failedFiles.append(shortname(filename))
       pass
+
+
+
+
+
+for filename in failedFiles:
+   if '\\Localization\\' in filename:
+      pass
+   elif '\\Lang\\' in filename:
+      pass
+   elif '\\Localization.cfg' in filename:
+      pass
+   else:
+      print(filename)
