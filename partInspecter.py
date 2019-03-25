@@ -100,7 +100,7 @@ for filename in failedFiles:
       print(filename)
 
 
-for engine in sorted(engineObjects, key=lambda engine: max(engine.engineAccelerationSpeed)):
+for engine in sorted(engineObjects, key=lambda engine: min(engine.engineAccelerationSpeed)):
    print(engine)
    print(engine.name)
    print(shortname(engine.filename))
