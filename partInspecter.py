@@ -35,6 +35,8 @@ def partName(fileContents):
    firstName = re.findall(r'name.*\n',fileContents)[0][:-1]
    return firstName[firstName.rfind('=')+1:].strip()
 
+def doubleValuesFromKeyValueAssignment(fileContents,key):
+   return re.findall(r'engineAccelerationSpeed.*=.*',fileContents)
 
 for filename in interestingParts:
    statinfo = os.stat(filename)
@@ -47,9 +49,9 @@ for filename in interestingParts:
 
       ModuleEnginesFX_count = len(re.findall(r'ModuleEnginesFX',fileContents))
 
-      IntakeAir_count = len(re.findall(r'IntakeAir',fileContents))
-      LiquidFuel_count = len(re.findall(r'LiquidFuel',fileContents))
-      Oxidizer_count = len(re.findall(r'Oxidizer',fileContents))
+      IntakeAir_count = len(re.findall(r'name.*=.*IntakeAir',fileContents))
+      LiquidFuel_count = len(re.findall(r'name.*=.*LiquidFuel',fileContents))
+      Oxidizer_count = len(re.findall(r'name.*=.*Oxidizer',fileContents))
 
       
       
@@ -59,6 +61,9 @@ for filename in interestingParts:
          print(partTitle(fileContents))
          print(partName(fileContents))
          print(IntakeAir_count,LiquidFuel_count,Oxidizer_count,shortname(filename))
+
+         print(doubleValuesFromKeyValueAssignment(fileContents,'engineAccelerationSpeed'))
+         print(doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed'))
 
          print()
    except:
