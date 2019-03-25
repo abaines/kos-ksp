@@ -26,6 +26,16 @@ def shortname(filename):
    #print(idx)
    return filename[idx:]
 
+
+def partTitle(fileContents):
+   firstTitle = re.findall(r'title.*\n',fileContents)[0][:-1]
+   return firstTitle[firstTitle.rfind('=')+1:].strip()
+
+def partName(fileContents):
+   firstName = re.findall(r'name.*\n',fileContents)[0][:-1]
+   return firstName[firstName.rfind('=')+1:].strip()
+
+
 for filename in interestingParts:
    statinfo = os.stat(filename)
 
@@ -35,10 +45,21 @@ for filename in interestingParts:
 
       fileContents = output
 
-      f = re.findall(r'ModuleEnginesFX',fileContents)
+      ModuleEnginesFX_count = len(re.findall(r'ModuleEnginesFX',fileContents))
 
-      count = len(f)
-      if count>0:
-         print(count,shortname(filename),statinfo.st_size)
+      IntakeAir_count = len(re.findall(r'IntakeAir',fileContents))
+      LiquidFuel_count = len(re.findall(r'LiquidFuel',fileContents))
+      Oxidizer_count = len(re.findall(r'Oxidizer',fileContents))
+
+      
+      
+
+      if ModuleEnginesFX_count>0 and LiquidFuel_count>Oxidizer_count:
+
+         print(partTitle(fileContents))
+         print(partName(fileContents))
+         print(IntakeAir_count,LiquidFuel_count,Oxidizer_count,shortname(filename))
+
+         print()
    except:
       pass
