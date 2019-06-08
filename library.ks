@@ -46,6 +46,33 @@ function ang_facingFromUp { return vang(ship:facing:vector,ship:up:vector). }
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 
+function VECDRAW_DEL
+{
+	parameter start_, vec_, color_ is White, label_ is "", scale_ is 1.0, show_ is true, width_ is 0.2.
+	
+	local vdd is VECDRAW(start_(),vec_(),color_,label_,scale_,show_,width_).
+	set vdd:STARTUPDATER to start_.
+	set vdd:VECUPDATER to vec_.
+	
+	return vdd.
+}
+
+// Vector Projection
+function vector_projection
+{
+	// https://en.wikipedia.org/wiki/Vector_projection
+	parameter vecU, vecV.
+	
+	local magU is vecU:mag.
+	local term1 is vdot(vecV,vecU) / magU.
+	local term2 is vecU / magU.
+	return term1 * term2.
+}
+
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+
 global reallyBigNumber is 2147483646.
 
 
