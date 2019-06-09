@@ -51,10 +51,16 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
 lock twr to qeC:THRUST / shipWeight.
 
-global twrPID TO PIDLOOP(3000, 1/1000, 1/1000, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global twrPID TO PIDLOOP(1500, 1/10000, 1/10000, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set twrPID:SETPOINT to 1.05.
 
-qeC:Activate().
+
+local activateTime to scriptEpoch + 2.
+when time:seconds > activateTime then
+{
+	qec:activate().
+}
+
 
 function mainLoop
 {
@@ -69,9 +75,7 @@ function mainLoop
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
 	
 	print "THRUST "+qeC:THRUST+"               " at(0,14).
-	print "SETPOINT "+twrPID:SETPOINT+"               " at(0,15).
-	
-	print "twr "+twr +"               " at(0,17).
+	print "twr "+twr +"               " at(0,15).
 }
 
 until false
