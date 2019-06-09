@@ -15,4 +15,4 @@ print "boot.ks".
 
 wait 0.
 
-run hello.
+run quad.
