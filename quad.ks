@@ -41,37 +41,21 @@ lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAIN
 lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
 lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 
-//print(qeN:POSITION).
-
 local vdd1 is VECDRAW_DEL({return ship:position.}, {return qeN:POSITION.}, RGB(0,0,1)).
 
-local vdd2 is VECDRAW_DEL({return ship:position.}, { return upwardMovementVec. }, RGB(1,0,1)).
-
-//local vdd3 is VECDRAW_DEL({return ship:position.}, { return 10*vector_projection(vec_up()*50,srfprograde:vector:normalized). }, RGB(0,1,1)).
-
-
-//local v1 is V(50,-120,0).
-//local v2 is V(30,40,0).
-//print(vector_projection(v1,v2)).
-//
-//local vdd4 is VECDRAW_DEL({return ship:position.}, {return V(10,100,0).}, RGB(1,0,1)).
-//local vdd5 is VECDRAW_DEL({return ship:position.}, {return V(40,30,0).}, RGB(0,1,1)).
-//local vdd6 is VECDRAW_DEL({return ship:position.}, {return vector_projection(V(10,100,0):normalized,V(40,30,0)).}, RGB(0,1,0)).
-
-
-//print(qeN).
-//print(qeC).
-//print(qeC:allfields).
-//print(qeC:MAXTHRUST).
+local vdd2 is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
 
 lock desiredHeight to min(dist2ground+1,50).
 
+lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
+
+lock twrOfOne to shipWeight / qeC:MAXTHRUST.
 
 global thrustPID1 TO PIDLOOP(20, 0, 1/100, -5, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set thrustPID1:SETPOINT to 0.1.
+set thrustPID1:SETPOINT to 1.
 
 global thrustPID2 TO PIDLOOP(100, 0.5, 0.5, 50, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set thrustPID2:SETPOINT to 50.
+set thrustPID2:SETPOINT to 1.01.
 
 qeC:Activate().
 
@@ -81,9 +65,12 @@ function mainLoop
 	print "dh "+desiredHeight+"               " at(0,6).
 	print "um "+upwardMovement+"               " at(0,7).
 	
-	local tpid2 to thrustPID2:update(time:second,dist2ground).
+	local tpid2 to thrustPID2:update(time:second,twrOfOne).
 	print "tpid2 "+tpid2+"               " at(0,9).
-	set qeC:THRUSTLIMIT to tpid2.
+	set qeC:THRUSTLIMIT to twrOfOne*100.
+	
+	print "twrOfOne "+twrOfOne+"               " at(0,11).
+	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
 }
 
 until false

@@ -83,6 +83,30 @@ SET voice0:VOLUME TO 0.20.
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 
+
+FUNCTION average
+{
+	// https://ksp-kos.github.io/KOS/language/variables.html
+	PARAMETER items.
+
+	LOCAL sum IS 0.
+	FOR val IN items
+	{
+		SET sum TO sum + val.
+	}.
+
+	RETURN sum / items:LENGTH.
+}.
+
+
+function max3
+{
+	PARAMETER v1,v2,v3.
+	
+	return max(max(v1,v2),v3).
+}
+
+
 function librarysetup
 {
 	stopwarp().
