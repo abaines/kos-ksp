@@ -38,23 +38,26 @@ global qeC is ship:partsTagged("qe-c")[0].
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
-lock upwardMovement to vector_projection(vec_up(),srfprograde:vector:normalized):mag.
+lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
+lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 
 //print(qeN:POSITION).
 
 local vdd1 is VECDRAW_DEL({return ship:position.}, {return qeN:POSITION.}, RGB(0,0,1)).
 
-local vdd2 is VECDRAW_DEL({return ship:position.}, { return upwardMovement*vec_up()*10. }, RGB(1,0,1)).
+local vdd2 is VECDRAW_DEL({return ship:position.}, { return upwardMovementVec. }, RGB(1,0,1)).
 
-local vdd3 is VECDRAW_DEL({return ship:position.}, { return 10*vector_projection(vec_up()*50,srfprograde:vector:normalized). }, RGB(0,1,1)).
+//local vdd3 is VECDRAW_DEL({return ship:position.}, { return 10*vector_projection(vec_up()*50,srfprograde:vector:normalized). }, RGB(0,1,1)).
 
-local v1 is V(50,-120,0).
-local v2 is V(30,40,0).
-print(vector_projection(v1,v2)).
 
-local vdd4 is VECDRAW_DEL({return ship:position.}, {return V(10,100,0).}, RGB(1,0,1)).
-local vdd5 is VECDRAW_DEL({return ship:position.}, {return V(40,30,0).}, RGB(0,1,1)).
-local vdd6 is VECDRAW_DEL({return ship:position.}, {return vector_projection(V(10,100,0),V(40,30,0)).}, RGB(0,1,0)).
+//local v1 is V(50,-120,0).
+//local v2 is V(30,40,0).
+//print(vector_projection(v1,v2)).
+//
+//local vdd4 is VECDRAW_DEL({return ship:position.}, {return V(10,100,0).}, RGB(1,0,1)).
+//local vdd5 is VECDRAW_DEL({return ship:position.}, {return V(40,30,0).}, RGB(0,1,1)).
+//local vdd6 is VECDRAW_DEL({return ship:position.}, {return vector_projection(V(10,100,0):normalized,V(40,30,0)).}, RGB(0,1,0)).
+
 
 //print(qeN).
 //print(qeC).
