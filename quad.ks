@@ -49,13 +49,10 @@ lock desiredHeight to min(dist2ground+1,50).
 
 lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
-lock twrOfOne to shipWeight / qeC:MAXTHRUST.
+lock twr to qeC:THRUST / shipWeight.
 
-global thrustPID1 TO PIDLOOP(20, 0, 1/100, -5, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set thrustPID1:SETPOINT to 1.
-
-global thrustPID2 TO PIDLOOP(100, 0.5, 0.5, 50, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set thrustPID2:SETPOINT to 1.01.
+global twrPID TO PIDLOOP(3000, 1/1000, 1/1000, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set twrPID:SETPOINT to 1.05.
 
 qeC:Activate().
 
@@ -65,12 +62,16 @@ function mainLoop
 	print "dh "+desiredHeight+"               " at(0,6).
 	print "um "+upwardMovement+"               " at(0,7).
 	
-	local tpid2 to thrustPID2:update(time:second,twrOfOne).
-	print "tpid2 "+tpid2+"               " at(0,9).
-	set qeC:THRUSTLIMIT to twrOfOne*100.
+	local twrPIDUpdate to twrPID:update(time:second,twr).
+	set qeC:THRUSTLIMIT to twrPIDUpdate. // out of 100
+	print "THRUSTLIMIT "+twrPIDUpdate+"               " at(0,9).
 	
-	print "twrOfOne "+twrOfOne+"               " at(0,11).
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
+	
+	print "THRUST "+qeC:THRUST+"               " at(0,14).
+	print "SETPOINT "+twrPID:SETPOINT+"               " at(0,15).
+	
+	print "twr "+twr +"               " at(0,17).
 }
 
 until false
