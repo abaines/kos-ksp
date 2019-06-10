@@ -21,10 +21,10 @@ print "quad.ks 11" at(0,21).
 global _throttle to 1.0.
 lock throttle to _throttle.
 
-global _steering to up.
+global _steering to Up + R(0,0,180).
 lock steering to _steering.
 
-rcs off.
+rcs on.
 sas off.
 
 managePanelsAndAntenna().
@@ -54,6 +54,16 @@ local vddS is VECDRAW_DEL({return ship:position.}, {return qeS:POSITION.}, RGB(1
 local vddW is VECDRAW_DEL({return ship:position.}, {return qeW:POSITION.}, RGB(0.1,0.1,0.1)).
 
 local vddUpwardMovement is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
+
+global waypointGoal to waypoint("TMA-1"):GEOPOSITION.
+
+lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
+lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
+lock goalDirection to VXCL(vec_up(),waypointGoal:POSITION).
+
+local vddTravel is VECDRAW_DEL({return ship:position.}, { return travelDirection*10. }, RGB(0,1,1)).
+local vddLean is VECDRAW_DEL({return ship:position.}, { return leadDirection*10. }, RGB(1,1,0)).
+local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. }, RGB(0,1,0)).
 
 lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
@@ -120,7 +130,7 @@ when true then
 	set guiOutput:text to ""+guiPID:OUTPUT.
 	return true.
 }
-gui:show().
+//gui:show().
 
 
 function mainLoop
