@@ -71,7 +71,7 @@ when true then
 }
 
 
-global altPID TO PIDLOOP(0.008, 0.0001, 1, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global altPID TO PIDLOOP(0.013, 0.003, 1.5, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set altPID:SETPOINT to 500.
 when true then
 {
