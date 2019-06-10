@@ -71,7 +71,7 @@ when true then
 }
 
 
-global altPID TO PIDLOOP(0.0001, 0, 0, 0.5, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global altPID TO PIDLOOP(0.008, 0.0001, 1, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set altPID:SETPOINT to 500.
 when true then
 {
@@ -108,12 +108,12 @@ local guiPID to altPID.
 local gui is GUI(200).
 local guiInput is gui:ADDLABEL("guiInput").
 local guiOutput is gui:ADDLABEL("guiOutput").
-addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.05. }).
-addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.05. }).
-addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI + 0.1. }).
-addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI - 0.1. }).
-addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD + 0.1. }).
-addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD - 0.1. }).
+addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.2. }).
+addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.2. }).
+addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI * 1.2. }).
+addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI / 1.2. }).
+addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD * 1.2. }).
+addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD / 1.2. }).
 when true then
 {
 	set guiInput:text to ""+guiPID:INPUT.
@@ -125,8 +125,9 @@ gui:show().
 
 function mainLoop
 {
-	print "mt "+qeC:MAXTHRUST+"               " at(0,5).
-	print "um "+upwardMovement+"               " at(0,7).
+	print "MAXTHRUST "+qeC:MAXTHRUST+"               " at(0,5).
+	print "upwardMovement "+upwardMovement+"               " at(0,6).
+	print "dist2ground "+dist2ground+"               " at(0,7).
 	
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
 	
