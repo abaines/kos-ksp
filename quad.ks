@@ -65,6 +65,43 @@ local vddTravel is VECDRAW_DEL({return ship:position.}, { return travelDirection
 local vddLean is VECDRAW_DEL({return ship:position.}, { return leadDirection*10. }, RGB(1,1,0)).
 local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. }, RGB(0,1,0)).
 
+local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
+local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
+
+global desiredLeanAngle to 5.
+
+local desiredLeanBaseVector to
+{
+	if dist2ground>350
+	{
+		return BetweenVector(vec_up(),goalDirection,desiredLeanAngle):normalized.
+	}
+	else
+	{
+		return vec_up().
+	}
+}.
+local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLeanBaseVector()*12. }, RGB(1,0.5,0.0)).
+
+
+
+local guiLean is GUI(200).
+local guiValue is guiLean:ADDLABEL("guiValue").
+addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
+addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0. }).
+addButtonDelegate(guiLean,"-",{ set desiredLeanAngle to desiredLeanAngle - 1. }).
+when true then
+{
+	set guiValue:text to ""+desiredLeanAngle.
+	return true.
+}
+guiLean:show().
+
+
+
+//lock _steering to Up + R(0,0,180).
+lock steering to desiredLeanBaseVector().
+
 lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
 lock twr to qeC:THRUST / shipWeight.
