@@ -31,11 +31,17 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
+
 global qeN is ship:partsTagged("qe-n")[0].
 global qeE is ship:partsTagged("qe-e")[0].
 global qeS is ship:partsTagged("qe-s")[0].
 global qeW is ship:partsTagged("qe-w")[0].
 global qeC is ship:partsTagged("qe-c")[0].
+
+set qeN:THRUSTLIMIT to 0.
+set qeE:THRUSTLIMIT to 0.
+set qeS:THRUSTLIMIT to 0.
+set qeW:THRUSTLIMIT to 0.
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
@@ -43,9 +49,9 @@ lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:su
 lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 
 local vddN is VECDRAW_DEL({return ship:position.}, {return qeN:POSITION.}, RGB(1,0,0)).
-local vddE is VECDRAW_DEL({return ship:position.}, {return qeE:POSITION.}, RGB(1,1,1)).
+local vddE is VECDRAW_DEL({return ship:position.}, {return qeE:POSITION.}, RGB(0.1,0.1,0.1)).
 local vddS is VECDRAW_DEL({return ship:position.}, {return qeS:POSITION.}, RGB(1,1,1)).
-local vddW is VECDRAW_DEL({return ship:position.}, {return qeW:POSITION.}, RGB(1,1,1)).
+local vddW is VECDRAW_DEL({return ship:position.}, {return qeW:POSITION.}, RGB(0.1,0.1,0.1)).
 
 local vdd1 is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
 
@@ -55,29 +61,46 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
 lock twr to qeC:THRUST / shipWeight.
 
-global twrPID TO PIDLOOP(500, 0, 0, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set twrPID:SETPOINT to 1.05.
+lock leanAngle to vang(ship:facing:vector,vec_up()).
+
+global twrPID TO PIDLOOP(2000, 0.1, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set twrPID:SETPOINT to 1.01.
+when true then
+{
+	set twrPID:SETPOINT to 1.05/cos(leanAngle).
+	set qeC:THRUSTLIMIT to twrPID:update(time:second,twr). // out of 100
+	return true.
+}
+
+global leanPID TO PIDLOOP(1, 0.0, 0, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set leanPID:SETPOINT to 5.
+when true then
+{
+	set qeN:THRUSTLIMIT to leanPID:update(time:second,leanAngle). // out of 100
+	return true.
+}
 
 
 local activateTime to scriptEpoch + 2.
 when time:seconds > activateTime then
 {
 	qec:activate().
+	
+	qen:activate().
+	qee:activate().
+	qes:activate().
+	qew:activate().
 }
 
+local guiPID to leanPID.
 local gui is GUI(200).
-
-local button1 TO gui:ADDBUTTON("p+").
-set button1:ONCLICK to { set twrPID:KP to twrPID:KP + 1. }.
-
-local button2 TO gui:ADDBUTTON("p-").
-set button1:ONCLICK to { set twrPID:KP to twrPID:KP - 1. }.
-
-local button3 TO gui:ADDBUTTON("i+").
-local button4 TO gui:ADDBUTTON("i-").
-local button5 TO gui:ADDBUTTON("d+").
-local button6 TO gui:ADDBUTTON("d-").
-
+local guiLabel is gui:ADDLABEL("guiLabel").
+addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.05. }).
+addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.05. }).
+addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI + 0.1. }).
+addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI - 0.1. }).
+addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD + 0.1. }).
+addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD - 0.1. }).
 gui:show().
 
 
@@ -87,18 +110,16 @@ function mainLoop
 	print "dh "+desiredHeight+"               " at(0,6).
 	print "um "+upwardMovement+"               " at(0,7).
 	
-	local twrPIDUpdate to twrPID:update(time:second,twr).
-	set qeC:THRUSTLIMIT to twrPIDUpdate. // out of 100
-	print "THRUSTLIMIT "+twrPIDUpdate+"               " at(0,9).
-	
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
 	
 	print "THRUST "+qeC:THRUST+"               " at(0,14).
 	print "twr "+twr +"               " at(0,15).
 	
-	print "p "+twrPID:KP +"               " at(0,17).
-	print "i "+twrPID:KI +"               " at(0,18).
-	print "d "+twrPID:KD +"               " at(0,19).
+	print "p "+guiPID:KP +"               " at(0,17).
+	print "i "+guiPID:KI +"               " at(0,18).
+	print "d "+guiPID:KD +"               " at(0,19).
+	
+	print "leanAngle "+leanAngle +"               " at(0,21).
 }
 
 until false

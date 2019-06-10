@@ -41,6 +41,17 @@ function beep
 }
 
 
+function addButtonDelegate
+{
+	parameter gui, text, delegate.
+	
+	local button to gui:addbutton(text).
+	set button:onclick to delegate.
+	
+	return button.
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
