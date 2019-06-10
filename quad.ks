@@ -53,9 +53,7 @@ local vddE is VECDRAW_DEL({return ship:position.}, {return qeE:POSITION.}, RGB(0
 local vddS is VECDRAW_DEL({return ship:position.}, {return qeS:POSITION.}, RGB(1,1,1)).
 local vddW is VECDRAW_DEL({return ship:position.}, {return qeW:POSITION.}, RGB(0.1,0.1,0.1)).
 
-local vdd1 is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
-
-lock desiredHeight to min(dist2ground+1,50).
+local vddUpwardMovement is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
 
 lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
@@ -67,17 +65,30 @@ global twrPID TO PIDLOOP(2000, 0.1, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXO
 set twrPID:SETPOINT to 1.01.
 when true then
 {
-	set twrPID:SETPOINT to 1.05/cos(leanAngle).
+	//set twrPID:SETPOINT to 1.05/cos(leanAngle).
 	set qeC:THRUSTLIMIT to twrPID:update(time:second,twr). // out of 100
 	return true.
 }
 
-global leanPID TO PIDLOOP(1, 0.0, 0, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set leanPID:SETPOINT to 5.
+
+global altPID TO PIDLOOP(0.0001, 0, 0, 0.5, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set altPID:SETPOINT to 500.
 when true then
 {
-	set qeN:THRUSTLIMIT to leanPID:update(time:second,leanAngle). // out of 100
+	set twrPID:SETPOINT to altPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
 	return true.
+}
+
+
+if false
+{
+	global leanPID TO PIDLOOP(1, 0.0, 0, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+	set leanPID:SETPOINT to 5.
+	when true then
+	{
+		set qeN:THRUSTLIMIT to leanPID:update(time:second,leanAngle). // out of 100
+		return true.
+	}
 }
 
 
@@ -92,22 +103,29 @@ when time:seconds > activateTime then
 	qew:activate().
 }
 
-local guiPID to leanPID.
+
+local guiPID to altPID.
 local gui is GUI(200).
-local guiLabel is gui:ADDLABEL("guiLabel").
+local guiInput is gui:ADDLABEL("guiInput").
+local guiOutput is gui:ADDLABEL("guiOutput").
 addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.05. }).
 addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.05. }).
 addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI + 0.1. }).
 addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI - 0.1. }).
 addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD + 0.1. }).
 addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD - 0.1. }).
+when true then
+{
+	set guiInput:text to ""+guiPID:INPUT.
+	set guiOutput:text to ""+guiPID:OUTPUT.
+	return true.
+}
 gui:show().
 
 
 function mainLoop
 {
 	print "mt "+qeC:MAXTHRUST+"               " at(0,5).
-	print "dh "+desiredHeight+"               " at(0,6).
 	print "um "+upwardMovement+"               " at(0,7).
 	
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
