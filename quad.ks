@@ -68,18 +68,20 @@ local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. },
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
-global desiredLeanAngle to 5.
+global desiredLeanAngle to 7.5.
 
 local desiredLeanBaseVector to
 {
-	if dist2ground>350
+	local angle to 0.
+	if dist2ground<1000 or qeC:THRUSTLIMIT>90
 	{
-		return BetweenVector(vec_up(),goalDirection,desiredLeanAngle):normalized.
+		set angle to 0.
 	}
 	else
 	{
-		return vec_up().
+		set angle to desiredLeanAngle.
 	}
+	return BetweenVector(vec_up(),goalDirection,angle):normalized.
 }.
 local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLeanBaseVector()*12. }, RGB(1,0.5,0.0)).
 
@@ -87,9 +89,11 @@ local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLea
 
 local guiLean is GUI(200).
 local guiValue is guiLean:ADDLABEL("guiValue").
+addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
 addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
 addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0. }).
 addButtonDelegate(guiLean,"-",{ set desiredLeanAngle to desiredLeanAngle - 1. }).
+addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
 when true then
 {
 	set guiValue:text to ""+desiredLeanAngle.
@@ -119,7 +123,7 @@ when true then
 
 
 global altPID TO PIDLOOP(0.013, 0.003, 1.5, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set altPID:SETPOINT to 500.
+set altPID:SETPOINT to 1500.
 when true then
 {
 	set twrPID:SETPOINT to altPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
@@ -139,7 +143,7 @@ if false
 }
 
 
-local activateTime to scriptEpoch + 2.
+local activateTime to scriptEpoch + 1.5.
 when time:seconds > activateTime then
 {
 	qec:activate().
