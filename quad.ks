@@ -68,14 +68,14 @@ local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. },
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
-global desiredLeanAngle to 7.5.
+global desiredLeanAngle to 30.
 
 local desiredLeanBaseVector to
 {
 	local angle to 0.
 	if dist2ground<1000 or qeC:THRUSTLIMIT>90
 	{
-		set angle to 0.
+		set angle to 0.001.
 	}
 	else
 	{
@@ -143,7 +143,7 @@ if false
 }
 
 
-local activateTime to scriptEpoch + 1.5.
+local activateTime to scriptEpoch + 1.
 when time:seconds > activateTime then
 {
 	qec:activate().
@@ -179,6 +179,8 @@ function mainLoop
 	print "MAXTHRUST "+qeC:MAXTHRUST+"               " at(0,5).
 	print "upwardMovement "+upwardMovement+"               " at(0,6).
 	print "dist2ground "+dist2ground+"               " at(0,7).
+	
+	print "THRUSTLIMIT "+qeC:THRUSTLIMIT+"               " at(0,9).
 	
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
 	
