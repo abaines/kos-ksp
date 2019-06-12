@@ -32,26 +32,26 @@ managePanelsAndAntenna().
 manageFuelCells().
 
 
-global qeN is ship:partsTagged("qe-n")[0].
-global qeE is ship:partsTagged("qe-e")[0].
-global qeS is ship:partsTagged("qe-s")[0].
-global qeW is ship:partsTagged("qe-w")[0].
+//global qeN is ship:partsTagged("qe-n")[0].
+//global qeE is ship:partsTagged("qe-e")[0].
+//global qeS is ship:partsTagged("qe-s")[0].
+//global qeW is ship:partsTagged("qe-w")[0].
 global qeC is ship:partsTagged("qe-c")[0].
 
-set qeN:THRUSTLIMIT to 0.
-set qeE:THRUSTLIMIT to 0.
-set qeS:THRUSTLIMIT to 0.
-set qeW:THRUSTLIMIT to 0.
+//set qeN:THRUSTLIMIT to 0.
+//set qeE:THRUSTLIMIT to 0.
+//set qeS:THRUSTLIMIT to 0.
+//set qeW:THRUSTLIMIT to 0.
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
 lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
 lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 
-local vddN is VECDRAW_DEL({return ship:position.}, {return qeN:POSITION.}, RGB(1,0,0)).
-local vddE is VECDRAW_DEL({return ship:position.}, {return qeE:POSITION.}, RGB(0.1,0.1,0.1)).
-local vddS is VECDRAW_DEL({return ship:position.}, {return qeS:POSITION.}, RGB(1,1,1)).
-local vddW is VECDRAW_DEL({return ship:position.}, {return qeW:POSITION.}, RGB(0.1,0.1,0.1)).
+//local vddN is VECDRAW_DEL({return ship:position.}, {return qeN:POSITION.}, RGB(1,0,0)).
+//local vddE is VECDRAW_DEL({return ship:position.}, {return qeE:POSITION.}, RGB(0.1,0.1,0.1)).
+//local vddS is VECDRAW_DEL({return ship:position.}, {return qeS:POSITION.}, RGB(1,1,1)).
+//local vddW is VECDRAW_DEL({return ship:position.}, {return qeW:POSITION.}, RGB(0.1,0.1,0.1)).
 
 local vddUpwardMovement is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
 
@@ -73,7 +73,7 @@ global desiredLeanAngle to 30.
 local desiredLeanBaseVector to
 {
 	local angle to 0.
-	if dist2ground<1000 or qeC:THRUSTLIMIT>90
+	if dist2ground<1000 //or qeC:THRUSTLIMIT>90
 	{
 		set angle to 0.001.
 	}
@@ -85,13 +85,13 @@ local desiredLeanBaseVector to
 }.
 local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLeanBaseVector()*12. }, RGB(1,0.5,0.0)).
 
-
+global fullThrottle to true.
 
 local guiLean is GUI(200).
 local guiValue is guiLean:ADDLABEL("guiValue").
 addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
 addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
-addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0. }).
+addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0.001. }).
 addButtonDelegate(guiLean,"-",{ set desiredLeanAngle to desiredLeanAngle - 1. }).
 addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
 when true then
@@ -100,6 +100,9 @@ when true then
 	return true.
 }
 guiLean:show().
+
+local fullThurstCheckbox to guiLean:ADDCHECKBOX("full throttle", true).
+set fullThurstCheckbox:ONTOGGLE to { parameter newState. set fullThrottle to newState. }.
 
 
 
@@ -116,8 +119,14 @@ global twrPID TO PIDLOOP(2000, 0.1, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXO
 set twrPID:SETPOINT to 1.01.
 when true then
 {
-	//set twrPID:SETPOINT to 1.05/cos(leanAngle).
-	set qeC:THRUSTLIMIT to twrPID:update(time:second,twr). // out of 100
+	if fullThrottle
+	{
+		set qeC:THRUSTLIMIT to 100.
+	}
+	else
+	{
+		set qeC:THRUSTLIMIT to twrPID:update(time:second,twr). // out of 100
+	}
 	return true.
 }
 
@@ -148,10 +157,10 @@ when time:seconds > activateTime then
 {
 	qec:activate().
 	
-	qen:activate().
-	qee:activate().
-	qes:activate().
-	qew:activate().
+	//qen:activate().
+	//qee:activate().
+	//qes:activate().
+	//qew:activate().
 }
 
 
@@ -192,6 +201,8 @@ function mainLoop
 	print "d "+guiPID:KD +"               " at(0,19).
 	
 	print "leanAngle "+leanAngle +"               " at(0,21).
+	
+	print "fullThrottle "+fullThrottle +"               " at(0,23).
 }
 
 until false
