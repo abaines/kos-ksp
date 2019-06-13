@@ -115,7 +115,7 @@ lock twr to qeC:THRUST / shipWeight.
 
 lock leanAngle to vang(ship:facing:vector,vec_up()).
 
-global twrPID TO PIDLOOP(2000, 0.1, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global twrPID TO PIDLOOP(1300, 70, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set twrPID:SETPOINT to 1.01.
 when true then
 {
@@ -135,7 +135,7 @@ global altPID TO PIDLOOP(0.013, 0.003, 1.5, 0.75, 1.5). // (KP, KI, KD, MINOUTPU
 set altPID:SETPOINT to 1500.
 when true then
 {
-	set twrPID:SETPOINT to altPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
+	//set twrPID:SETPOINT to altPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
 	return true.
 }
 
@@ -164,23 +164,38 @@ when time:seconds > activateTime then
 }
 
 
-local guiPID to altPID.
+local guiPID to twrPID.
 local gui is GUI(200).
-local guiInput is gui:ADDLABEL("guiInput").
-local guiOutput is gui:ADDLABEL("guiOutput").
+
+local guiP is gui:ADDLABEL("gui").
 addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.2. }).
 addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.2. }).
+
+local guiI is gui:ADDLABEL("gui").
 addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI * 1.2. }).
 addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI / 1.2. }).
+
+local guiD is gui:ADDLABEL("gui").
 addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD * 1.2. }).
 addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD / 1.2. }).
+
+local guiInputDesired is gui:ADDLABEL("guiInput").
+addButtonDelegate(gui,"+",{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.01. }).
+addButtonDelegate(gui,"-",{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.01. }).
+
+local guiInput is gui:ADDLABEL("guiInput").
+local guiOutput is gui:ADDLABEL("guiOutput").
 when true then
 {
-	set guiInput:text to ""+guiPID:INPUT.
-	set guiOutput:text to ""+guiPID:OUTPUT.
+	set guiInput:text to "in:"+guiPID:INPUT.
+	set guiOutput:text to "out:"+guiPID:OUTPUT.
+	set guiInputDesired:text to "set:"+guiPID:SETPOINT.
+	set guiP:text to "P:"+guiPID:KP.
+	set guiI:text to "I:"+guiPID:KI.
+	set guiD:text to "D:"+guiPID:KD.
 	return true.
 }
-//gui:show().
+gui:show().
 
 
 function mainLoop
