@@ -131,37 +131,28 @@ when true then
 }
 
 
-global altPID TO PIDLOOP(0.013, 0.003, 1.5, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set altPID:SETPOINT to 1500.
+//global altPID TO PIDLOOP(0.013, 0.003, 1.5, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+//set altPID:SETPOINT to 1500.
+//when true then
+//{
+//	set twrPID:SETPOINT to altPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
+//	return true.
+//}
+
+
+global deltaAltPID TO PIDLOOP(0.0001, 0.0001, 0.0001, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set deltaAltPID:SETPOINT to 0.
 when true then
 {
-	//set twrPID:SETPOINT to altPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
+	// TODO: update this to measure rise/fall rate and adjust twrPID.
+	set twrPID:SETPOINT to deltaAltPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
 	return true.
 }
 
 
-if false
-{
-	global leanPID TO PIDLOOP(1, 0.0, 0, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-	set leanPID:SETPOINT to 5.
-	when true then
-	{
-		set qeN:THRUSTLIMIT to leanPID:update(time:second,leanAngle). // out of 100
-		return true.
-	}
-}
 
 
-local activateTime to scriptEpoch + 1.
-when time:seconds > activateTime then
-{
-	//qec:activate().
-	
-	//qen:activate().
-	//qee:activate().
-	//qes:activate().
-	//qew:activate().
-}
+
 
 
 local guiPID to twrPID.
