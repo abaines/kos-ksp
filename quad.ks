@@ -18,8 +18,7 @@ if true
 print "quad.ks 11" at(0,0).
 print "quad.ks 11" at(0,21).
 
-global _throttle to 1.0.
-lock throttle to _throttle.
+SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 1.
 
 global _steering to Up + R(0,0,180).
 lock steering to _steering.
@@ -61,19 +60,20 @@ lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
 lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
 lock goalDirection to VXCL(vec_up(),waypointGoal:POSITION).
 
-local vddTravel is VECDRAW_DEL({return ship:position.}, { return travelDirection*10. }, RGB(0,1,1)).
+local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
+local vddTravelFlat is VECDRAW_DEL({return ship:position.}, { return travelDirection*10. }, RGB(0,1,1)).
 local vddLean is VECDRAW_DEL({return ship:position.}, { return leadDirection*10. }, RGB(1,1,0)).
 local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. }, RGB(0,1,0)).
 
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
-global desiredLeanAngle to 30.
+global desiredLeanAngle to 0.001.
 
 local desiredLeanBaseVector to
 {
 	local angle to 0.
-	if dist2ground<1000 //or qeC:THRUSTLIMIT>90
+	if dist2ground<0 //or qeC:THRUSTLIMIT>90
 	{
 		set angle to 0.001.
 	}
@@ -92,8 +92,8 @@ local guiValue is guiLean:ADDLABEL("guiValue").
 addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
 addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
 addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0.001. }).
-addButtonDelegate(guiLean,"-",{ set desiredLeanAngle to desiredLeanAngle - 1. }).
-addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
+addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.   if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
+addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
 when true then
 {
 	set guiValue:text to ""+desiredLeanAngle.
@@ -155,7 +155,7 @@ if false
 local activateTime to scriptEpoch + 1.
 when time:seconds > activateTime then
 {
-	qec:activate().
+	//qec:activate().
 	
 	//qen:activate().
 	//qee:activate().
