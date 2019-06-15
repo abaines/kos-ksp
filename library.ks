@@ -84,6 +84,17 @@ SET voice0:VOLUME TO 0.20.
 /// FUNCTIONS AND VARIBLES ONLY !
 
 
+function kspLaunchPad
+{
+	return LATLNG(-0.0972077948308072,-74.557676885654786).
+}
+
+
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+
+
 FUNCTION average
 {
 	// https://ksp-kos.github.io/KOS/language/variables.html
