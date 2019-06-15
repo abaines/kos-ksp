@@ -49,11 +49,11 @@ function ang_facingFromUp { return vang(ship:facing:vector,ship:up:vector). }
 function VECDRAW_DEL
 {
 	parameter start_, vec_, color_ is White, label_ is "", scale_ is 1.0, show_ is true, width_ is 0.2.
-	
+
 	local vdd is VECDRAW(start_(),vec_(),color_,label_,scale_,show_,width_).
 	set vdd:STARTUPDATER to start_.
 	set vdd:VECUPDATER to vec_.
-	
+
 	return vdd.
 }
 
@@ -62,7 +62,7 @@ function vector_projection
 {
 	// https://en.wikipedia.org/wiki/Vector_projection
 	parameter vecU, vecV.
-	
+
 	local magU is vecU:mag.
 	local term1 is vdot(vecV,vecU) / magU.
 	local term2 is vecU / magU.
@@ -102,7 +102,7 @@ FUNCTION average
 function max3
 {
 	PARAMETER v1,v2,v3.
-	
+
 	return max(max(v1,v2),v3).
 }
 
@@ -110,24 +110,24 @@ function max3
 function librarysetup
 {
 	stopwarp().
-	
+
 	CLEARSCREEN.
-	
+
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 
 	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
-	
+
 	if terminal:width<90 {set terminal:width to 90.}
-	
+
 	if terminal:height<40 {set terminal:height to 40.}
-	
+
 	CLEARVECDRAWS().
 }
 
 function beep
 {
 	parameter hertz is 1000, volume is 0.3, duration is 0.01, keyDownLength is 0.01.
-	
+
 	voice0:PLAY( NOTE( hertz, duration, keyDownLength, volume) ).
 }
 
@@ -185,9 +185,9 @@ function slopeIntercept
 function slopeInterceptValue
 {
 	parameter si, val, clam.
-	
+
 	local r is si["slope"] * val + si["intercept"].
-	
+
 	if clam
 	{
 		return clamp(r,si["y"],si["b"]).
@@ -222,9 +222,9 @@ function slopeInterceptLex2
 function slopeInterceptCalc2
 {
 	parameter sil, val.
-	
+
 	local result is sil["slope"] * val + sil["intercept"].
-	
+
 	if sil["clamp"]
 	{
 		return clamp(result,sil["output1"],sil["output2"]).
@@ -238,10 +238,10 @@ function slopeInterceptCalc2
 function clamp
 {
 	parameter val, c1, c2.
-	
+
 	local mi is min(c1,c2).
 	local ma is max(c1,c2).
-	
+
 	if val < mi
 	{
 		return mi.
@@ -265,14 +265,14 @@ function BetweenVector
 {
 	// assume vec1 and vec2 are 90degrees apart.
 	parameter vec1, vec2, angle.
-	
+
 	local vec1n is vec1:normalized.
 	local vec2n is vec2:normalized.
-	
+
 	local vec1nm is vec1n * cos(angle).
-	
+
 	local r is (vec1n*cos(angle))+(vec2n*sin(angle)).
-	
+
 	return r:normalized.
 }
 
@@ -281,7 +281,7 @@ function planierize
 	// vec1 is planer vector
 	// vec2 is to be placed in vec1 plane
 	parameter vec1, vec2.
-	
+
 	return VCRS(VCRS(vec1,vec2),vec1).
 }
 
@@ -289,13 +289,13 @@ function planierize
 function orbitSpeed
 {
 	parameter apo is 70000, peri is 70000, gm is 3.5e12, datum is 600000.
-	
+
 	local simimajor is datum + (apo+peri)/2.
-	
+
 	local r is datum + max(apo,peri).
-	
+
 	local v is sqrt(gm*((2/r)-(1/simimajor))).
-	
+
 	return v.
 }
 
@@ -303,23 +303,23 @@ function orbitSpeed
 function delayUntilSteady
 {
 	parameter duration is 10, maxSpeed is 0.009, printat is 4.
-	
+
 	local check is time:seconds.
 	lock passed to Time:seconds - check.
-	
+
 	lock shipSpeed to SHIP:VELOCITY:surface:MAG.
-	
+
 	UNTIL (passed>duration or ship:ALTITUDE>1000)
 	{
 		if shipSpeed>0.009
 		{
 			set check to time:seconds.
 		}
-		
+
 		print "Stable Time         : " + passed at(45,printat).
 		print "Speed               : " + shipspeed at(45,printat+1).
 		print "Angle From Up       : " + ang_facingFromUp() at(45,printat+2).
-		
+
 		wait 0.
 	}
 
@@ -336,7 +336,7 @@ function managePanelsAndAntenna
 	lock t to time:seconds.
 	local deployed is true.
 	local protector to t + 1.
-	
+
 	when true then
 	{
 		if t < protector
@@ -380,13 +380,13 @@ function managePanelsAndAntenna
 function manageFuelCells
 {
 	parameter threshold is 1/3.
-	
+
 	lock electricchargepercent to GetShipResourcePercent("electriccharge").
 	lock t to time:seconds.
 
 	local cellsDeployed is false.
 	local protector to t + 1.
-	
+
 	when true then
 	{
 		if t < protector
@@ -412,7 +412,7 @@ function manageFuelCells
 		{
 			set protector to t + 1.
 		}
-	
+
 		wait 0.
 		PRESERVE.
 	}
@@ -421,11 +421,11 @@ function manageFuelCells
 function GetStageLowestResource
 {
 	parameter resourceType.
-	
+
 	local srlrt is stage:resourceslex[resourceType].
-	
+
 	local lowest is reallyBigNumber.
-	
+
 	for p in srlrt:parts
 	{
 		for r in p:RESOURCES
@@ -434,7 +434,7 @@ function GetStageLowestResource
 			{
 				//local perc is r:amount / r:capacity.
 				local perc is r:amount.
-				
+
 				if perc < lowest
 				{
 					set lowest to perc.
@@ -450,10 +450,10 @@ function GetStageLowestResource
 function GetShipResourcePercent
 {
 	parameter resourceType.
-	
+
 	local ramount is 0.
 	local rcapacity is 0.
-	
+
 	for r in ship:RESOURCES
 	{
 		if r:name = resourceType
@@ -488,9 +488,9 @@ FUNCTION MANEUVER_TIME
 function setantenna
 {
 	parameter activate.
-	
+
 	local startTime to time:seconds.
-	
+
 	if activate
 	{
 		set activate to "extend antenna".
@@ -499,17 +499,17 @@ function setantenna
 	{
 		set activate to "retract antenna".
 	}
-	
+
 	local antennaModules is list().
-	
+
 	for part in ship:PARTSDUBBEDPATTERN("(antenna|dish|comm)")
 	{
 		local partname is part:name.
-		
+
 		for modname in part:modules
 		{
 			local module is part:getmodule(modname).
-			
+
 			for eventname in module:ALLEVENTNAMES
 			{
 				if eventname:contains("antenna")
@@ -520,7 +520,7 @@ function setantenna
 						"eventname", eventname,
 						"module", module
 					)).
-					
+
 					if eventname:contains(activate)
 					{
 						if module:hasevent(activate)
@@ -532,7 +532,7 @@ function setantenna
 			}
 		}
 	}
-	
+
 	//print (time:seconds-startTime).
 	return antennaModules.
 }
@@ -540,9 +540,9 @@ function setantenna
 function modHelper
 {
 	parameter module.
-	
+
 	local us TO UNIQUESET().
-	
+
 	for f in module:ALLFIELDS
 	{
 		us:add(f).
@@ -567,7 +567,7 @@ function modHelper
 	{
 		us:add(an).
 	}
-	
+
 	return us.
 }
 
@@ -576,9 +576,9 @@ function modHelper
 function IMNG
 {
 	parameter dim.
-	
+
 	set dim to dim:tolower.
-	
+
 	if dim:contains("pro")
 	{
 		return nextnode:prograde.
@@ -605,9 +605,9 @@ function IMNG
 function IMNS
 {
 	parameter dim, value.
-	
+
 	set dim to dim:tolower.
-	
+
 	if dim:contains("pro")
 	{
 		set nextnode:prograde to value.
@@ -636,16 +636,16 @@ function ImproveManeuverNode
 	parameter dim, stepsize.
 
 	local startTime to time:seconds.
-	
+
 	local initNode to IMNG(dim).
 	local initCA to closestapproach(ship,target).
-	
+
 	IMNS(dim, initNode + stepsize).
 	local CAplus to closestapproach(ship,target).
-	
+
 	IMNS(dim, initNode - stepsize).
 	local CAminus to closestapproach(ship,target).
-	
+
 	if CAplus["minDist"]<initCA["minDist"] and CAplus["minDist"]<CAminus["minDist"]
 	{
 		IMNS(dim, initNode + stepsize).
@@ -658,7 +658,7 @@ function ImproveManeuverNode
 	{
 		IMNS(dim, initNode).
 	}
-	
+
 	return lex(
 		"CAminus",CAminus,
 		"initCA",initCA,
@@ -671,9 +671,9 @@ function ImproveManeuverNode
 function closestapproach
 {
 	parameter ves1, ves2, t1 is -1, t2 is -2, step1 is 30.
-	
+
 	local startTime to time:seconds.
-	
+
 	if t1 < 0
 	{
 		set t1 to time:seconds.
@@ -682,14 +682,14 @@ function closestapproach
 	{
 		set t2 to time:seconds + 2*max(ves1:orbit:period, ves2:orbit:period).
 	}
-	
+
 	local bestTime1 to t1.
 	local bestTime2 to t2.
-	
+
 	local minTime to 0.
 	local minDist to 0.
 	local timeStep to 0.
-	
+
 	//local i to 0.
 	for I IN RANGE(7)
 	{
@@ -699,16 +699,16 @@ function closestapproach
 			set step to step1.
 		}
 		local cah is closestapproachHelper(ves1,ves2,bestTime1,bestTime2,step).
-		
+
 		set timeStep to cah["timeStep"].
-		
+
 		set bestTime1 to cah["minTime"] - timeStep.
 		set bestTime2 to cah["minTime"] + timeStep.
-		
+
 		set minTime to cah["minTime"].
 		set minDist to cah["minDist"].
 	}
-	
+
 	return lex(
 		"bestTime1",bestTime1,
 		"bestTime2",bestTime2,
@@ -722,24 +722,24 @@ function closestapproach
 function closestapproachHelper
 {
 	parameter ves1, ves2, t1, t2, steps is 12.
-	
+
 	local timeStep is abs(t1 - t2)/steps.
-	
+
 	local minDist to 2147483646.
 	local minTime to -1.
-	
+
 	for i in range(steps)
 	{
 		local tr is t1 + i*timeStep.
 		local distanc is (positionat(ves1, tr) - positionat(ves2, tr)):mag.
-		
+
 		if distanc < minDist
 		{
 			set minDist to distanc.
 			set minTime to tr.
 		}
 	}
-	
+
 	return lex(
 		"minDist",minDist,
 		"minTime",minTime,
@@ -761,47 +761,47 @@ function EtaAscendingNode
 	local shipN is vcrs(shipV,ship:position - body:position):normalized.
 	local tarN is vcrs(tarV,target:position - body:position):normalized.
 	if target:name = body:name { set tarN to ship:north:vector. }
-	
+
 	local intersectV to vcrs(shipN,tarN):normalized * (target:position - body:position):mag.
 	//local mark_intersectV to VECDRAWARGS(body:position, intersectV, RGB(1.0,0,0), "intsctV", 1, true).
-	
+
 	local shipVec is ship:position - body:position.
 	//local mark_shipVec to VECDRAWARGS(body:position, shipVec, RGB(0,0,1), "", 1, true).
-	
+
 	local farTime is time:seconds + ship:orbit:period.
 	local nearTime is time:seconds.
-	
+
 	local minAngl to 2147483646.
 	local minTime to -1.
-	
+
 	for I IN RANGE(5)
 	{
 		local stepSize to max(1,(farTime-nearTime) / 7).
-		
+
 		local timerange to range(nearTime,farTime,stepSize).
-		
+
 		set minAngl to 2147483646.
 		set minTime to -1.
-		
+
 		for t in timerange
 		{
 			local tShipVec to positionat(ship, t) - body:position.
-			
+
 			//VECDRAWARGS(body:position, tShipVec, RGB(0,1/(5-i),1/(i+1)), "", 1, true).
-			
+
 			local tAngl to vang(tShipVec,intersectV).
-			
+
 			if tAngl < minAngl
 			{
 				set minAngl to tAngl.
 				set minTime to t.
 			}
 		}
-		
+
 		set farTime to minTime + stepSize.
 		set nearTime to minTime - stepSize.
 	}
-	
+
 	return lex(
 		"farTime", farTime,
 		"nearTime", nearTime,
@@ -819,7 +819,7 @@ function setupRemoteTechAntenna
 	// https://ksp-kos.github.io/KOS/addons/RemoteTech.html?highlight=modulertantenna#antennas
 	// "no-target", "active-vessel", a Body, a Vessel, "Mission Control"
 	parameter partTagText, satelliteName, shouldActivate.
-	
+
 	local antennae to ship:partsTagged(partTagText).
 	for antennaI in antennae
 	{

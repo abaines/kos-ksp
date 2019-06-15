@@ -85,7 +85,7 @@ local desiredLeanBaseVector to
 }.
 local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLeanBaseVector()*12. }, RGB(1,0.5,0.0)).
 
-global fullThrottle to true.
+global fullThrottle to false.
 
 local guiLean is GUI(200).
 local guiValue is guiLean:ADDLABEL("guiValue").
@@ -141,11 +141,11 @@ when true then
 
 
 global deltaAltPID TO PIDLOOP(0.0001, 0.0001, 0.0001, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set deltaAltPID:SETPOINT to 0.
+set deltaAltPID:SETPOINT to 1.
 when true then
 {
-	// TODO: update this to measure rise/fall rate and adjust twrPID.
-	set twrPID:SETPOINT to deltaAltPID:update(time:second,dist2ground)/cos(leanAngle). // out of 100
+	// update this to measure rise/fall rate and adjust twrPID.
+	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement). // out of 100
 	return true.
 }
 
@@ -155,12 +155,13 @@ when true then
 
 
 
-local guiPID to twrPID.
+local guiPID to deltaAltPID.
 local gui is GUI(200).
 
-local guiP is gui:ADDLABEL("gui").
-addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.2. }).
-addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.2. }).
+local guiP is gui:ADDTEXTFIELD(""+guiPID:KP).
+set guiP:ONCONFIRM to {parameter value. set guiPID:KP to value:tonumber().}.
+addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
+addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
 
 local guiI is gui:ADDLABEL("gui").
 addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI * 1.2. }).
@@ -181,7 +182,7 @@ when true then
 	set guiInput:text to "in:"+guiPID:INPUT.
 	set guiOutput:text to "out:"+guiPID:OUTPUT.
 	set guiInputDesired:text to "set:"+guiPID:SETPOINT.
-	set guiP:text to "P:"+guiPID:KP.
+	//set guiP:text to "P:"+guiPID:KP.
 	set guiI:text to "I:"+guiPID:KI.
 	set guiD:text to "D:"+guiPID:KD.
 	return true.
@@ -194,20 +195,20 @@ function mainLoop
 	print "MAXTHRUST "+qeC:MAXTHRUST+"               " at(0,5).
 	print "upwardMovement "+upwardMovement+"               " at(0,6).
 	print "dist2ground "+dist2ground+"               " at(0,7).
-	
+
 	print "THRUSTLIMIT "+qeC:THRUSTLIMIT+"               " at(0,9).
-	
+
 	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
-	
+
 	print "THRUST "+qeC:THRUST+"               " at(0,14).
 	print "twr "+twr +"               " at(0,15).
-	
+
 	print "p "+guiPID:KP +"               " at(0,17).
 	print "i "+guiPID:KI +"               " at(0,18).
 	print "d "+guiPID:KD +"               " at(0,19).
-	
+
 	print "leanAngle "+leanAngle +"               " at(0,21).
-	
+
 	print "fullThrottle "+fullThrottle +"               " at(0,23).
 }
 

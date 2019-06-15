@@ -31,6 +31,8 @@ function librarysetup
 	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 
 	CLEARVECDRAWS().
+
+	CLEARGUIS().
 }
 
 function beep
@@ -44,10 +46,10 @@ function beep
 function addButtonDelegate
 {
 	parameter gui, text, delegate.
-	
+
 	local button to gui:addbutton(text).
 	set button:onclick to delegate.
-	
+
 	return button.
 }
 
