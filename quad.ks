@@ -15,8 +15,7 @@ if true
 	set terminal:height to 30.
 }
 
-print "quad.ks 11" at(0,0).
-print "quad.ks 11" at(0,21).
+print "quad.ks 12".
 
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 1.
 
@@ -70,7 +69,7 @@ local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vec
 
 global desiredLeanAngle to 0.001.
 
-local desiredLeanBaseVector to
+global desiredLeanBaseVector to
 {
 	local angle to 0.
 	if dist2ground<0 //or qeC:THRUSTLIMIT>90
@@ -89,15 +88,19 @@ global fullThrottle to false.
 
 local guiLean is GUI(200).
 guiLean:ADDLABEL("Desired Lean Controller").
-local guiValue is guiLean:ADDLABEL("guiLean").
+local guiLeanAngle is guiLean:ADDLABEL("guiLeanAngle").
+local guiLeanDesired is guiLean:ADDLABEL("guiLeanDesired").
 addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
 addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
 addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0.001. }).
 addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.   if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
 addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
+local guiLeanError is guiLean:ADDLABEL("guiLeanError").
 when true then
 {
-	set guiValue:text to ""+desiredLeanAngle.
+	set guiLeanDesired:text to ""+desiredLeanAngle.
+	set guiLeanError:text to ""+vang(desiredLeanBaseVector(),ship:facing:vector).
+	set guiLeanAngle:text to ""+leanAngle.
 	return true.
 }
 guiLean:show().
@@ -141,7 +144,7 @@ when true then
 //}
 
 
-global deltaAltPID TO PIDLOOP(0.75, 0.1, 0.03, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global deltaAltPID TO PIDLOOP(0.75, 0.1, 0.03, 0.75, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set deltaAltPID:SETPOINT to 5.
 when true then
 {
@@ -157,39 +160,39 @@ when true then
 
 
 local guiPID to deltaAltPID.
-local gui is GUI(240).
-gui:ADDLABEL("PID Controller").
+local pidGUI is GUI(240).
+pidGUI:ADDLABEL("PID Controller").
 
-local guiP is gui:ADDTEXTFIELD(""+guiPID:KP).
+local guiP is pidGUI:ADDTEXTFIELD(""+guiPID:KP).
 set guiP:ONCONFIRM to {parameter value. set guiPID:KP to value:tonumber().}.
-addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
-addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
+addButtonDelegate(pidGUI,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
+addButtonDelegate(pidGUI,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
 
-local guiI is addTextFieldDelegate(gui, guiPID:KI, {parameter val. set guiPID:KI to val:tonumber().}).
-addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI * 1.2. set guiI:text to ""+guiPID:KI. }).
-addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI / 1.2. set guiI:text to ""+guiPID:KI. }).
+local guiI is addTextFieldDelegate(pidGUI, guiPID:KI, {parameter val. set guiPID:KI to val:tonumber().}).
+addButtonDelegate(pidGUI,"i+",{ set guiPID:KI to guiPID:KI * 1.2. set guiI:text to ""+guiPID:KI. }).
+addButtonDelegate(pidGUI,"i-",{ set guiPID:KI to guiPID:KI / 1.2. set guiI:text to ""+guiPID:KI. }).
 
-local guiD is addTextFieldDelegate(gui, guiPID:KD, {parameter val. set guiPID:KD to val:tonumber().}).
-addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD * 1.2. set guiD:text to ""+guiPID:KD. }).
-addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD / 1.2. set guiD:text to ""+guiPID:KD. }).
+local guiD is addTextFieldDelegate(pidGUI, guiPID:KD, {parameter val. set guiPID:KD to val:tonumber().}).
+addButtonDelegate(pidGUI,"d+",{ set guiPID:KD to guiPID:KD * 1.2. set guiD:text to ""+guiPID:KD. }).
+addButtonDelegate(pidGUI,"d-",{ set guiPID:KD to guiPID:KD / 1.2. set guiD:text to ""+guiPID:KD. }).
 
-local guiInputDesired is addTextFieldDelegate(gui, guiPID:SETPOINT,
+local guiInputDesired is addTextFieldDelegate(pidGUI, guiPID:SETPOINT,
 	{parameter val. set guiPID:SETPOINT to val:tonumber().}
 ).
-addButtonDelegate(gui,"setpoint+",
+addButtonDelegate(pidGUI,"setpoint+",
 	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
 ).
-addButtonDelegate(gui,"setpoint-",
+addButtonDelegate(pidGUI,"setpoint-",
 	{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
 ).
 
-local guiInput is gui:ADDLABEL("guiInput").
-local guiOutput is gui:ADDLABEL("guiOutput").
-gui:ADDSPACING(12).
-local guiPterm is gui:ADDLABEL("guiPterm").
-local guiIterm is gui:ADDLABEL("guiIterm").
-local guiDterm is gui:ADDLABEL("guiDterm").
-local guiErrorSum is gui:ADDLABEL("guiErrorSum").
+local guiInput is pidGUI:ADDLABEL("guiInput").
+local guiOutput is pidGUI:ADDLABEL("guiOutput").
+pidGUI:ADDSPACING(12).
+local guiPterm is pidGUI:ADDLABEL("guiPterm").
+local guiIterm is pidGUI:ADDLABEL("guiIterm").
+local guiDterm is pidGUI:ADDLABEL("guiDterm").
+local guiErrorSum is pidGUI:ADDLABEL("guiErrorSum").
 when true then
 {
 	set guiInput:text to "in: "+guiPID:INPUT.
@@ -201,29 +204,37 @@ when true then
 	set guiErrorSum:text to "ErrorSum: "+guiPID:ErrorSum.
 	return true.
 }
-gui:show().
+pidGUI:show().
+
+
+
+local enginegui is gui(240).
+local maxthrustlabel is enginegui:addlabel("maxthrustlabel").
+local upwardmovementlabel is enginegui:addlabel("upwardmovementlabel").
+local dist2groundlabel is enginegui:addlabel("dist2groundlabel").
+local thrustlimitlabel is enginegui:addlabel("thrustlimitlabel").
+local gravlabel is enginegui:addlabel("gravlabel").
+local thrustlabel is enginegui:addlabel("thrustlabel").
+local twrlabel is enginegui:addlabel("twrlabel").
+local fullthurstcheckbox to enginegui:addcheckbox("full throttle", fullthrottle).
+set fullthurstcheckbox:ontoggle to { parameter newstate. set fullthrottle to newstate. }.
+when true then
+{
+	set maxthrustlabel:text to "qec:maxthrust: "+round(qec:maxthrust,6).
+	set upwardmovementlabel:text to "upwardmovement: "+round(upwardmovement,6).
+	set dist2groundlabel:text to "dist2ground: "+round(dist2ground,6).
+	set thrustlimitlabel:text to "qec:thrustlimit: "+round(qec:thrustlimit,6).
+	set gravlabel:text to "ship:sensors:grav:mag: "+round(ship:sensors:grav:mag,6).
+	set thrustlabel:text to "qec:thrust: "+round(qec:thrust,6).
+	set twrlabel:text to "twr: "+round(twr,6).
+
+	return true.
+}
+enginegui:show().
 
 
 function mainLoop
 {
-	print "MAXTHRUST "+qeC:MAXTHRUST+"               " at(0,5).
-	print "upwardMovement "+upwardMovement+"               " at(0,6).
-	print "dist2ground "+dist2ground+"               " at(0,7).
-
-	print "THRUSTLIMIT "+qeC:THRUSTLIMIT+"               " at(0,9).
-
-	print "GRAV "+ship:sensors:GRAV:mag+"               " at(0,12).
-
-	print "THRUST "+qeC:THRUST+"               " at(0,14).
-	print "twr "+twr +"               " at(0,15).
-
-	print "p "+guiPID:KP +"               " at(0,17).
-	print "i "+guiPID:KI +"               " at(0,18).
-	print "d "+guiPID:KD +"               " at(0,19).
-
-	print "leanAngle "+leanAngle +"               " at(0,21).
-
-	print "fullThrottle "+fullThrottle +"               " at(0,23).
 }
 
 until false
