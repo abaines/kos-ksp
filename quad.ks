@@ -101,7 +101,7 @@ when true then
 }
 guiLean:show().
 
-local fullThurstCheckbox to guiLean:ADDCHECKBOX("full throttle", true).
+local fullThurstCheckbox to guiLean:ADDCHECKBOX("full throttle", fullThrottle).
 set fullThurstCheckbox:ONTOGGLE to { parameter newState. set fullThrottle to newState. }.
 
 
@@ -140,7 +140,7 @@ when true then
 //}
 
 
-global deltaAltPID TO PIDLOOP(0.0001, 0.0001, 0.0001, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global deltaAltPID TO PIDLOOP(0.75, 0.1, 0.03, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set deltaAltPID:SETPOINT to 1.
 when true then
 {
@@ -156,35 +156,48 @@ when true then
 
 
 local guiPID to deltaAltPID.
-local gui is GUI(200).
+local gui is GUI(240).
+gui:ADDLABEL("PID Controller").
 
 local guiP is gui:ADDTEXTFIELD(""+guiPID:KP).
 set guiP:ONCONFIRM to {parameter value. set guiPID:KP to value:tonumber().}.
 addButtonDelegate(gui,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
 addButtonDelegate(gui,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
 
-local guiI is gui:ADDLABEL("gui").
-addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI * 1.2. }).
-addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI / 1.2. }).
+local guiI is addTextFieldDelegate(gui, guiPID:KI, {parameter val. set guiPID:KI to val:tonumber().}).
+addButtonDelegate(gui,"i+",{ set guiPID:KI to guiPID:KI * 1.2. set guiI:text to ""+guiPID:KI. }).
+addButtonDelegate(gui,"i-",{ set guiPID:KI to guiPID:KI / 1.2. set guiI:text to ""+guiPID:KI. }).
 
-local guiD is gui:ADDLABEL("gui").
-addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD * 1.2. }).
-addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD / 1.2. }).
+local guiD is addTextFieldDelegate(gui, guiPID:KD, {parameter val. set guiPID:KD to val:tonumber().}).
+addButtonDelegate(gui,"d+",{ set guiPID:KD to guiPID:KD * 1.2. set guiD:text to ""+guiPID:KD. }).
+addButtonDelegate(gui,"d-",{ set guiPID:KD to guiPID:KD / 1.2. set guiD:text to ""+guiPID:KD. }).
 
-local guiInputDesired is gui:ADDLABEL("guiInput").
-addButtonDelegate(gui,"+",{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.01. }).
-addButtonDelegate(gui,"-",{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.01. }).
+local guiInputDesired is addTextFieldDelegate(gui, guiPID:SETPOINT,
+	{parameter val. set guiPID:SETPOINT to val:tonumber().}
+).
+addButtonDelegate(gui,"setpoint+",
+	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.01. set guiInputDesired:text to ""+guiPID:SETPOINT. }
+).
+addButtonDelegate(gui,"setpoint-",
+	{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.01. set guiInputDesired:text to ""+guiPID:SETPOINT. }
+).
 
 local guiInput is gui:ADDLABEL("guiInput").
 local guiOutput is gui:ADDLABEL("guiOutput").
+gui:ADDSPACING(12).
+local guiPterm is gui:ADDLABEL("guiPterm").
+local guiIterm is gui:ADDLABEL("guiIterm").
+local guiDterm is gui:ADDLABEL("guiDterm").
+local guiErrorSum is gui:ADDLABEL("guiErrorSum").
 when true then
 {
-	set guiInput:text to "in:"+guiPID:INPUT.
-	set guiOutput:text to "out:"+guiPID:OUTPUT.
-	set guiInputDesired:text to "set:"+guiPID:SETPOINT.
-	//set guiP:text to "P:"+guiPID:KP.
-	set guiI:text to "I:"+guiPID:KI.
-	set guiD:text to "D:"+guiPID:KD.
+	set guiInput:text to "in: "+guiPID:INPUT.
+	set guiOutput:text to "out: "+guiPID:OUTPUT.
+
+	set guiPterm:text to "pterm: "+guiPID:pterm.
+	set guiIterm:text to "iterm: "+guiPID:iterm.
+	set guiDterm:text to "dterm: "+guiPID:dterm.
+	set guiErrorSum:text to "ErrorSum: "+guiPID:ErrorSum.
 	return true.
 }
 gui:show().

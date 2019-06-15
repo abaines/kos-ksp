@@ -53,6 +53,16 @@ function addButtonDelegate
 	return button.
 }
 
+function addTextFieldDelegate
+{
+	parameter gui, text, delegate.
+
+	local textField to gui:ADDTEXTFIELD(""+text).
+	set textField:ONCONFIRM to delegate.
+
+	return textField.
+}
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
