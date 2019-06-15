@@ -209,13 +209,16 @@ pidGUI:show().
 
 
 local enginegui is gui(240).
+
+local thrustlimitlabel is enginegui:addlabel("thrustlimitlabel").
+local thrustSlider is enginegui:ADDHSLIDER(qec:thrustlimit,0,100).
+local twrlabel is enginegui:addlabel("twrlabel").
 local maxthrustlabel is enginegui:addlabel("maxthrustlabel").
+local thrustlabel is enginegui:addlabel("thrustlabel").
+local gravlabel is enginegui:addlabel("gravlabel").
 local upwardmovementlabel is enginegui:addlabel("upwardmovementlabel").
 local dist2groundlabel is enginegui:addlabel("dist2groundlabel").
-local thrustlimitlabel is enginegui:addlabel("thrustlimitlabel").
-local gravlabel is enginegui:addlabel("gravlabel").
-local thrustlabel is enginegui:addlabel("thrustlabel").
-local twrlabel is enginegui:addlabel("twrlabel").
+
 local fullthurstcheckbox to enginegui:addcheckbox("full throttle", fullthrottle).
 set fullthurstcheckbox:ontoggle to { parameter newstate. set fullthrottle to newstate. }.
 when true then
@@ -227,6 +230,8 @@ when true then
 	set gravlabel:text to "ship:sensors:grav:mag: "+round(ship:sensors:grav:mag,6).
 	set thrustlabel:text to "qec:thrust: "+round(qec:thrust,6).
 	set twrlabel:text to "twr: "+round(twr,6).
+	
+	set thrustSlider:value to qec:thrustlimit.
 
 	return true.
 }
