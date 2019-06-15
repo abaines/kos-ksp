@@ -17,6 +17,12 @@ if true
 
 print "quad.ks 12".
 
+print ship:geoposition.
+global experimentstate to lex().
+experimentstate:add("ship:name",ship:name).
+experimentstate:add("ship:geoposition",ship:geoposition).
+writejson(experimentstate, "experiment.json").
+
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 1.
 
 global _steering to Up + R(0,0,180).

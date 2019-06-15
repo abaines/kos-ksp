@@ -1,18 +1,11 @@
 {
     "entries": [
-        "ship:position - body:position",
-        {
-            "x": -494191.97992056893,
-            "y": -1018.0996348861256,
-            "z": 340388.478849417,
-            "$type": "kOS.Suffixed.Vector"
-        },
         "ship:name",
-        "KSV Science-Kitten-I",
-        "SHIP:GEOPOSITION",
+        "Untitled Space Craft-I",
+        "ship:geoposition",
         {
-            "lat": -0.097209107153396715,
-            "lng": -74.557675286190459,
+            "lat": -0.0972077948308072,
+            "lng": -74.557676885654786,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
