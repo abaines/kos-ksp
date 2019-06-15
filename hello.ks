@@ -56,9 +56,9 @@ if PARAMETER1<>" "
 when terminal:input:haschar then
 {
 	local newchar is terminal:input:getchar().
-	
+
 	print "newchar : " + newchar + "            " at(0,1).
-	
+
 	if newchar = "t" // target
 	{
 		set scriptState["behavior"] to newchar.
@@ -174,7 +174,7 @@ set shipDraw:vecupdater to
 		return v(0,0,0).
 	}
 }.
-set targDraw:vecupdater to 
+set targDraw:vecupdater to
 {
 	if HASTARGET and scriptState["behavior"] = "c"
 	{
@@ -292,7 +292,7 @@ global hoverEngines to ship:partsTagged("hover").
 function hoverThrust
 {
 	parameter t.
-	
+
 	for he in hoverEngines
 	{
 		set he:thrustlimit to t.
@@ -360,9 +360,9 @@ function mainLoop
 	local behavior is scriptState["behavior"].
 	local stageAllow is scriptState["stageAllow"].
 	local questThrottle is scriptState["questThrottle"].
-	
+
 	print "speed : " + round(ship:velocity:surface:mag,2) + "                 " at(0,3).
-	
+
 	if behavior = "y"
 	{
 		local terrainheight to SHIP:GEOPOSITION:TERRAINHEIGHT.
@@ -377,14 +377,14 @@ function mainLoop
 		print "hover !                   " at(0,20).
 		return.
 	}
-	
+
 	if questThrottle
 	{
 		set throt to slopeInterceptCalc2(sil_quest_throttle,velocity:surface:mag).
 	}
 	else if behavior = "r" or behavior = "b" or behavior = "u"
 	{
-		
+
 	}
 	else if behavior <> "d"
 	{
@@ -406,9 +406,9 @@ function mainLoop
 	{
 		print "electric charge%: " + round(electricchargepercent*100,3) + "                 " at(0,5).
 		print "ship:orbit:period: " + round((ship:orbit:period/(60*60*6))*100,3) + "  " at(0,6).
-		
+
 		print "p:" + round(abs(eta_periapsis())) + " a:" + round(abs(eta_apoapsis())) + "  " at(0,2).
-		
+
 		local electricThrot to 0.
 		if ship:orbit:period >= 60*60*6
 		{
@@ -425,16 +425,16 @@ function mainLoop
 		set throt to min(throt,electricThrot).
 	}
 	print "throt: " + round(throt*100,3) + "                 " at(0,4).
-	
+
 	local sic_steering_alt to slopeInterceptCalc2(sil_steering_alt,ship:ALTITUDE).
 	local sic_steering_apo to min(slopeInterceptCalc2(sil_steering_apo,ship:APOAPSIS),90).
-	
+
 	print "sic_steering_alt : " + sic_steering_alt + "                 " at(0,10).
 	print "sic_steering_apo : " + sic_steering_apo + "                 " at(0,11).
-	
+
 	local steering_math to max(min(sic_steering_alt, sic_steering_apo),-45).
 	print "steering_math : " + steering_math + "                 " at(0,12).
-	
+
 	if behavior = "c" and HASTARGET
 	{
 		local targetFutureDistanceB is (positionat(target,time:seconds + futureTargetTime - 2) - ship:position):mag.
@@ -457,7 +457,7 @@ function mainLoop
 	{
 		if ALLNODES:LENGTH>0
 		{
-			local nextN to nextnode. 
+			local nextN to nextnode.
 			local burn_vector to nextN:BURNVECTOR.
 			set steer to burn_vector.
 			sas off.
@@ -506,16 +506,16 @@ function mainLoop
 	{
 		// using weird command orientation (east)
 		//set steer to Up + R(0,(steering_math-90),-90).
-		
+
 		// using "accepted" command orientation (east)
 		//set steer to Up + R(0,steering_math,180).
-		
+
 		// going north/south
 		//set steer to Up + R(-1*(steering_math-90),0,180).
-		
+
 		//set steer to Up + R(1*(steering_math-90),0,180).
-		
-		
+
+
 		// navball angle
 		local angle to 90.
 		// 45 is north east
@@ -531,16 +531,16 @@ function mainLoop
 		set desiredVec to v(-1,0,-1).
 		set desiredVec to v(0,1,0).
 		set desiredVec to launchPad_Up.
-		
+
 		set desiredVec to BetweenVector(launchPad_north,launchPad_east,angle).
-		
-		
+
+
 		// at launch pad
 		// v(0,1,0) is north
 		// v(-1,0,-1) is up'ish and little west
-		
-		
-		
+
+
+
 		if (ship:ALTITUDE<1000)
 		{
 			//set steer to Up + R(0,0,180). // (default rotation)
@@ -559,18 +559,18 @@ function mainLoop
 	{
 		print "unknown behavior: " + behavior + "            " at(0,20).
 	}
-	
+
 	local retroError to vang(ship:facing:vector,-1*ship:srfprograde:vector).
 	print "ret err:" + round(retroError,3) + "                 " at(0,8).
-	
-	
-	
+
+
+
 	local stageAutoParts to ship:partsTagged("sa").
 	local didStageAutoParts to false.
 	for stageAutoPart in stageAutoParts
 	{
 		local resource0 to stageAutoPart:RESOURCES[0]:amount.
-		
+
 		if resource0 <= 0.1
 		{
 			stageAutoPart:GetModule("ModuleAnchoredDecoupler"):doevent("decouple").
@@ -581,7 +581,7 @@ function mainLoop
 	{
 		beep(440,0.05,0.001).
 	}
-	
+
 	print "stage allowed "+ stageAllow + "            " at(0,16).
 	if stageAllow > 0
 	{
@@ -590,7 +590,7 @@ function mainLoop
 		local solidfuel is GetStageLowestResource("solidfuel").
 		local lowestResource is min(solidfuel,min(liquidfuel,oxidizer)).
 		print "lowest fuel: " + ROUND(lowestResource,4) + "          " at(0,17).
-		
+
 		if liquidfuel<=0.01 or oxidizer<=0.01 or solidfuel<=0.01
 		{
 			beep(440,0.05,0.001).
@@ -602,7 +602,7 @@ function mainLoop
 			print "staged !                      " at(0,18).
 		}
 	}
-	
+
 	set mainLoopCount to 1 + mainLoopCount.
 	print "" + mod(mainLoopCount,10) at(43,21).
 }
