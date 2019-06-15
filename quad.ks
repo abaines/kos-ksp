@@ -11,7 +11,7 @@ PARAMETER PARAMETER1 is " ".
 
 if true
 {
-	set terminal:width to 60.
+	set terminal:width to 42.
 	set terminal:height to 30.
 }
 
@@ -88,7 +88,8 @@ local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLea
 global fullThrottle to false.
 
 local guiLean is GUI(200).
-local guiValue is guiLean:ADDLABEL("guiValue").
+guiLean:ADDLABEL("Desired Lean Controller").
+local guiValue is guiLean:ADDLABEL("guiLean").
 addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
 addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
 addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0.001. }).
@@ -101,8 +102,8 @@ when true then
 }
 guiLean:show().
 
-local fullThurstCheckbox to guiLean:ADDCHECKBOX("full throttle", fullThrottle).
-set fullThurstCheckbox:ONTOGGLE to { parameter newState. set fullThrottle to newState. }.
+//local fullThurstCheckbox to guiLean:ADDCHECKBOX("full throttle", fullThrottle).
+//set fullThurstCheckbox:ONTOGGLE to { parameter newState. set fullThrottle to newState. }.
 
 
 
@@ -141,7 +142,7 @@ when true then
 
 
 global deltaAltPID TO PIDLOOP(0.75, 0.1, 0.03, 0.75, 1.5). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set deltaAltPID:SETPOINT to 1.
+set deltaAltPID:SETPOINT to 5.
 when true then
 {
 	// update this to measure rise/fall rate and adjust twrPID.
@@ -176,10 +177,10 @@ local guiInputDesired is addTextFieldDelegate(gui, guiPID:SETPOINT,
 	{parameter val. set guiPID:SETPOINT to val:tonumber().}
 ).
 addButtonDelegate(gui,"setpoint+",
-	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.01. set guiInputDesired:text to ""+guiPID:SETPOINT. }
+	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
 ).
 addButtonDelegate(gui,"setpoint-",
-	{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.01. set guiInputDesired:text to ""+guiPID:SETPOINT. }
+	{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
 ).
 
 local guiInput is gui:ADDLABEL("guiInput").

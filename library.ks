@@ -117,7 +117,7 @@ function librarysetup
 
 	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 
-	if terminal:width<90 {set terminal:width to 90.}
+	if terminal:width<42 {set terminal:width to 42.}
 
 	if terminal:height<40 {set terminal:height to 40.}
 
@@ -334,7 +334,8 @@ function managePanelsAndAntenna
 
 	lock alt to SHIP:ALTITUDE.
 	lock t to time:seconds.
-	local deployed is true.
+
+	local areDeployed is true.
 	local protector to t + 1.
 
 	when true then
@@ -343,7 +344,7 @@ function managePanelsAndAntenna
 		{
 			// delay
 		}
-		else if alt>spaceAlt and not deployed
+		else if alt>spaceAlt and not areDeployed
 		{
 			stopwarp().
 			HUDTEXT("Space!1", 15, 1, 15, BLUE, false).
@@ -352,10 +353,10 @@ function managePanelsAndAntenna
 			HUDTEXT("Space!4", 15, 4, 15, BLUE, false).
 			panels on.
 			setantenna(true).
-			set deployed to true.
+			set areDeployed to true.
 			set protector to t + 10.
 		}
-		else if alt<spaceAlt and deployed
+		else if alt<spaceAlt and areDeployed
 		{
 			stopwarp().
 			HUDTEXT("Air!1", 15, 1, 15, CYAN, false).
@@ -364,7 +365,7 @@ function managePanelsAndAntenna
 			HUDTEXT("Air!4", 15, 4, 15, CYAN, false).
 			panels off.
 			setantenna(false).
-			set deployed to false.
+			set areDeployed to false.
 			set protector to t + 10.
 		}
 		else
@@ -372,7 +373,6 @@ function managePanelsAndAntenna
 			set protector to t + 1.
 		}
 
-		wait 0.
 		PRESERVE.
 	}
 }
@@ -413,7 +413,6 @@ function manageFuelCells
 			set protector to t + 1.
 		}
 
-		wait 0.
 		PRESERVE.
 	}
 }
