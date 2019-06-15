@@ -11,8 +11,8 @@ PARAMETER PARAMETER1 is " ".
 
 if true
 {
-	set terminal:width to 42.
-	set terminal:height to 30.
+	if terminal:width<42 {set terminal:width to 42.}
+	if terminal:height<30 {set terminal:height to 30.}
 }
 
 print "quad.ks 12".
@@ -54,22 +54,38 @@ local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. },
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
+function stopVector
+{
+	local sup to ship:up:vector:normalized.
+
+	local stabilizingStr to ship:velocity:surface:mag+5.
+	local stabilizingRatio to 2. // should always be greater than 1
+
+	local retro to -1*ship:velocity:surface + (stabilizingStr*sup).
+	local stopDirectionInPlane to VXCL(sup,retro):normalized.
+	local retroRatioStabilized to retro:normalized + (stabilizingRatio*sup).
+	return retroRatioStabilized:normalized.
+}
+
+local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*9. }, RGB(1,0.1,0.1)).
+
+global desireStop to false.
 global desiredLeanAngle to 0.001.
 
 global desiredLeanBaseVector to
 {
-	local angle to 0.
-	if dist2ground<0 //or qeC:THRUSTLIMIT>90
+	if desireStop
 	{
-		set angle to 0.001.
+		return stopVector().
 	}
 	else
 	{
-		set angle to desiredLeanAngle.
+		return BetweenVector(vec_up(),goalDirection,desiredLeanAngle):normalized.
 	}
-	return BetweenVector(vec_up(),goalDirection,angle):normalized.
 }.
 local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLeanBaseVector()*12. }, RGB(1,0.5,0.0)).
+
+lock leanAngle to vang(ship:facing:vector,vec_up()).
 
 global fullThrottle to false.
 
@@ -83,6 +99,8 @@ addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0.001. }).
 addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.   if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
 addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
 local guiLeanError is guiLean:ADDLABEL("guiLeanError").
+local guiLeanStop is guiLean:addcheckbox("Stop",desireStop).
+set guiLeanStop:ontoggle to { parameter newstate. set desireStop to newstate. }.
 when true then
 {
 	set guiLeanDesired:text to ""+desiredLeanAngle.
@@ -100,7 +118,6 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
 lock twr to qeC:THRUST / shipWeight.
 
-lock leanAngle to vang(ship:facing:vector,vec_up()).
 
 global twrPID TO PIDLOOP(1300, 70, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set twrPID:SETPOINT to 1.01.

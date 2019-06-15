@@ -119,7 +119,7 @@ function librarysetup
 
 	if terminal:width<42 {set terminal:width to 42.}
 
-	if terminal:height<40 {set terminal:height to 40.}
+	if terminal:height<30 {set terminal:height to 30.}
 
 	CLEARVECDRAWS().
 }
