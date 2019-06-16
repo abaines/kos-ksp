@@ -35,7 +35,7 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
-global waypointName to "TMA-1".
+global waypointName to "TMA-4".
 global kspLaunchPadName to "KSC Launch Pad".
 global ksplaunchpadgeo to ksplaunchpad().
 global waypointGoal to waypoint(waypointName):GEOPOSITION.
@@ -80,8 +80,8 @@ function stopVector
 
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*9. }, RGB(1,0.1,0.1)).
 
-global desireStop to false.
-global desiredLeanAngle to 0.001.
+global desireStop to true.
+global desiredLeanAngle to 45.
 
 global desiredLeanBaseVector to
 {
@@ -91,7 +91,7 @@ global desiredLeanBaseVector to
 	}
 	else
 	{
-		return BetweenVector(vec_up(),goalDirection,desiredLeanAngle):normalized.
+		return BetweenVector(vec_up(),goalDirection,desiredLeanAngle+0.001):normalized.
 	}
 }.
 local vddDesiredLean is VECDRAW_DEL({return ship:position.}, { return desiredLeanBaseVector()*12. }, RGB(1,0.5,0.0)).
@@ -122,10 +122,10 @@ set guiLeanGoalpopup:index to 1.
 local guiLeanAngle is guiLean:ADDLABEL("guiLeanAngle").
 local guiLeanDesired is guiLean:ADDLABEL("guiLeanDesired").
 addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
-addButtonDelegate(guiLean,"+",{ set desiredLeanAngle to desiredLeanAngle + 1. }).
-addButtonDelegate(guiLean,"0",{ set desiredLeanAngle to 0.001. }).
-addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.   if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
-addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. if desiredLeanAngle<0.001 { set desiredLeanAngle to 0.001. } }).
+addButtonDelegate(guiLean,"+", { set desiredLeanAngle to desiredLeanAngle + 1.0. }).
+addButtonDelegate(guiLean,"0", { set desiredLeanAngle to 0.0. }).
+addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.0. }).
+addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
 local guiLeanError is guiLean:ADDLABEL("guiLeanError").
 local guiLeanStop is guiLean:addcheckbox("Stop",desireStop).
 set guiLeanStop:ontoggle to { parameter newstate. set desireStop to newstate. }.
