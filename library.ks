@@ -84,6 +84,7 @@ SET voice0:VOLUME TO 0.20.
 /// FUNCTIONS AND VARIBLES ONLY !
 
 
+// kerbal space center launch pad
 function kspLaunchPad
 {
 	return LATLNG(-0.0972077948308072,-74.557676885654786).
