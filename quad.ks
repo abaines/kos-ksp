@@ -41,8 +41,38 @@ global ksplaunchpadgeo to ksplaunchpad().
 global waypointGoal to waypoint(waypointName):GEOPOSITION.
 global currentGoal to waypointGoal.
 
-global qeC is ship:partsTagged("qe-c")[0].
+// quadEngine
+global quadEngines is ship:partsTagged("qe").
+print("quadEngines:length: "+quadEngines:length).
+global quadEnginesAverageThrustLimit to 0.
+when true then
+{
+	for qe in quadEngines
+	{
+		set qe:thrustLimit to quadEnginesAverageThrustLimit.
+	}
+	return true.
+}
 
+function quadEnginesRawThrust
+{
+	local sum is 0.
+	for qe in quadEngines
+	{
+		set sum to sum + qe:thrust.
+	}
+	return sum.
+}
+
+function quadEnginesMaxMaxThrust
+{
+	local m is 0.
+	for qe in quadEngines
+	{
+		set m to max(m,qe:maxthrust).
+	}
+	return m.
+}
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
@@ -144,7 +174,7 @@ lock steering to desiredLeanBaseVector().
 
 lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
-lock twr to qeC:THRUST / shipWeight.
+lock twr to quadEnginesRawThrust() / shipWeight.
 
 
 global twrPID TO PIDLOOP(1300, 70, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
@@ -153,11 +183,11 @@ when true then
 {
 	if fullThrottle
 	{
-		set qeC:THRUSTLIMIT to 100.
+		set quadEnginesAverageThrustLimit to 100.
 	}
 	else
 	{
-		set qeC:THRUSTLIMIT to twrPID:update(time:second,twr). // out of 100
+		set quadEnginesAverageThrustLimit to twrPID:update(time:second,twr). // out of 100
 	}
 	return true.
 }
@@ -231,7 +261,7 @@ pidGUI:show().
 local enginegui is gui(240).
 
 local thrustlimitlabel is enginegui:addlabel("thrustlimitlabel").
-local thrustSlider is enginegui:ADDHSLIDER(qec:thrustlimit,0,100).
+local thrustSlider is enginegui:ADDHSLIDER(quadEnginesAverageThrustLimit,0,100).
 local twrlabel is enginegui:addlabel("twrlabel").
 local maxthrustlabel is enginegui:addlabel("maxthrustlabel").
 local thrustlabel is enginegui:addlabel("thrustlabel").
@@ -244,15 +274,15 @@ set fullthurstcheckbox:ontoggle to { parameter newstate. set fullthrottle to new
 local landcontrolcheckbox to enginegui:addcheckbox("land", false).
 when true then
 {
-	set maxthrustlabel:text to "qec:maxthrust: "+round(qec:maxthrust,6).
+	set maxthrustlabel:text to "qec:maxthrust: "+round(quadEnginesMaxMaxThrust(),6).
 	set upwardmovementlabel:text to "upwardmovement: "+round(upwardmovement,6).
 	set dist2groundlabel:text to "dist2ground: "+round(dist2ground,6).
-	set thrustlimitlabel:text to "qec:thrustlimit: "+round(qec:thrustlimit,6).
+	set thrustlimitlabel:text to "qec:thrustlimit: "+round(quadEnginesAverageThrustLimit,6).
 	set gravlabel:text to "ship:sensors:grav:mag: "+round(ship:sensors:grav:mag,6).
-	set thrustlabel:text to "qec:thrust: "+round(qec:thrust,6).
+	set thrustlabel:text to "qec:thrust: "+round(quadEnginesRawThrust(),6).
 	set twrlabel:text to "twr: "+round(twr,6).
 
-	set thrustSlider:value to qec:thrustlimit.
+	set thrustSlider:value to quadEnginesAverageThrustLimit.
 
 	if landcontrolcheckbox:PRESSED
 	{

@@ -1,11 +1,11 @@
 {
     "entries": [
         "ship:name",
-        "KSV Science-Kitten 3.5c-I",
+        "HMD Exploding Viking-I",
         "ship:geoposition",
         {
-            "lat": -0.097153463621409683,
-            "lng": -74.557642289190454,
+            "lat": -0.09715388298769756,
+            "lng": -74.557642563816628,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
