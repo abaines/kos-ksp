@@ -177,7 +177,7 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 lock twr to quadEnginesRawThrust() / shipWeight.
 
 
-global twrPID TO PIDLOOP(1300, 70, 25, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global twrPID TO PIDLOOP(1000, 410, 830, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set twrPID:SETPOINT to 1.01.
 when true then
 {
