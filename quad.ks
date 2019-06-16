@@ -35,7 +35,7 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
-global waypointName to "TMA-4".
+global waypointName to "TMA-2".
 global kspLaunchPadName to "KSC Launch Pad".
 global ksplaunchpadgeo to ksplaunchpad().
 global waypointGoal to waypoint(waypointName):GEOPOSITION.
@@ -241,6 +241,7 @@ local dist2groundlabel is enginegui:addlabel("dist2groundlabel").
 
 local fullthurstcheckbox to enginegui:addcheckbox("full throttle", fullthrottle).
 set fullthurstcheckbox:ontoggle to { parameter newstate. set fullthrottle to newstate. }.
+local landcontrolcheckbox to enginegui:addcheckbox("land", false).
 when true then
 {
 	set maxthrustlabel:text to "qec:maxthrust: "+round(qec:maxthrust,6).
@@ -252,6 +253,11 @@ when true then
 	set twrlabel:text to "twr: "+round(twr,6).
 
 	set thrustSlider:value to qec:thrustlimit.
+
+	if landcontrolcheckbox:PRESSED
+	{
+		set deltaAltPID:SETPOINT to dist2ground/-20.
+	}
 
 	return true.
 }
