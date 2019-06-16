@@ -35,6 +35,11 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
+global waypointName to "TMA-1".
+global kspLaunchPadName to "KSC Launch Pad".
+global ksplaunchpadgeo to ksplaunchpad().
+global waypointGoal to waypoint(waypointName):GEOPOSITION.
+global currentGoal to waypointGoal.
 
 global qeC is ship:partsTagged("qe-c")[0].
 
@@ -46,11 +51,11 @@ lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 
 local vddUpwardMovement is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
 
-global waypointGoal to waypoint("TMA-1"):GEOPOSITION.
+local vddLaunchPad is VECDRAW_DEL({return ship:position.}, { return ksplaunchpadgeo:position. }, RGB(0,1,0)).
 
 lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
 lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
-lock goalDirection to VXCL(vec_up(),waypointGoal:POSITION).
+lock goalDirection to VXCL(vec_up(),currentGoal:POSITION).
 
 local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
 local vddTravelFlat is VECDRAW_DEL({return ship:position.}, { return travelDirection*10. }, RGB(0,1,1)).
@@ -97,6 +102,23 @@ global fullThrottle to false.
 
 local guiLean is GUI(200).
 guiLean:ADDLABEL("Desired Lean Controller").
+local guiLeanGoalpopup to guiLean:addpopupmenu().
+guiLeanGoalpopup:addoption(kspLaunchPadName).
+guiLeanGoalpopup:addoption(waypointName).
+set guiLeanGoalpopup:ONCHANGE to
+{
+	parameter choice.
+	if choice:TOSTRING = waypointName
+	{
+		set currentGoal to waypointGoal.
+	}
+	else
+	{
+		set currentGoal to ksplaunchpadgeo.
+	}
+}.
+set guiLeanGoalpopup:index to 1.
+
 local guiLeanAngle is guiLean:ADDLABEL("guiLeanAngle").
 local guiLeanDesired is guiLean:ADDLABEL("guiLeanDesired").
 addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
