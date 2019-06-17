@@ -11,8 +11,8 @@ PARAMETER PARAMETER1 is " ".
 
 if true
 {
-	if terminal:width<42 {set terminal:width to 42.}
-	if terminal:height<30 {set terminal:height to 30.}
+	set terminal:width  to 42.
+	set terminal:height to 20.
 }
 
 print "quad.ks 12".
@@ -159,6 +159,7 @@ addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5.
 local guiLeanError is guiLean:ADDLABEL("guiLeanError").
 local guiLeanStop is guiLean:addcheckbox("Stop",desireStop).
 set guiLeanStop:ontoggle to { parameter newstate. set desireStop to newstate. }.
+local guiLeanFullThrottle is guiLean:addcheckbox("Auto Lean Full Throttle",false).
 when true then
 {
 	set guiLeanDesired:text to ""+desiredLeanAngle.
@@ -177,7 +178,7 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 lock twr to quadEnginesRawThrust() / shipWeight.
 
 
-global twrPID TO PIDLOOP(1000, 410, 830, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global twrPID TO PIDLOOP(500, 410, 400, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set twrPID:SETPOINT to 1.01.
 when true then
 {
@@ -194,7 +195,7 @@ when true then
 
 
 
-global deltaAltPID TO PIDLOOP(0.75, 0.1, 0.03, 0.75, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.75, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set deltaAltPID:SETPOINT to 5.
 when true then
 {
@@ -205,11 +206,18 @@ when true then
 
 
 
+global leanFullThrottlePID TO PIDLOOP(-0.1, 0, 0, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set leanFullThrottlePID:SETPOINT to 6767+10.
+when guiLeanFullThrottle:pressed then
+{
+	set desiredLeanAngle to leanFullThrottlePID:update(time:second,SHIP:ALTITUDE).
+	return true.
+}
 
 
 
 
-local guiPID to deltaAltPID.
+local guiPID to leanFullThrottlePID.
 local pidGUI is GUI(240).
 pidGUI:ADDLABEL("PID Controller").
 
@@ -309,6 +317,10 @@ when true then
 	}.
 	if quadEnginesAverageThrustLimitRepresentative()<>engineThrashPrevious
 	{
+		if engineThrashPrevious<>-1
+		{
+			print "Thrash: " + (time:seconds - engineThrashTime).
+		}
 		set engineThrashTime to time:seconds.
 	}
 	set engineThrashPrevious to quadEnginesAverageThrustLimitRepresentative().
