@@ -206,7 +206,7 @@ when true then
 
 
 
-global leanFullThrottlePID TO PIDLOOP(-0.1, 0, 0, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global leanFullThrottlePID TO PIDLOOP(-0.023, 0, -2, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set leanFullThrottlePID:SETPOINT to 6767+10.
 when guiLeanFullThrottle:pressed then
 {
@@ -283,6 +283,17 @@ local landcontrolcheckbox to enginegui:addcheckbox("land", false).
 local engineThrashlabel is enginegui:addlabel("engineThrashlabel").
 local engineThrashTime is -1.
 local engineThrashPrevious is -1.
+
+local deltaAltTextField is addTextFieldDelegate(enginegui, deltaAltPID:SETPOINT,
+	{parameter val. set deltaAltPID:SETPOINT to val:tonumber().}
+).
+addButtonDelegate(enginegui,"setpoint+",
+	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT + 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
+).
+addButtonDelegate(enginegui,"setpoint-",
+	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT - 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
+).
+
 when true then
 {
 	set maxthrustlabel:text to "qec:maxthrust: "+round(quadEnginesMaxMaxThrust(),6).
@@ -298,6 +309,7 @@ when true then
 	if landcontrolcheckbox:PRESSED
 	{
 		set deltaAltPID:SETPOINT to dist2ground/-20.
+		set deltaAltTextField:text to ""+deltaAltPID:SETPOINT.
 	}
 	
 	local quadEnginesAverageThrustLimitRepresentative to 
