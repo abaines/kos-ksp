@@ -4,8 +4,8 @@
         "HMD Exploding Viking-II",
         "ship:geoposition",
         {
-            "lat": -0.097153887854326909,
-            "lng": -74.557643115149659,
+            "lat": -0.097153676536219272,
+            "lng": -74.557645048823318,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
