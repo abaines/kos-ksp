@@ -273,8 +273,8 @@ local fullthurstcheckbox to enginegui:addcheckbox("full throttle", fullthrottle)
 set fullthurstcheckbox:ontoggle to { parameter newstate. set fullthrottle to newstate. }.
 local landcontrolcheckbox to enginegui:addcheckbox("land", false).
 local engineThrashlabel is enginegui:addlabel("engineThrashlabel").
-local engineThrashTime is time:seconds.
-local engineThrashWasHappening is false.
+local engineThrashTime is -1.
+local engineThrashPrevious is -1.
 when true then
 {
 	set maxthrustlabel:text to "qec:maxthrust: "+round(quadEnginesMaxMaxThrust(),6).
@@ -292,12 +292,26 @@ when true then
 		set deltaAltPID:SETPOINT to dist2ground/-20.
 	}
 	
-	local engineThrashIsHappening to quadEnginesAverageThrustLimit>99 or quadEnginesAverageThrustLimit<1.
-	if engineThrashWasHappening<>engineThrashIsHappening
+	local quadEnginesAverageThrustLimitRepresentative to 
+	{
+		if quadEnginesAverageThrustLimit<1
+		{
+			return 0.
+		}
+		else if quadEnginesAverageThrustLimit>99
+		{
+			return 100.
+		}
+		else
+		{
+			return 50.
+		}
+	}.
+	if quadEnginesAverageThrustLimitRepresentative()<>engineThrashPrevious
 	{
 		set engineThrashTime to time:seconds.
 	}
-	set engineThrashWasHappening to engineThrashIsHappening.
+	set engineThrashPrevious to quadEnginesAverageThrustLimitRepresentative().
 	set engineThrashlabel:text to ""+(time:seconds - engineThrashTime).
 
 	return true.
