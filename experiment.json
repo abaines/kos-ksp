@@ -1,11 +1,11 @@
 {
     "entries": [
         "ship:name",
-        "HMD Exploding Viking-I",
+        "ISP Kitten-Thunder-I",
         "ship:geoposition",
         {
-            "lat": 2.6446566645159053,
-            "lng": -81.43118827027169,
+            "lat": -0.048609153686349889,
+            "lng": -74.724227395934733,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
