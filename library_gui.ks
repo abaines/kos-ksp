@@ -148,6 +148,14 @@ function createButtonGridWithTextFields
 			addButtonDelegate(guiRowTemp,buttonText, {updateText(xx,yy).}).
 		}
 	}
+
+	// return a delegate for updating XY text fields
+	return {
+		parameter newX, newY.
+
+		set textFieldX:text to ""+newX.
+		set textFieldY:text to ""+newY.
+	}.
 }
 
 

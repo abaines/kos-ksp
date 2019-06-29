@@ -66,9 +66,15 @@ guiGeoResearch:ADDLABEL("Geo Research").
 local guiShipGeoPositionLat is guiGeoResearch:ADDLABEL("guiShipGeoPositionLat").
 local guiShipGeoPositionLng is guiGeoResearch:ADDLABEL("guiShipGeoPositionLng").
 
-createButtonGridWithTextFields(guiGeoResearch, movableMarkGeo:lat, movableMarkGeo:lng,{
+local gridUpdateDelegate to createButtonGridWithTextFields(guiGeoResearch, movableMarkGeo:lat, movableMarkGeo:lng,{
 	parameter xx, yy.
 	set movableMarkGeo to LATLNG(xx,yy).
+}).
+
+addButtonDelegate(guiGeoResearch,"Ship", {
+	local shipGeoPosition to ship:geoposition.
+	gridUpdateDelegate(shipGeoPosition:lat,shipGeoPosition:lng).
+	set movableMarkGeo to shipGeoPosition.
 }).
 
 when true then
