@@ -63,6 +63,7 @@ function addTextFieldDelegate
 	return textField.
 }
 
+// create interface for x and y values, including two text fields and a 5 by 5 grid of arrow buttons for manipulating the values
 function createButtonGridWithTextFields
 {
 	parameter gui, startX, startY, delegate, rate is 0.002.
@@ -70,6 +71,7 @@ function createButtonGridWithTextFields
 	local textFieldX to gui:ADDTEXTFIELD(""+startX).
 	local textFieldY to gui:ADDTEXTFIELD(""+startY).
 
+	// grab the text field values and update caller delegate
 	function updateDelegate
 	{
 		local xText to textFieldX:text.
@@ -90,6 +92,7 @@ function createButtonGridWithTextFields
 		updateDelegate().
 	}.
 
+	// take the button arrow grid events and convert them to updates in the text fields, and update caller.
 	function updateText
 	{
 		parameter xChange, yChange.
