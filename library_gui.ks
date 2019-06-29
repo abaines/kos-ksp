@@ -66,12 +66,12 @@ function addTextFieldDelegate
 // create interface for x and y values, including two text fields and a 5 by 5 grid of arrow buttons for manipulating the values
 function createButtonGridWithTextFields
 {
-	parameter gui, startX, startY, delegate, baseRate is 0.0001, expo is 10.
+	parameter gui, startX, startY, delegate, baseRate is 0.00001, expo is 10.
 
 	local textFieldX to gui:ADDTEXTFIELD(""+startX).
 	local textFieldY to gui:ADDTEXTFIELD(""+startY).
 
-	local currentExpo is 0.
+	local currentExpo is 1.
 
 	// grab the text field values and update caller delegate
 	function updateDelegate
@@ -126,7 +126,9 @@ function createButtonGridWithTextFields
 		}
 	}
 
-	local rateLabel to gui:ADDLABEL("rate").
+	local rateLabelsRow to gui:ADDHLAYOUT().
+	local rateSmallLabel to rateLabelsRow:ADDLABEL("rateSmallLabel").
+	local rateBigLabel to rateLabelsRow:ADDLABEL("rateBigLabel").
 
 	local guiScaleRow to gui:ADDHLAYOUT().
 
@@ -140,12 +142,13 @@ function createButtonGridWithTextFields
 		local scaleSmall is baseRate*(expo^(currentExpo+abs(1))).
 		local scaleBig   is baseRate*(expo^(currentExpo+abs(2))).
 
-		set rateLabel:text to ""+scaleSmall + "  " + scaleBig.
+		set rateSmallLabel:text to "" + scaleSmall.
+		set rateBigLabel:text   to "" + scaleBig.
 	}
 
 	updateCurrentExp(currentExpo).
 
-	FOR rateIter IN RANGE(0, 2+1)
+	FOR rateIter IN RANGE(0, 3+1)
 	{
 		local localRateIter is 0+rateIter.
 		addButtonDelegate(guiScaleRow,""+localRateIter, {

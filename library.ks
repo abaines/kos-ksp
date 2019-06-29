@@ -103,6 +103,22 @@ function kspRunwayEnd
 }
 
 
+// get smart position for a latlng|geo such that always above sea level
+function smartGeoPosition
+{
+	parameter givenLatLng.
+
+	if givenLatLng:terrainheight>0
+	{
+		return givenLatLng:position.
+	}
+	else
+	{
+		return givenLatLng:altitudeposition(0).
+	}
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
