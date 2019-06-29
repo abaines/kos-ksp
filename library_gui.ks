@@ -65,7 +65,7 @@ function addTextFieldDelegate
 
 function createButtonGridWithTextFields
 {
-	parameter gui, startX, startY, delegate.
+	parameter gui, startX, startY, delegate, rate is 0.002.
 
 	local textFieldX to gui:ADDTEXTFIELD(""+startX).
 	local textFieldY to gui:ADDTEXTFIELD(""+startY).
@@ -78,6 +78,8 @@ function createButtonGridWithTextFields
 		delegate(xText:tonumber(),yText:tonumber()).
 	}
 
+	updateDelegate().
+
 	set textFieldX:ONCONFIRM to {
 		parameter value.
 		updateDelegate().
@@ -88,23 +90,35 @@ function createButtonGridWithTextFields
 		updateDelegate().
 	}.
 
+	function updateText
+	{
+		parameter xChange, yChange.
+		//print("" + xChange + " " + yChange).
 
+		// TODO: add delegate here for flipping and rotating grid against x and y values
 
-	// TODO: the thing
-	local guiGeoRow1 to gui:ADDHLAYOUT().
-	local guiRow1a to guiGeoRow1:addbutton("1a").
-	local guiRow1b to guiGeoRow1:addbutton("1b").
-	local guiRow1c to guiGeoRow1:addbutton("1c").
-	local guiGeoRow2 to gui:ADDHLAYOUT().
-	local guiRow2a to guiGeoRow2:addbutton("2a").
-	local guiRow2b to guiGeoRow2:addbutton("2b").
-	local guiRow2c to guiGeoRow2:addbutton("2c").
-	local guiGeoRow3 to gui:ADDHLAYOUT().
-	local guiRow3a to guiGeoRow3:addbutton("3a").
-	local guiRow3b to guiGeoRow3:addbutton("3b").
-	local guiRow3c to guiGeoRow3:addbutton("3c").
+		set textFieldX:text to ""+(textFieldX:text:tonumber() + rate*yChange). // TODO: should be +rate*xChange
+		set textFieldY:text to ""+(textFieldY:text:tonumber() + rate*xChange). // TODO: should be +rate*yChange
 
-	updateDelegate().
+		updateDelegate().
+	}
+
+	updateText(0,0).
+
+	local guiRow1 to gui:ADDHLAYOUT().
+	addButtonDelegate(guiRow1," ", {updateText(-1,+1).}).
+	addButtonDelegate(guiRow1,"^", {updateText(00,+1).}).
+	addButtonDelegate(guiRow1," ", {updateText(+1,+1).}).
+
+	local guiRow2 to gui:ADDHLAYOUT().
+	addButtonDelegate(guiRow2,"<", {updateText(-1,00).}).
+	addButtonDelegate(guiRow2,"0", {updateText(00,00).}).
+	addButtonDelegate(guiRow2,">", {updateText(+1,00).}).
+
+	local guiRow3 to gui:ADDHLAYOUT().
+	addButtonDelegate(guiRow3," ", {updateText(-1,-1).}).
+	addButtonDelegate(guiRow3,"\/",{updateText(00,-1).}).
+	addButtonDelegate(guiRow3," ", {updateText(+1,-1).}).
 }
 
 
