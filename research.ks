@@ -57,7 +57,7 @@ controlFromHerePart().
 
 
 global movableMarkGeo to LATLNG(-00.049,-74.611).
-local vddMovableMark is VECDRAW_DEL({return movableMarkGeo:position-ship:position+40*vec_up().}, { return -30*vec_up(). }, RGB(0.9,0.8,0.2), "", 1, true, 0.7).
+local vddMovableMark is VECDRAW_DEL({return movableMarkGeo:position-ship:position+42*vec_up().}, { return -40*vec_up(). }, RGB(0.9,0.8,0.2), "", 1, true, 0.7).
 
 
 

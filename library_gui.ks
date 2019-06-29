@@ -110,10 +110,39 @@ function createButtonGridWithTextFields
 		local guiRowTemp to gui:ADDHLAYOUT().
 		FOR col IN RANGE(-2, 2+1)
 		{
-			print("& " + row + " " + col).
-			local xx is 0+row.
-			local yy is 0+col.
-			addButtonDelegate(guiRowTemp," ", {updateText(yy,-1*xx).}).
+			//print("& " + row + " " + col).
+			local xx is +1*col.
+			local yy is -1*row.
+			local buttonText is " ".
+
+			if xx = 0 and yy =0
+			{
+				set buttonText to "0".
+			}
+			else if xx = 0
+			{
+				if yy<0
+				{
+					set buttonText to "\/".
+				}
+				if yy>0
+				{
+					set buttonText to "^".
+				}
+			}
+			else if yy = 0
+			{
+				if xx<0
+				{
+					set buttonText to "<".
+				}
+				if xx>0
+				{
+					set buttonText to ">".
+				}
+			}
+
+			addButtonDelegate(guiRowTemp,buttonText, {updateText(xx,yy).}).
 		}
 	}
 }
