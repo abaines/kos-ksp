@@ -26,7 +26,7 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
-//global waypointName to "TMA-2".
+global waypointName to "TMA-2".
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
@@ -55,10 +55,30 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 controlFromHerePart().
 
 
+
+global movableMarkGeo to LATLNG(-0.0493846120008479,-74.611272503147).
+local vddRunway is VECDRAW_DEL({return movableMarkGeo:position-ship:position+10*vec_up().}, { return -9*vec_up(). }, RGB(0.9,0.8,0.2)).
+
+
+
 local guiGeoResearch is GUI(200).
 guiGeoResearch:ADDLABEL("Geo Research").
 local guiShipGeoPositionLat is guiGeoResearch:ADDLABEL("guiShipGeoPositionLat").
 local guiShipGeoPositionLng is guiGeoResearch:ADDLABEL("guiShipGeoPositionLng").
+
+local guiMovableMarkLatText is addTextFieldDelegate(guiGeoResearch, movableMarkGeo:lat, {
+	parameter value.
+	local val is value:tonumber().
+	set movableMarkGeo to LATLNG(val,movableMarkGeo:lng).
+	print movableMarkGeo.
+}).
+local guiMovableMarkLngText is addTextFieldDelegate(guiGeoResearch, movableMarkGeo:lng, {
+	parameter value.
+	local val is value:tonumber().
+	set movableMarkGeo to LATLNG(movableMarkGeo:lat,val).
+	print movableMarkGeo.
+}).
+
 when true then
 {
 	set guiShipGeoPositionLat:text to "" + round(ship:geoposition:lat,9).
