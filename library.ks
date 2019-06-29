@@ -340,6 +340,21 @@ function delayUntilSteady
 	print "                                            "  at(45,printat+2).
 }
 
+
+// find part tagged 'cfh' and use it for control from here
+function controlFromHerePart
+{
+	local cfgParts to ship:partstagged("cfh").
+
+	local cfgPartsLength to cfgParts:length.
+	if cfgPartsLength<>1
+	{
+		print "Found "+cfgPartsLength+" parts tagged with 'cfh'.".
+	}
+
+	cfgParts[0]:controlfrom().
+}
+
 function managePanelsAndAntenna
 {
 	parameter spaceAlt is 70000.

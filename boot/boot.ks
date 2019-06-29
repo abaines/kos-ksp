@@ -11,7 +11,7 @@ CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 
 set Terminal:CHARHEIGHT to 10.
 
-print "boot.ks".
+print "research.ks".
 
 wait 0.
 
