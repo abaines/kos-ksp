@@ -90,6 +90,18 @@ function kspLaunchPad
 	return LATLNG(-0.0972077948308072,-74.557676885654786).
 }
 
+// ksc kerbal space center Runway start space hanger launch
+function kspRunwayStart
+{
+	return LATLNG(-0.048599996665065981,-74.724473624279071).
+}
+
+// ksc kerbal space center Runway end space hanger land
+function kspRunwayEnd
+{
+	return LATLNG(-0.05016922733662988,-74.498071382014942).
+}
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

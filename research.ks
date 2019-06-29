@@ -12,26 +12,34 @@ set terminal:height to 20.
 
 
 print "research.ks 13".
+print "geo: "+round(ship:geoposition:lat,14) + ", " + round(ship:geoposition:lng,14).
 
-print ship:geoposition.
 global experimentstate to lex().
 experimentstate:add("ship:name",ship:name).
 experimentstate:add("ship:geoposition",ship:geoposition).
 writejson(experimentstate, "experiment.json").
 
-rcs on.
+rcs off.
 sas off.
 
 managePanelsAndAntenna().
 
 manageFuelCells().
 
-global waypointName to "TMA-2".
+//global waypointName to "TMA-2".
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
 global ksplaunchpadgeo to ksplaunchpad().
 local vddLaunchPad is VECDRAW_DEL({return ship:position.}, { return ksplaunchpadgeo:position. }, RGB(0,1,0)).
+
+global kspRunwayStartGeo to kspRunwayStart().
+local vddRunwayStart is VECDRAW_DEL({return ship:position.}, { return kspRunwayStartGeo:position. }, RGB(0,1,0)).
+
+global kspRunwayEndGeo to kspRunwayEnd().
+local vddRunwayEnd is VECDRAW_DEL({return ship:position.}, { return kspRunwayEndGeo:position. }, RGB(0,1,0)).
+
+local vddRunway is VECDRAW_DEL({return kspRunwayStartGeo:position-ship:position+1*vec_up().}, { return kspRunwayEndGeo:position-kspRunwayStartGeo:position. }, RGB(0.8,0.8,0.8)).
 
 lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
 lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
@@ -47,7 +55,18 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 controlFromHerePart().
 
 
+local guiGeoResearch is GUI(200).
+guiGeoResearch:ADDLABEL("Geo Research").
+local guiShipGeoPositionLat is guiGeoResearch:ADDLABEL("guiShipGeoPositionLat").
+local guiShipGeoPositionLng is guiGeoResearch:ADDLABEL("guiShipGeoPositionLng").
+when true then
+{
+	set guiShipGeoPositionLat:text to "" + round(ship:geoposition:lat,9).
+	set guiShipGeoPositionLng:text to "" + round(ship:geoposition:lng,9).
 
+	return true.
+}
+guiGeoResearch:show().
 
 
 until 0 { wait 0. } // main loop wait forever
