@@ -66,17 +66,9 @@ guiGeoResearch:ADDLABEL("Geo Research").
 local guiShipGeoPositionLat is guiGeoResearch:ADDLABEL("guiShipGeoPositionLat").
 local guiShipGeoPositionLng is guiGeoResearch:ADDLABEL("guiShipGeoPositionLng").
 
-local guiMovableMarkLatText is addTextFieldDelegate(guiGeoResearch, movableMarkGeo:lat, {
-	parameter value.
-	local val is value:tonumber().
-	set movableMarkGeo to LATLNG(val,movableMarkGeo:lng).
-	print movableMarkGeo.
-}).
-local guiMovableMarkLngText is addTextFieldDelegate(guiGeoResearch, movableMarkGeo:lng, {
-	parameter value.
-	local val is value:tonumber().
-	set movableMarkGeo to LATLNG(movableMarkGeo:lat,val).
-	print movableMarkGeo.
+createButtonGridWithTextFields(guiGeoResearch, movableMarkGeo:lat, movableMarkGeo:lng,{
+	parameter xx, yy.
+	set movableMarkGeo to LATLNG(xx,yy).
 }).
 
 when true then

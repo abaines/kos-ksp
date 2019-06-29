@@ -63,6 +63,50 @@ function addTextFieldDelegate
 	return textField.
 }
 
+function createButtonGridWithTextFields
+{
+	parameter gui, startX, startY, delegate.
+
+	local textFieldX to gui:ADDTEXTFIELD(""+startX).
+	local textFieldY to gui:ADDTEXTFIELD(""+startY).
+
+	function updateDelegate
+	{
+		local xText to textFieldX:text.
+		local yText to textFieldY:text.
+		//print("UD " + xText + " " + yText).
+		delegate(xText:tonumber(),yText:tonumber()).
+	}
+
+	set textFieldX:ONCONFIRM to {
+		parameter value.
+		updateDelegate().
+	}.
+
+	set textFieldY:ONCONFIRM to {
+		parameter value.
+		updateDelegate().
+	}.
+
+
+
+	// TODO: the thing
+	local guiGeoRow1 to gui:ADDHLAYOUT().
+	local guiRow1a to guiGeoRow1:addbutton("1a").
+	local guiRow1b to guiGeoRow1:addbutton("1b").
+	local guiRow1c to guiGeoRow1:addbutton("1c").
+	local guiGeoRow2 to gui:ADDHLAYOUT().
+	local guiRow2a to guiGeoRow2:addbutton("2a").
+	local guiRow2b to guiGeoRow2:addbutton("2b").
+	local guiRow2c to guiGeoRow2:addbutton("2c").
+	local guiGeoRow3 to gui:ADDHLAYOUT().
+	local guiRow3a to guiGeoRow3:addbutton("3a").
+	local guiRow3b to guiGeoRow3:addbutton("3b").
+	local guiRow3c to guiGeoRow3:addbutton("3c").
+
+	updateDelegate().
+}
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
