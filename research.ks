@@ -26,8 +26,6 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
-global waypointName to "TMA-2".
-
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
 global ksplaunchpadgeo to ksplaunchpad().
@@ -75,11 +73,47 @@ local gridUpdateDelegate to createButtonGridWithTextFields(guiGeoResearch, movab
 	set movableMarkGeo to LATLNG(xx,yy).
 }).
 
-addButtonDelegate(guiGeoResearch,"Ship", {
-	local shipGeoPosition to ship:geoposition.
-	gridUpdateDelegate(shipGeoPosition:lat,shipGeoPosition:lng).
-	set movableMarkGeo to shipGeoPosition.
-}).
+local guiGeoResearchWaypointPopupMenu to guiGeoResearch:addpopupmenu().
+guiGeoResearchWaypointPopupMenu:addoption("Custom").
+guiGeoResearchWaypointPopupMenu:addoption("Ship").
+for wayPointIter in ALLWAYPOINTS()
+{
+	local wpName is char(34) + wayPointIter:name + char(34).
+	// TODO: handle ship switching bodies
+	if wayPointIter:body = ship:body
+	{
+		guiGeoResearchWaypointPopupMenu:addoption(wpName).
+	}
+}
+set guiGeoResearchWaypointPopupMenu:onchange to
+{
+	parameter choice.
+
+	if choice = "Ship"
+	{
+		local shipGeoPosition to ship:geoposition.
+		gridUpdateDelegate(shipGeoPosition:lat,shipGeoPosition:lng).
+		set movableMarkGeo to shipGeoPosition.
+		set guiGeoResearchWaypointPopupMenu:index to 0.
+		print("Ship").
+	}
+	else if choice = "Custom"
+	{
+		// do nothing
+	}
+	else if choice:startsWith(char(34)) and choice:endsWith(char(34))
+	{
+		local wp to WayPoint(choice:replace(char(34),"")).
+		print(wp).
+
+		gridUpdateDelegate(wp:geoposition:lat,wp:geoposition:lng).
+		set movableMarkGeo to wp:geoposition.
+	}
+	else
+	{
+		print("WTF? " + choice).
+	}
+}.
 
 when true then
 {
