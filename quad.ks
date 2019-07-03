@@ -343,7 +343,7 @@ set landcontrolcheckbox:ontoggle to {
 	if not newstate
 	{
 		set deltaAltPID:SETPOINT to 0.2.
-		set guiInputDesired:text to ""+guiPID:SETPOINT.
+		set deltaAltTextField:text to ""+deltaAltPID:SETPOINT.
 	}
 }.
 local engineThrashlabel is enginegui:addlabel("engineThrashlabel").
