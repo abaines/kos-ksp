@@ -95,7 +95,6 @@ local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. },
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
-// TODO: figure out ideal SI values
 local stopInterceptLex to slopeInterceptLex2(0.1,0,20,1,true).
 
 // TODO: smarter stop: include small amount of goal
@@ -182,7 +181,7 @@ set guiLeanFullThrottle:ontoggle to {
 }.
 when guiLeanFullThrottle:pressed then
 {
-	set desiredLeanAngle to leanFullThrottlePID:update(time:second,SHIP:ALTITUDE).
+	set desiredLeanAngle to 90-leanFullThrottlePID:update(time:second,SHIP:ALTITUDE).
 	return true.
 }
 when true then
@@ -238,8 +237,8 @@ when true then
 
 
 
-global leanFullThrottlePID TO PIDLOOP(-0.023, 0, -2, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set leanFullThrottlePID:SETPOINT to 6767+10.
+global leanFullThrottlePID TO PIDLOOP(0.1, 0.01, 2, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set leanFullThrottlePID:SETPOINT to 6777. // kerbin highest mountain is 6767
 
 
 
@@ -277,15 +276,19 @@ local guiPterm is pidGUI:ADDLABEL("guiPterm").
 local guiIterm is pidGUI:ADDLABEL("guiIterm").
 local guiDterm is pidGUI:ADDLABEL("guiDterm").
 local guiErrorSum is pidGUI:ADDLABEL("guiErrorSum").
+pidGUI:ADDSPACING(12).
+local guiPidSetPointError is pidGUI:ADDLABEL("guiPidSetPointError").
 when true then
 {
-	set guiInput:text to "in: "+guiPID:INPUT.
-	set guiOutput:text to "out: "+guiPID:OUTPUT.
+	set guiInput:text to "in: "+round(guiPID:INPUT,6).
+	set guiOutput:text to "out: "+round(guiPID:OUTPUT,6).
 
 	set guiPterm:text to "pterm: "+guiPID:pterm.
 	set guiIterm:text to "iterm: "+guiPID:iterm.
 	set guiDterm:text to "dterm: "+guiPID:dterm.
 	set guiErrorSum:text to "ErrorSum: "+guiPID:ErrorSum.
+
+	set guiPidSetPointError:text to "Setpoint Err: " + round(guiPID:INPUT-guiPID:SETPOINT,6).
 	return true.
 }
 pidGUI:show().
@@ -306,6 +309,14 @@ local dist2groundlabel is enginegui:addlabel("dist2groundlabel").
 local fullthurstcheckbox to enginegui:addcheckbox("full throttle", fullthrottle).
 set fullthurstcheckbox:ontoggle to { parameter newstate. set fullthrottle to newstate. }.
 local landcontrolcheckbox to enginegui:addcheckbox("land", false).
+set landcontrolcheckbox:ontoggle to {
+	parameter newstate.
+	if not newstate
+	{
+		set deltaAltPID:SETPOINT to 0.2.
+		set guiInputDesired:text to ""+guiPID:SETPOINT.
+	}
+}.
 local engineThrashlabel is enginegui:addlabel("engineThrashlabel").
 local engineThrashTime is -1.
 local engineThrashPrevious is -1.
