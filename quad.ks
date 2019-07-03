@@ -96,17 +96,18 @@ local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
 // TODO: figure out ideal SI values
-local stopInterceptLex to slopeInterceptLex2(5,10,15,1,true).
+local stopInterceptLex to slopeInterceptLex2(0.1,0,20,1,true).
 
 // TODO: smarter stop: include small amount of goal
 function stopVector
 {
 	local sup to ship:up:vector:normalized.
 
-	local stabilizingStr to slopeInterceptCalc2(stopInterceptLex,ship:GROUNDSPEED). // should always be greater than 1
+	local destabilizingStr to slopeInterceptCalc2(stopInterceptLex,ship:GROUNDSPEED). // should always be greater than 1
 
 	local retro to -1*ship:velocity:surface:normalized.
-	local retroRatioStabilized to retro + sup*stabilizingStr.
+	// reverse stabilization
+	local retroRatioStabilized to destabilizingStr*retro + sup.
 	return retroRatioStabilized:normalized.
 }
 
@@ -186,9 +187,16 @@ when guiLeanFullThrottle:pressed then
 }
 when true then
 {
-	set guiLeanDesired:text to ""+desiredLeanAngle.
-	set guiLeanError:text to ""+vang(desiredLeanBaseVector(),ship:facing:vector).
-	set guiLeanAngle:text to ""+leanAngle.
+	set guiLeanAngle:text to "leanAngle: "+round(leanAngle,6).
+	if guiLeanStop:pressed
+	{
+		set guiLeanDesired:text to "stop: "+round(vang(stopVector(),ship:up:vector),6).
+	}
+	else
+	{
+		set guiLeanDesired:text to "desiredLeanAngle: "+round(desiredLeanAngle,3).
+	}
+	set guiLeanError:text to "Lean Error: "+round(vang(desiredLeanBaseVector(),ship:facing:vector),6).
 	return true.
 }
 guiLean:show().
