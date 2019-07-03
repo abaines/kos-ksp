@@ -96,7 +96,7 @@ local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
 // TODO: figure out ideal SI values
-local stopInterceptLex to slopeInterceptLex2(5,5,30,1,true).
+local stopInterceptLex to slopeInterceptLex2(5,10,15,1,true).
 
 // TODO: smarter stop: include small amount of goal
 function stopVector
@@ -113,7 +113,7 @@ function stopVector
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*9. }, RGB(1,0.1,0.1)).
 
 global desireStop to true.
-global desiredLeanAngle to 45.
+global desiredLeanAngle to 7.5.
 
 global desiredLeanBaseVector to
 {
@@ -160,8 +160,30 @@ addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.0.
 addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
 local guiLeanError is guiLean:ADDLABEL("guiLeanError").
 local guiLeanStop is guiLean:addcheckbox("Stop",desireStop).
-set guiLeanStop:ontoggle to { parameter newstate. set desireStop to newstate. }.
+set guiLeanStop:ontoggle to {
+	parameter newstate.
+	set desireStop to newstate.
+	if newstate{
+		set guiLeanFullThrottle:pressed to false.
+		set desiredLeanAngle to 0.
+		set fullthurstcheckbox:pressed to false.
+		brakes on.
+	}
+}.
 local guiLeanFullThrottle is guiLean:addcheckbox("Auto Lean Full Throttle",false).
+set guiLeanFullThrottle:ontoggle to {
+	parameter newstate.
+	if newstate {
+		set guiLeanStop:pressed to false.
+		set fullthurstcheckbox:pressed to true.
+		brakes off.
+	}
+}.
+when guiLeanFullThrottle:pressed then
+{
+	set desiredLeanAngle to leanFullThrottlePID:update(time:second,SHIP:ALTITUDE).
+	return true.
+}
 when true then
 {
 	set guiLeanDesired:text to ""+desiredLeanAngle.
@@ -198,7 +220,7 @@ when true then
 
 
 global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.75, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set deltaAltPID:SETPOINT to 5.
+set deltaAltPID:SETPOINT to -0.2.
 when true then
 {
 	// update this to measure rise/fall rate and adjust twrPID.
@@ -210,11 +232,6 @@ when true then
 
 global leanFullThrottlePID TO PIDLOOP(-0.023, 0, -2, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set leanFullThrottlePID:SETPOINT to 6767+10.
-when guiLeanFullThrottle:pressed then
-{
-	set desiredLeanAngle to leanFullThrottlePID:update(time:second,SHIP:ALTITUDE).
-	return true.
-}
 
 
 
@@ -344,15 +361,8 @@ when true then
 enginegui:show().
 
 
-function mainLoop
-{
-}
 
-until false
-{
-	mainLoop().
-	wait 0.
-}
 
+until 0 { wait 0. } // main loop wait forever
 
 print "end of file".
