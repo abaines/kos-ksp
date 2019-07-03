@@ -293,7 +293,36 @@ when true then
 }
 pidGUI:show().
 
-// TODO: auto landing legs: speed:mag + dist2ground < 100
+
+// landing gear logic
+local landingGearSpamProtector to time:seconds.
+local landingGearSpamLastSet to true.
+when time:seconds>landingGearSpamProtector then
+{
+	local groundValue to dist2ground + (upwardMovement * 3). // estimated alt in 3 seconds
+
+	if groundValue > 350 and landingGearSpamLastSet
+	{
+		print "gear off".
+		gear off.
+		set landingGearSpamLastSet to false.
+		set landingGearSpamProtector to time:seconds+2.
+	}
+	else if groundValue < 250 and not landingGearSpamLastSet
+	{
+		print "gear on".
+		gear on.
+		set landingGearSpamLastSet to true.
+		set landingGearSpamProtector to time:seconds+2.
+	}
+	else
+	{
+		set landingGearSpamProtector to time:seconds+0.5.
+	}
+
+	return true.
+}
+
 
 local enginegui is gui(240).
 
