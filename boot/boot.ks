@@ -20,4 +20,4 @@ CLEARGUIS().
 
 wait 0.
 
-run research.
+run quad.

@@ -239,7 +239,7 @@ when true then
 
 global leanFullThrottlePID TO PIDLOOP(0.1, 0.01, 2, 1, 89). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 set leanFullThrottlePID:SETPOINT to 6777. // kerbin highest mountain is 6767
-
+// TODO: find a way to fly lower for more speed, but not crash into mountains
 
 
 
