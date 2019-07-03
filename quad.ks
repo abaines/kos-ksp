@@ -35,7 +35,7 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
-global waypointName to "TMA-2".
+global waypointName to "TMA-3".
 global kspLaunchPadName to "KSC Launch Pad".
 global ksplaunchpadgeo to ksplaunchpad().
 global waypointGoal to waypoint(waypointName):GEOPOSITION.
@@ -95,16 +95,18 @@ local vddGoal is VECDRAW_DEL({return ship:position.}, { return goalDirection. },
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
+// TODO: figure out ideal SI values
+local stopInterceptLex to slopeInterceptLex2(5,5,30,1,true).
+
+// TODO: smarter stop: include small amount of goal
 function stopVector
 {
 	local sup to ship:up:vector:normalized.
 
-	local stabilizingStr to ship:velocity:surface:mag+5.
-	local stabilizingRatio to 2. // should always be greater than 1
+	local stabilizingStr to slopeInterceptCalc2(stopInterceptLex,ship:GROUNDSPEED). // should always be greater than 1
 
-	local retro to -1*ship:velocity:surface + (stabilizingStr*sup).
-	local stopDirectionInPlane to VXCL(sup,retro):normalized.
-	local retroRatioStabilized to retro:normalized + (stabilizingRatio*sup).
+	local retro to -1*ship:velocity:surface:normalized.
+	local retroRatioStabilized to retro + sup*stabilizingStr.
 	return retroRatioStabilized:normalized.
 }
 
@@ -221,8 +223,7 @@ local guiPID to leanFullThrottlePID.
 local pidGUI is GUI(240).
 pidGUI:ADDLABEL("PID Controller").
 
-local guiP is pidGUI:ADDTEXTFIELD(""+guiPID:KP).
-set guiP:ONCONFIRM to {parameter value. set guiPID:KP to value:tonumber().}.
+local guiP is addTextFieldDelegate(pidGUI, guiPID:KP, {parameter val. set guiPID:KP to val:tonumber().}).
 addButtonDelegate(pidGUI,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
 addButtonDelegate(pidGUI,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
 
@@ -264,7 +265,7 @@ when true then
 }
 pidGUI:show().
 
-
+// TODO: auto landing legs: speed:mag + dist2ground < 100
 
 local enginegui is gui(240).
 
@@ -311,8 +312,8 @@ when true then
 		set deltaAltPID:SETPOINT to dist2ground/-20.
 		set deltaAltTextField:text to ""+deltaAltPID:SETPOINT.
 	}
-	
-	local quadEnginesAverageThrustLimitRepresentative to 
+
+	local quadEnginesAverageThrustLimitRepresentative to
 	{
 		if quadEnginesAverageThrustLimit<1
 		{
