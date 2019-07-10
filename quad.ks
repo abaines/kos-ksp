@@ -35,11 +35,11 @@ managePanelsAndAntenna().
 
 manageFuelCells().
 
-global waypointName to "TMA-3".
+
 global kspLaunchPadName to "KSC Launch Pad".
 global ksplaunchpadgeo to ksplaunchpad().
-global waypointGoal to waypoint(waypointName):GEOPOSITION.
-global currentGoal to waypointGoal.
+
+global currentGoal to ksplaunchpadgeo.
 
 // quadEngine
 global quadEngines is ship:partsTagged("qe").
@@ -132,24 +132,50 @@ lock leanAngle to vang(ship:facing:vector,vec_up()).
 
 global fullThrottle to false.
 
+
+// movable marker for geo location with draw vector
+global movableMarkGeo to LATLNG(-00.049,-74.611).
+local vddMovableMark is VECDRAW_DEL({
+	return smartGeoPosition(movableMarkGeo)-ship:position+100*vec_up().
+}, {
+	return -10*vec_up().
+}, RGB(0.99,0.3,0.6), "", 10, true, 1).
+
+
 local guiLean is GUI(200).
 guiLean:ADDLABEL("Desired Lean Controller").
-local guiLeanGoalpopup to guiLean:addpopupmenu().
-guiLeanGoalpopup:addoption(kspLaunchPadName).
-guiLeanGoalpopup:addoption(waypointName).
-set guiLeanGoalpopup:ONCHANGE to
-{
-	parameter choice.
-	if choice:TOSTRING = waypointName
-	{
-		set currentGoal to waypointGoal.
-	}
-	else
-	{
-		set currentGoal to ksplaunchpadgeo.
-	}
+
+// placeholder grid Update Delegate
+global gridUpdateDelegate to { parameter newX, newY. }.
+
+global updateExperimentJson to false.
+
+local latLngUpdateDelegate to {
+	parameter xx, yy.
+	set movableMarkGeo to LATLNG(xx,yy).
+	gridUpdateDelegate(xx,yy).
+	set currentGoal to movableMarkGeo.
+
+	set updateExperimentJson to true.
 }.
-set guiLeanGoalpopup:index to 1.
+
+when updateExperimentJson then
+{
+	print("updateExperimentJson: " + movableMarkGeo).
+
+	// TODO: update experimentstate
+	//experimentstate:add("movableMarkGeo",movableMarkGeo).
+	//writejson(experimentstate, "experiment.json").
+
+	set updateExperimentJson to false.
+	return true.
+}
+
+local guiWaypointPopupMenu to createWaypointDropdownMenu(guiLean,latLngUpdateDelegate).
+
+set gridUpdateDelegate to createButtonGridWithTextFields(guiLean, movableMarkGeo:lat, movableMarkGeo:lng, latLngUpdateDelegate).
+
+
 
 local guiLeanAngle is guiLean:ADDLABEL("guiLeanAngle").
 local guiLeanDesired is guiLean:ADDLABEL("guiLeanDesired").

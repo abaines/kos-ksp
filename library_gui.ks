@@ -227,3 +227,71 @@ function numberPositivity
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
+
+// add waypoint dropdown menu to a gui
+function createWaypointDropdownMenu
+{
+	parameter gui, latLngUpdateDelegate.
+
+	local guiWaypointPopupMenu to gui:addpopupmenu().
+
+	guiWaypointPopupMenu:addoption("Custom").
+	guiWaypointPopupMenu:addoption("Ship").
+	guiWaypointPopupMenu:addoption("Launch Pad").
+	guiWaypointPopupMenu:addoption("Runway").
+
+	for wayPointIter in ALLWAYPOINTS()
+	{
+		local wpName is char(34) + wayPointIter:name + char(34).
+		// TODO: handle ship switching bodies
+		if wayPointIter:body = ship:body
+		{
+			guiWaypointPopupMenu:addoption(wpName).
+		}
+	}
+
+	set guiWaypointPopupMenu:onchange to
+	{
+		parameter choice.
+
+		if choice = "Ship"
+		{
+			print("Ship").
+			local shipGeoPosition to ship:geoposition.
+			latLngUpdateDelegate(shipGeoPosition:lat,shipGeoPosition:lng).
+			set guiWaypointPopupMenu:index to 0.
+		}
+		else if choice = "Launch Pad"
+		{
+			print("Launch Pad").
+			latLngUpdateDelegate(ksplaunchpadgeo:lat,ksplaunchpadgeo:lng).
+		}
+		else if choice = "Runway"
+		{
+			print("Runway").
+			local runwayStartGeo to kspRunwayStart().
+			latLngUpdateDelegate(runwayStartGeo:lat,runwayStartGeo:lng).
+		}
+		else if choice = "Custom"
+		{
+			// do nothing
+		}
+		else if choice:startsWith(char(34)) and choice:endsWith(char(34))
+		{
+			local wp to WayPoint(choice:replace(char(34),"")).
+			print(wp).
+			latLngUpdateDelegate(wp:geoposition:lat,wp:geoposition:lng).
+		}
+		else
+		{
+			print("WTF? " + choice).
+		}
+	}.
+
+	return guiWaypointPopupMenu.
+}
+
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+
