@@ -148,28 +148,16 @@ guiLean:ADDLABEL("Desired Lean Controller").
 // placeholder grid Update Delegate
 global gridUpdateDelegate to { parameter newX, newY. }.
 
-global updateExperimentJson to false.
-
 local latLngUpdateDelegate to {
 	parameter xx, yy.
 	set movableMarkGeo to LATLNG(xx,yy).
 	gridUpdateDelegate(xx,yy).
 	set currentGoal to movableMarkGeo.
 
-	set updateExperimentJson to true.
+	// update experiment.json with newest geo mark location
+	set experimentstate["movableMarkGeo"] to movableMarkGeo.
+	writejson(experimentstate, "experiment.json").
 }.
-
-when updateExperimentJson then
-{
-	print("updateExperimentJson: " + movableMarkGeo).
-
-	// TODO: update experimentstate
-	//experimentstate:add("movableMarkGeo",movableMarkGeo).
-	//writejson(experimentstate, "experiment.json").
-
-	set updateExperimentJson to false.
-	return true.
-}
 
 local guiWaypointPopupMenu to createWaypointDropdownMenu(guiLean,latLngUpdateDelegate).
 

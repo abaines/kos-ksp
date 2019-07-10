@@ -1,11 +1,21 @@
 {
     "entries": [
         "ship:name",
-        "ISP Kitten-Thunder-I",
+        "HMD Exploding Viking 5c-I",
         "ship:geoposition",
         {
-            "lat": -0.048609153686349889,
-            "lng": -74.724227395934733,
+            "lat": -0.09712455099133481,
+            "lng": -74.55766836654827,
+            "body": {
+                "name": "Kerbin",
+                "$type": "kOS.Suffixed.BodyTarget"
+            },
+            "$type": "kOS.Suffixed.GeoCoordinates"
+        },
+        "movableMarkGeo",
+        {
+            "lat": -28.789296,
+            "lng": -13.43771,
             "body": {
                 "name": "Kerbin",
                 "$type": "kOS.Suffixed.BodyTarget"
