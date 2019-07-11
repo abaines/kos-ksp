@@ -49,7 +49,7 @@ global currentGoal to ksplaunchpadgeo.
 // quadEngine
 global quadEngines is ship:partsTagged("qe").
 print("quadEngines:length: "+quadEngines:length).
-global quadEnginesAverageThrustLimit to 0.
+global quadEnginesAverageThrustLimit to 100.
 when true then
 {
 	for qe in quadEngines
@@ -386,7 +386,7 @@ addButtonDelegate(enginegui,"setpoint-",
 	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT - 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
 ).
 
-local landRateInterceptLex to slopeInterceptLex2(50,-70,80,-20,true).
+local landRateInterceptLex to slopeInterceptLex2(25,-60,80,-20,true).
 
 when true then
 {
