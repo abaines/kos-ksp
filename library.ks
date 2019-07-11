@@ -892,3 +892,26 @@ function setupRemoteTechAntenna
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
+
+
+// transform a geoposition into a lexicon for serialization
+function geopositionToLex
+{
+	parameter someGeoPosition.
+	return lexicon(
+		"lat", someGeoPosition:lat,
+		"lng", someGeoPosition:lng,
+		"body", someGeoPosition:body:name
+	).
+}
+
+
+
+
+
+
+
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+

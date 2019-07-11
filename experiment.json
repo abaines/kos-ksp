@@ -4,23 +4,27 @@
         "HMD Exploding Viking 5c-I",
         "ship:geoposition",
         {
-            "lat": -0.09712455099133481,
-            "lng": -74.55766836654827,
-            "body": {
-                "name": "Kerbin",
-                "$type": "kOS.Suffixed.BodyTarget"
-            },
-            "$type": "kOS.Suffixed.GeoCoordinates"
+            "entries": [
+                "lat",
+                -28.783798705895492,
+                "lng",
+                -13.455252513084995,
+                "body",
+                "Kerbin"
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
         },
         "movableMarkGeo",
         {
-            "lat": -28.789296,
-            "lng": -13.43771,
-            "body": {
-                "name": "Kerbin",
-                "$type": "kOS.Suffixed.BodyTarget"
-            },
-            "$type": "kOS.Suffixed.GeoCoordinates"
+            "entries": [
+                "lat",
+                -28.7896704371252,
+                "lng",
+                -13.447861499046,
+                "body",
+                "Kerbin"
+            ],
+            "$type": "kOS.Safe.Encapsulation.Lexicon"
         }
     ],
     "$type": "kOS.Safe.Encapsulation.Lexicon"

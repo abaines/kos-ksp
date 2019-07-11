@@ -20,8 +20,9 @@ print "quad.ks 12".
 print ship:geoposition.
 global experimentstate to lex().
 experimentstate:add("ship:name",ship:name).
-experimentstate:add("ship:geoposition",ship:geoposition).
-writejson(experimentstate, "experiment.json").
+experimentstate:add("ship:geoposition",geopositionToLex(ship:geoposition)).
+WRITEJSON(experimentstate, "experiment.json").
+READJSON("experiment.json").
 
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 1.
 
@@ -135,6 +136,21 @@ global fullThrottle to false.
 
 // movable marker for geo location with draw vector
 global movableMarkGeo to LATLNG(-00.049,-74.611).
+if exists("experiment.json")
+{
+	local jsonRead TO READJSON("experiment.json").
+	if jsonRead:hasvalue("movableMarkGeo")
+	{
+		print("derpy time").
+		print(jsonRead["movableMarkGeo"]).
+		set movableMarkGeo to LATLNG( jsonRead["movableMarkGeo"]["lat"],jsonRead["movableMarkGeo"]["lng"] ).
+	}
+	else
+	{
+		print(jsonRead).
+	}
+}
+
 local vddMovableMark is VECDRAW_DEL({
 	return smartGeoPosition(movableMarkGeo)-ship:position+100*vec_up().
 }, {
@@ -155,8 +171,9 @@ local latLngUpdateDelegate to {
 	set currentGoal to movableMarkGeo.
 
 	// update experiment.json with newest geo mark location
-	set experimentstate["movableMarkGeo"] to movableMarkGeo.
+	set experimentstate["movableMarkGeo"] to geopositionToLex(movableMarkGeo).
 	writejson(experimentstate, "experiment.json").
+	READJSON("experiment.json").
 }.
 
 local guiWaypointPopupMenu to createWaypointDropdownMenu(guiLean,latLngUpdateDelegate).
@@ -374,6 +391,8 @@ addButtonDelegate(enginegui,"setpoint-",
 	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT - 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
 ).
 
+local landRateInterceptLex to slopeInterceptLex2(50,-70,80,-20,true).
+
 when true then
 {
 	set maxthrustlabel:text to "qec:maxthrust: "+round(quadEnginesMaxMaxThrust(),6).
@@ -388,7 +407,7 @@ when true then
 
 	if landcontrolcheckbox:PRESSED
 	{
-		set deltaAltPID:SETPOINT to dist2ground/-20.
+		set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
 		set deltaAltTextField:text to ""+deltaAltPID:SETPOINT.
 	}
 
@@ -416,7 +435,7 @@ when true then
 		set engineThrashTime to time:seconds.
 	}
 	set engineThrashPrevious to quadEnginesAverageThrustLimitRepresentative().
-	set engineThrashlabel:text to ""+(time:seconds - engineThrashTime).
+	set engineThrashlabel:text to "Thrash: "+(time:seconds - engineThrashTime).
 
 	return true.
 }
