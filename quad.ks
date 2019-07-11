@@ -19,8 +19,12 @@ print "quad.ks 12".
 
 print ship:geoposition.
 global experimentstate to lex().
-experimentstate:add("ship:name",ship:name).
-experimentstate:add("ship:geoposition",geopositionToLex(ship:geoposition)).
+if exists("experiment.json")
+{
+	set experimentstate to READJSON("experiment.json").
+}
+set experimentstate["ship:name"] to ship:name.
+set experimentstate["ship:geoposition"] to geopositionToLex(ship:geoposition).
 WRITEJSON(experimentstate, "experiment.json").
 READJSON("experiment.json").
 
@@ -136,19 +140,10 @@ global fullThrottle to false.
 
 // movable marker for geo location with draw vector
 global movableMarkGeo to LATLNG(-00.049,-74.611).
-if exists("experiment.json")
+if experimentstate:haskey("movableMarkGeo")
 {
-	local jsonRead TO READJSON("experiment.json").
-	if jsonRead:hasvalue("movableMarkGeo")
-	{
-		print("derpy time").
-		print(jsonRead["movableMarkGeo"]).
-		set movableMarkGeo to LATLNG( jsonRead["movableMarkGeo"]["lat"],jsonRead["movableMarkGeo"]["lng"] ).
-	}
-	else
-	{
-		print(jsonRead).
-	}
+	set movableMarkGeo to geopositionFromLex(experimentstate["movableMarkGeo"]).
+	print("movableMarkGeo restored").
 }
 
 local vddMovableMark is VECDRAW_DEL({
@@ -172,7 +167,7 @@ local latLngUpdateDelegate to {
 
 	// update experiment.json with newest geo mark location
 	set experimentstate["movableMarkGeo"] to geopositionToLex(movableMarkGeo).
-	writejson(experimentstate, "experiment.json").
+	WRITEJSON(experimentstate, "experiment.json").
 	READJSON("experiment.json").
 }.
 

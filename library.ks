@@ -906,8 +906,12 @@ function geopositionToLex
 }
 
 
-
-
+// transform a lexicon into a geoposition from serialization
+function geopositionFromLex
+{
+	parameter someLex.
+	return body(someLex["body"]):GEOPOSITIONLATLNG(someLex["lat"],someLex["lng"]).
+}
 
 
 
