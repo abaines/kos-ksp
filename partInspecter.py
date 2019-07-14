@@ -9,6 +9,8 @@ import winsound
 import time
 import glob
 import re
+import traceback
+import sys
 
 
 class Engine:
@@ -19,12 +21,23 @@ class Engine:
       self.LiquidFuel_count = LiquidFuel_count
       self.Oxidizer_count = Oxidizer_count
 
-      self.title = partTitle(fileContents)
+      try:
+         self.title = partTitle(fileContents)
+      except:
+         pass         
       self.name = partName(fileContents)
 
-      self.gimbalRange = partGimbalRange(fileContents)
+      try:
+         self.gimbalRange = partGimbalRange(fileContents)
+      except:
+         pass
 
-      self.attachRules = partAttachRules(fileContents)
+      try:
+         self.attachRules = partAttachRules(fileContents)
+      except:
+         pass
+
+      self.atmosphereCurve = partAtmosphereCurve(fileContents)
 
       self.engineAccelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineAccelerationSpeed')
       self.engineDecelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed')
@@ -32,6 +45,8 @@ class Engine:
    def __repr__(self):
       return self.title
 
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 interestingParts = []
 
@@ -73,6 +88,27 @@ def doubleValuesFromKeyValueAssignment(fileContents,key):
 
    return doubles
 
+def partAtmosphereCurve(fileContents):
+   atmosphereCurveText = re.findall(r'atmosphereCurve[^\{]*?\{[^\}]*?\}',fileContents)
+   
+   for m in atmosphereCurveText:
+      #print(m)
+      pass
+      
+   return len(atmosphereCurveText)
+
+
+def checkIfImportantFileName(filename):
+   if '\\Localization\\' in filename:
+      return False
+   elif '\\Lang\\' in filename:
+      return False
+   elif '\\Localization.cfg' in filename:
+      return False
+   else:
+      return True
+
+
 failedFiles = []
 
 engineObjects = []
@@ -97,10 +133,11 @@ for filename in interestingParts:
          engineObject = Engine(filename, fileContents, IntakeAir_count,LiquidFuel_count,Oxidizer_count)
          engineObjects.append(engineObject)
 
-   except:
-      failedFiles.append(shortname(filename))
-      pass
-
+   except Exception as e:
+      if checkIfImportantFileName(filename):
+         failedFiles.append(shortname(filename))
+         eprint(shortname(filename))
+         traceback.print_exc()
 
 
 for filename in failedFiles:
@@ -125,4 +162,8 @@ for engine in sorted(engineObjects, key=lambda engine: min(engine.gimbalRange or
    print(engine.gimbalRange)
    print(engine.attachRules)
 
+   print(engine.atmosphereCurve)
+
    print()
+
+print('end of file')
