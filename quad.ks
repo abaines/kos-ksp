@@ -430,7 +430,7 @@ when true then
 		set engineThrashTime to time:seconds.
 	}
 	set engineThrashPrevious to quadEnginesAverageThrustLimitRepresentative().
-	set engineThrashlabel:text to "Thrash: "+(time:seconds - engineThrashTime).
+	set engineThrashlabel:text to "Thrash: "+round(time:seconds - engineThrashTime,2).
 
 	return true.
 }
