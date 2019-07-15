@@ -1,14 +1,14 @@
 {
     "entries": [
         "ship:name",
-        "HMD Exploding Viking 5c-I",
+        "ASC Kerbal-Joy 375a-I",
         "ship:geoposition",
         {
             "entries": [
                 "lat",
-                -11.828800408097656,
+                -0.097211948062130446,
                 "lng",
-                12.194903191573104,
+                -74.557671227521425,
                 "body",
                 "Kerbin"
             ],
@@ -18,9 +18,9 @@
         {
             "entries": [
                 "lat",
-                -0.048599996665065981,
+                0,
                 "lng",
-                -74.724473624279071,
+                90,
                 "body",
                 "Kerbin"
             ],

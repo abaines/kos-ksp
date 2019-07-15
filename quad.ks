@@ -33,12 +33,18 @@ SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 1.
 global _steering to Up + R(0,0,180).
 lock steering to _steering.
 
-rcs on.
+rcs off.
 sas off.
 
 managePanelsAndAntenna().
 
 manageFuelCells().
+
+
+setupRemoteTechAntenna("a1","ID Happiness-Sunshine-I Relay",true).
+setupRemoteTechAntenna("a2","Potoo 1",true).
+setupRemoteTechAntenna("a3","active-vessel",true).
+setupRemoteTechAntenna("a4","Mission Control",true).
 
 
 global kspLaunchPadName to "KSC Launch Pad".
