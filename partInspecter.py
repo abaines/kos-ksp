@@ -43,7 +43,10 @@ class Engine:
       self.engineDecelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed')
 
    def __repr__(self):
-      return self.title
+      if hasattr(self,'title'):
+         return self.title
+      else:
+         return "Unknown Title"
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -151,7 +154,16 @@ for filename in failedFiles:
       print(filename)
 
 
-for engine in sorted(engineObjects, key=lambda engine: min(engine.gimbalRange or [0])):
+def engine_compare(engine):
+   if not hasattr(engine,"gimbalRange"):
+      return -1
+   else:
+      return min(engine.gimbalRange or [0])
+
+
+
+for engine in sorted(engineObjects, key=lambda engine: engine_compare(engine)):
+
    print(engine)
    print(engine.name)
    print(shortname(engine.filename))
@@ -159,8 +171,14 @@ for engine in sorted(engineObjects, key=lambda engine: min(engine.gimbalRange or
    print(engine.engineAccelerationSpeed)
    print(engine.engineDecelerationSpeed)
 
-   print(engine.gimbalRange)
-   print(engine.attachRules)
+   try:
+      print(engine.gimbalRange)
+   except:
+      print("-")
+   try:
+      print(engine.attachRules)
+   except:
+      print("-")
 
    print(engine.atmosphereCurve)
 
