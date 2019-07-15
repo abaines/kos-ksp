@@ -93,12 +93,25 @@ def doubleValuesFromKeyValueAssignment(fileContents,key):
 
 def partAtmosphereCurve(fileContents):
    atmosphereCurveText = re.findall(r'atmosphereCurve[^\{]*?\{[^\}]*?\}',fileContents)
-   
-   for m in atmosphereCurveText:
-      #print(m)
-      pass
-      
-   return len(atmosphereCurveText)
+
+   atmosphereCurveData = []
+   for multitext in atmosphereCurveText:
+      d = dict()
+      multiResult = re.findall(r'.*key.*=.*?[\d+]\w+[\d+]',multitext) # regex find all results
+      for line in multiResult:
+         line = line.strip()
+         if not set(line).issubset('key =1234567890.'):
+            print("!"+line)
+
+         linere = re.findall(r'[\d.]+',line)
+         if len(linere)!=2:
+            print("@"+linere)
+
+         d[linere[0]] = linere[1]
+
+      atmosphereCurveData.append(d)
+
+   return atmosphereCurveData
 
 
 def checkIfImportantFileName(filename):
