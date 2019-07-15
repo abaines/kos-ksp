@@ -107,7 +107,7 @@ def partAtmosphereCurve(fileContents):
          if len(linere)!=2:
             print("@"+linere)
 
-         d[linere[0]] = linere[1]
+         d[float(linere[0])] = float(linere[1])
 
       atmosphereCurveData.append(d)
 
@@ -168,13 +168,14 @@ for filename in failedFiles:
 
 
 def engine_compare(engine):
-   if not hasattr(engine,"gimbalRange"):
-      return -1
-   else:
-      return min(engine.gimbalRange or [0])
+   spaceIsp = -1
+   for curve in engine.atmosphereCurve:
+      ncurve = list(curve.values())
+      spaceIsp = max(max(ncurve),spaceIsp)
+   return spaceIsp
 
 
-
+print("Engines:")
 for engine in sorted(engineObjects, key=lambda engine: engine_compare(engine)):
 
    print(engine)
