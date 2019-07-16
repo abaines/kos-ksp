@@ -1,14 +1,14 @@
 {
     "entries": [
         "ship:name",
-        "ASC Kerbal-Joy 375a-I",
+        "ASC Kerbal-Joy 375b-I",
         "ship:geoposition",
         {
             "entries": [
                 "lat",
-                -0.097218889361056354,
+                -0.097218884920427531,
                 "lng",
-                -74.557670026005056,
+                -74.557675954101668,
                 "body",
                 "Kerbin"
             ],

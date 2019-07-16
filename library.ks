@@ -524,6 +524,23 @@ function GetShipResourcePercent
 	return ramount / rcapacity.
 }
 
+
+// get the amount of a given resource from a given part
+function getPartsResource
+{
+	parameter thePart, resourceType.
+
+	for resource in thePart:resources
+	{
+		if resource:name = resourceType
+		{
+			return resource:amount.
+		}
+	}
+	return -1.
+}
+
+
 FUNCTION MANEUVER_TIME
 {
   PARAMETER dV.

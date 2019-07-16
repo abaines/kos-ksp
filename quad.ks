@@ -33,7 +33,7 @@ SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 1.
 global _steering to Up + R(0,0,180).
 lock steering to _steering.
 
-rcs off.
+rcs on.
 sas off.
 
 managePanelsAndAntenna().
@@ -443,6 +443,30 @@ when true then
 enginegui:show().
 
 
+// auto stage IFS CDT parts
+when true then
+{
+	local decoupled to false.
+	local autoTankParts to ship:PARTSDUBBEDPATTERN("IFS Cryogenic Dual Tank ").
+
+	for tankPart in autoTankParts
+	{
+		local liquidfuel is getPartsResource(tankPart,"liquidfuel").
+		if liquidfuel < 1
+		{
+			set decoupled to true.
+			tankPart:getmodule("ModuleAnchoredDecoupler"):Doevent("Decouple").
+		}
+	}
+
+	if decoupled
+	{
+		print("decoupled").
+		wait 0.
+	}
+
+	return true.
+}
 
 
 until 0 { wait 0. } // main loop wait forever
