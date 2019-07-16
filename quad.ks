@@ -452,10 +452,14 @@ when true then
 	for tankPart in autoTankParts
 	{
 		local liquidfuel is getPartsResource(tankPart,"liquidfuel").
-		if liquidfuel < 1
+		if liquidfuel < 0.1
 		{
 			set decoupled to true.
 			tankPart:getmodule("ModuleAnchoredDecoupler"):Doevent("Decouple").
+		}
+		else if liquidfuel < 588
+		{
+			HIGHLIGHT(tankPart,RGB(1,0.5,0)).
 		}
 	}
 
