@@ -194,11 +194,12 @@ set gridUpdateDelegate to createButtonGridWithTextFields(guiLean, movableMarkGeo
 
 local guiLeanAngle is guiLean:ADDLABEL("guiLeanAngle").
 local guiLeanDesired is guiLean:ADDLABEL("guiLeanDesired").
-addButtonDelegate(guiLean,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
-addButtonDelegate(guiLean,"+", { set desiredLeanAngle to desiredLeanAngle + 1.0. }).
-addButtonDelegate(guiLean,"0", { set desiredLeanAngle to 0.0. }).
-addButtonDelegate(guiLean,"-", { set desiredLeanAngle to desiredLeanAngle - 1.0. }).
-addButtonDelegate(guiLean,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
+local leanHlayout to guiLean:ADDHLAYOUT().
+addButtonDelegate(leanHlayout,"--",{ set desiredLeanAngle to desiredLeanAngle - 7.5. }).
+addButtonDelegate(leanHlayout,"-", { set desiredLeanAngle to desiredLeanAngle - 1.0. }).
+addButtonDelegate(leanHlayout,"0", { set desiredLeanAngle to 0.0. }).
+addButtonDelegate(leanHlayout,"+", { set desiredLeanAngle to desiredLeanAngle + 1.0. }).
+addButtonDelegate(leanHlayout,"++",{ set desiredLeanAngle to desiredLeanAngle + 7.5. }).
 local guiLeanError is guiLean:ADDLABEL("guiLeanError").
 local guiLeanStop is guiLean:addcheckbox("Stop",desireStop).
 set guiLeanStop:ontoggle to {
@@ -297,29 +298,33 @@ set leanFullThrottlePID:SETPOINT to 6777. // kerbin highest mountain is 6767
 
 
 local guiPID to leanFullThrottlePID.
-local pidGUI is GUI(240).
+local pidGUI is GUI(200).
 pidGUI:ADDLABEL("PID Controller").
 
 local guiP is addTextFieldDelegate(pidGUI, guiPID:KP, {parameter val. set guiPID:KP to val:tonumber().}).
-addButtonDelegate(pidGUI,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
-addButtonDelegate(pidGUI,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
+local pidHlayoutP to pidGUI:ADDHLAYOUT().
+addButtonDelegate(pidHlayoutP,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
+addButtonDelegate(pidHlayoutP,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
 
 local guiI is addTextFieldDelegate(pidGUI, guiPID:KI, {parameter val. set guiPID:KI to val:tonumber().}).
-addButtonDelegate(pidGUI,"i+",{ set guiPID:KI to guiPID:KI * 1.2. set guiI:text to ""+guiPID:KI. }).
-addButtonDelegate(pidGUI,"i-",{ set guiPID:KI to guiPID:KI / 1.2. set guiI:text to ""+guiPID:KI. }).
+local pidHlayoutI to pidGUI:ADDHLAYOUT().
+addButtonDelegate(pidHlayoutI,"i-",{ set guiPID:KI to guiPID:KI / 1.2. set guiI:text to ""+guiPID:KI. }).
+addButtonDelegate(pidHlayoutI,"i+",{ set guiPID:KI to guiPID:KI * 1.2. set guiI:text to ""+guiPID:KI. }).
 
 local guiD is addTextFieldDelegate(pidGUI, guiPID:KD, {parameter val. set guiPID:KD to val:tonumber().}).
-addButtonDelegate(pidGUI,"d+",{ set guiPID:KD to guiPID:KD * 1.2. set guiD:text to ""+guiPID:KD. }).
-addButtonDelegate(pidGUI,"d-",{ set guiPID:KD to guiPID:KD / 1.2. set guiD:text to ""+guiPID:KD. }).
+local pidHlayoutD to pidGUI:ADDHLAYOUT().
+addButtonDelegate(pidHlayoutD,"d-",{ set guiPID:KD to guiPID:KD / 1.2. set guiD:text to ""+guiPID:KD. }).
+addButtonDelegate(pidHlayoutD,"d+",{ set guiPID:KD to guiPID:KD * 1.2. set guiD:text to ""+guiPID:KD. }).
 
 local guiInputDesired is addTextFieldDelegate(pidGUI, guiPID:SETPOINT,
 	{parameter val. set guiPID:SETPOINT to val:tonumber().}
 ).
-addButtonDelegate(pidGUI,"setpoint+",
-	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
-).
-addButtonDelegate(pidGUI,"setpoint-",
+local pidHlayoutSP to pidGUI:ADDHLAYOUT().
+addButtonDelegate(pidHlayoutSP,"setpoint-",
 	{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
+).
+addButtonDelegate(pidHlayoutSP,"setpoint+",
+	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
 ).
 
 local guiInput is pidGUI:ADDLABEL("guiInput").
@@ -377,7 +382,7 @@ when time:seconds>landingGearSpamProtector then
 }
 
 
-local enginegui is gui(240).
+local enginegui is gui(200).
 
 local thrustlimitlabel is enginegui:addlabel("thrustlimitlabel").
 local thrustSlider is enginegui:ADDHSLIDER(quadEnginesAverageThrustLimit,0,100).
@@ -406,11 +411,12 @@ local engineThrashPrevious is -1.
 local deltaAltTextField is addTextFieldDelegate(enginegui, deltaAltPID:SETPOINT,
 	{parameter val. set deltaAltPID:SETPOINT to val:tonumber().}
 ).
-addButtonDelegate(enginegui,"setpoint+",
-	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT + 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
-).
-addButtonDelegate(enginegui,"setpoint-",
+local engineHlayoutSP to enginegui:ADDHLAYOUT().
+addButtonDelegate(engineHlayoutSP,"setpoint-",
 	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT - 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
+).
+addButtonDelegate(engineHlayoutSP,"setpoint+",
+	{ set deltaAltPID:SETPOINT to deltaAltPID:SETPOINT + 0.2. set deltaAltTextField:text to ""+deltaAltPID:SETPOINT. }
 ).
 
 local landRateInterceptLex to slopeInterceptLex2(25,-60,80,-20,true).
@@ -418,10 +424,10 @@ local landRateInterceptLex to slopeInterceptLex2(25,-60,80,-20,true).
 when true then
 {
 	set maxthrustlabel:text to "qec:maxthrust: "+round(quadEnginesMaxMaxThrust(),6).
-	set upwardmovementlabel:text to "upwardmovement: "+round(upwardmovement,6).
-	set dist2groundlabel:text to "dist2ground: "+round(dist2ground,6).
+	set upwardmovementlabel:text to "upwardmovement: "+round(upwardmovement,3).
+	set dist2groundlabel:text to "dist2ground: "+round(dist2ground,3).
 	set thrustlimitlabel:text to "qec:thrustlimit: "+round(quadEnginesAverageThrustLimit,6).
-	set gravlabel:text to "ship:sensors:grav:mag: "+round(ship:sensors:grav:mag,6).
+	set gravlabel:text to "sensors:grav: "+round(ship:sensors:grav:mag,6).
 	set thrustlabel:text to "qec:thrust: "+round(quadEnginesRawThrust(),6).
 	set twrlabel:text to "twr: "+round(twr,6).
 
