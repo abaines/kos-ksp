@@ -123,6 +123,8 @@ function stopVector
 
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*9. }, RGB(1,0.1,0.1)).
 
+local gravityTurnInterceptLex to slopeInterceptLex2(0,0,70000,90,false).
+
 global desireStop to true.
 global desiredLeanAngle to 7.5.
 
@@ -131,6 +133,13 @@ global desiredLeanBaseVector to
 	if desireStop
 	{
 		return stopVector().
+	}
+	else if guiLeanSpaceCheckbox:pressed
+	{
+		local east is heading(90,0):vector.
+		// TODO: better gravity turn math
+		local gravityTurnAngle to slopeInterceptCalc2(gravityTurnInterceptLex,ship:APOAPSIS).
+		return BetweenVector(vec_up(),east,gravityTurnAngle):normalized.
 	}
 	else
 	{
@@ -199,6 +208,7 @@ set guiLeanStop:ontoggle to {
 		set guiLeanFullThrottle:pressed to false.
 		set desiredLeanAngle to 0.
 		set fullthurstcheckbox:pressed to false.
+		set guiLeanSpaceCheckbox:pressed to false.
 		brakes on.
 	}
 }.
@@ -208,6 +218,7 @@ set guiLeanFullThrottle:ontoggle to {
 	if newstate {
 		set guiLeanStop:pressed to false.
 		set fullthurstcheckbox:pressed to true.
+		set guiLeanSpaceCheckbox:pressed to false.
 		brakes off.
 	}
 }.
@@ -216,6 +227,16 @@ when guiLeanFullThrottle:pressed then
 	set desiredLeanAngle to 90-leanFullThrottlePID:update(time:second,SHIP:ALTITUDE).
 	return true.
 }
+local guiLeanSpaceCheckbox is guiLean:addcheckbox("Auto Launch to Space",false).
+set guiLeanSpaceCheckbox:ontoggle to {
+	parameter newstate.
+	if newstate {
+		set guiLeanStop:pressed to false.
+		set fullthurstcheckbox:pressed to true.
+		set fullthurstcheckbox:pressed to true.
+		brakes off.
+	}
+}.
 when true then
 {
 	set guiLeanAngle:text to "leanAngle: "+round(leanAngle,6).
