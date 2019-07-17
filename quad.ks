@@ -123,7 +123,9 @@ function stopVector
 
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*9. }, RGB(1,0.1,0.1)).
 
-local gravityTurnInterceptLex to slopeInterceptLex2(0,0,70000,90,false).
+// TODO: better gravity turn math
+local gravityTurnInterceptLex to slopeInterceptLex2(0,4,70000,90,true).
+lock gravityTurnAngle to slopeInterceptCalc2(gravityTurnInterceptLex,ship:APOAPSIS).
 
 global desireStop to true.
 global desiredLeanAngle to 7.5.
@@ -137,8 +139,6 @@ global desiredLeanBaseVector to
 	else if guiLeanSpaceCheckbox:pressed
 	{
 		local east is heading(90,0):vector.
-		// TODO: better gravity turn math
-		local gravityTurnAngle to slopeInterceptCalc2(gravityTurnInterceptLex,ship:APOAPSIS).
 		return BetweenVector(vec_up(),east,gravityTurnAngle):normalized.
 	}
 	else
@@ -234,7 +234,7 @@ set guiLeanSpaceCheckbox:ontoggle to {
 	if newstate {
 		set guiLeanStop:pressed to false.
 		set fullthurstcheckbox:pressed to true.
-		set fullthurstcheckbox:pressed to true.
+		set guiLeanFullThrottle:pressed to false.
 		brakes off.
 	}
 }.
@@ -244,6 +244,10 @@ when true then
 	if guiLeanStop:pressed
 	{
 		set guiLeanDesired:text to "stop: "+round(vang(stopVector(),ship:up:vector),6).
+	}
+	else if guiLeanSpaceCheckbox:pressed
+	{
+		set guiLeanDesired:text to "gravityTurnAngle: "+round(gravityTurnAngle,3).
 	}
 	else
 	{
