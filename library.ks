@@ -1027,6 +1027,17 @@ function setLoadDistances
 
 
 
+// get a list of all the vessels in the game
+function getAllVessels
+{
+	local targetList is list().
+	LIST TARGETS IN targetList.
+	return targetList.
+}
+
+
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

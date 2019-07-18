@@ -72,6 +72,26 @@ when true then
 	return true.
 }
 
+setLoadDistances(10).
+printLoadDistances().
+
+for ves in getAllVessels()
+{
+	if ( ves:LOADED or ves:UNPACKED ) or ( ves:TYPE <> "SpaceObject" and ves:status<>"orbiting" )
+	{
+		local stringBuilder to "`"+ves:name + "` " + ves:status:TOLOWER + " " + ves:TYPE:TOLOWER.
+		if ves:loaded
+		{
+			set stringBuilder to stringBuilder + " LOADED".
+		}
+		if ves:unpacked
+		{
+			set stringBuilder to stringBuilder + " UNPACKED".
+		}
+		print(stringBuilder).
+	}
+}
+
 
 
 until 0 { wait 0. } // main loop wait forever
