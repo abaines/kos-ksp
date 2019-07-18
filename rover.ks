@@ -92,6 +92,20 @@ for ves in getAllVessels()
 	}
 }
 
+local roverGui is gui(200).
+local roverGuiLabel is roverGui:addlabel("Rover Data").
+local launchpadLabel is roverGui:addlabel("launchpadLabel").
+local runwayStartLabel is roverGui:addlabel("runwayStartLabel").
+local runwayEndLabel is roverGui:addlabel("runwayEndLabel").
+when true then
+{
+	set launchpadLabel:text to ""+kspLaunchPad():distance.
+	set runwayStartLabel:text to ""+kspRunwayStart():distance.
+	set runwayEndLabel:text to ""+kspRunwayEnd():distance.
+
+	return true.
+}
+roverGui:show().
 
 
 until 0 { wait 0. } // main loop wait forever
