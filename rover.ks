@@ -51,6 +51,26 @@ local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
 
+local lastSetBrakes to true.
+brakes on.
+
+local goalSpeed to 11.
+
+when true then
+{
+	if ship:velocity:surface:mag>goalSpeed and not lastSetBrakes
+	{
+		brakes on.
+		set lastSetBrakes to true.
+	}
+	else if ship:velocity:surface:mag<goalSpeed and lastSetBrakes
+	{
+		brakes off.
+		set lastSetBrakes to false.
+	}
+
+	return true.
+}
 
 
 
