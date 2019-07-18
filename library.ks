@@ -931,6 +931,101 @@ function geopositionFromLex
 }
 
 
+// display current load distances
+function printLoadDistances
+{
+	local distances TO KUNIVERSE:DEFAULTLOADDISTANCE.
+
+	PRINT "orbit distances:".
+	print "    load: " + distances:ORBIT:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:ORBIT:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:ORBIT:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:ORBIT:PACK:TOSTRING:padLeft(7) + "m".
+
+	PRINT "escaping distances:".
+	print "    load: " + distances:ESCAPING:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:ESCAPING:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:ESCAPING:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:ESCAPING:PACK:TOSTRING:padLeft(7) + "m".
+
+	PRINT "suborbital distances:".
+	print "    load: " + distances:SUBORBITAL:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:SUBORBITAL:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:SUBORBITAL:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:SUBORBITAL:PACK:TOSTRING:padLeft(7) + "m".
+
+	PRINT "flying distances:".
+	print "    load: " + distances:FLYING:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:FLYING:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:FLYING:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:FLYING:PACK:TOSTRING:padLeft(7) + "m".
+
+	PRINT "landed distances:".
+	print "    load: " + distances:LANDED:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:LANDED:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:LANDED:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:LANDED:PACK:TOSTRING:padLeft(7) + "m".
+
+	PRINT "prelaunch distances:".
+	print "    load: " + distances:PRELAUNCH:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:PRELAUNCH:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:PRELAUNCH:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:PRELAUNCH:PACK:TOSTRING:padLeft(7) + "m".
+
+	PRINT "splashed distances:".
+	print "    load: " + distances:SPLASHED:LOAD:TOSTRING:padLeft(7) + "m".
+	print "  unload: " + distances:SPLASHED:UNLOAD:TOSTRING:padLeft(7) + "m".
+	print "  unpack: " + distances:SPLASHED:UNPACK:TOSTRING:padLeft(7) + "m".
+	print "    pack: " + distances:SPLASHED:PACK:TOSTRING:padLeft(7) + "m".
+}
+
+// set vessel load distances for unload/pack by given multiplier
+function setLoadDistances
+{
+	parameter multiplierValue is 10.
+
+	local distances TO KUNIVERSE:DEFAULTLOADDISTANCE.
+	WAIT 0.
+
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:SUBORBITAL:UNLOAD TO multiplierValue*15000.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:SUBORBITAL:LOAD TO multiplierValue*1.
+	WAIT 0.
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:SUBORBITAL:PACK TO multiplierValue*10000.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:SUBORBITAL:UNPACK TO multiplierValue*1.
+	WAIT 0.
+
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:FLYING:UNLOAD TO multiplierValue*22500.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:FLYING:LOAD TO multiplierValue*1.
+	WAIT 0.
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:FLYING:PACK TO multiplierValue*25000.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:FLYING:UNPACK TO multiplierValue*1.
+	WAIT 0.
+
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:LANDED:UNLOAD TO multiplierValue*2500.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:LANDED:LOAD TO multiplierValue*1.
+	WAIT 0.
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:LANDED:PACK TO multiplierValue*350.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:LANDED:UNPACK TO multiplierValue*1.
+	WAIT 0.
+
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:SPLASHED:UNLOAD TO multiplierValue*2500.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:SPLASHED:LOAD TO multiplierValue*1.
+	WAIT 0.
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:SPLASHED:PACK TO multiplierValue*350.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:SPLASHED:UNPACK TO multiplierValue*1.
+	WAIT 0.
+
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:PRELAUNCH:UNLOAD TO multiplierValue*2500.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:PRELAUNCH:LOAD TO multiplierValue*1.
+	WAIT 0.
+	SET KUNIVERSE:DEFAULTLOADDISTANCE:PRELAUNCH:PACK TO multiplierValue*350.
+	//SET KUNIVERSE:DEFAULTLOADDISTANCE:PRELAUNCH:UNPACK TO multiplierValue*1.
+	WAIT 0.
+
+	print("Load distances updated: " + multiplierValue).
+}
+
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
