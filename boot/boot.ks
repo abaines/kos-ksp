@@ -20,4 +20,7 @@ CLEARGUIS().
 
 wait 0.
 
-run quad.
+run rover.
+
+print "end of boot file".
+

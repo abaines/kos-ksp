@@ -500,6 +500,8 @@ when true then
 		wait 0.
 	}
 
+	// TODO: auto stage specially tagged parts
+
 	return true.
 }
 
