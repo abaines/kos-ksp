@@ -8,8 +8,6 @@ print "boot.ks".
 
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 
-CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
-
 if terminal:width<42 {set terminal:width to 42.}
 
 set Terminal:CHARHEIGHT to 10.
@@ -23,7 +21,10 @@ wait 0.
 
 if ship:SHIPNAME:STARTSWITH("CC Command and Control") { run rover. }
 else if ship:SHIPNAME:STARTSWITH("Smart Booster") { run paste. }
-else { print("Please select script for this vessel: " + ship:SHIPNAME). }
+else {
+	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
+	print("Please select script for this vessel: " + ship:SHIPNAME).
+}
 
 
 print "end of boot file".

@@ -5,7 +5,7 @@ global scriptEpoch to time:seconds.
 runOncePath("library").
 runOncePath("library_gui").
 
-librarysetup().
+librarysetup(false).
 
 when time:seconds > scriptEpoch + 10 then
 {
@@ -58,8 +58,8 @@ local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vec
 
 lock steering to ship:up:vector.
 
-global twrPID TO PIDLOOP(500, 410, 400, 0, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set twrPID:SETPOINT to 1.05.
+global twrPID TO PIDLOOP(500, 410, 400, 50, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+set twrPID:SETPOINT to 1.25.
 lock throttle to twrPID:update(time:second,twr).
 
 local thrustSlider is heartGui:ADDHSLIDER(0,0,100).

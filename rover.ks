@@ -5,7 +5,7 @@ global scriptEpoch to time:seconds.
 runOncePath("library").
 runOncePath("library_gui").
 
-librarysetup().
+librarysetup(false).
 
 when time:seconds > scriptEpoch + 10 then
 {

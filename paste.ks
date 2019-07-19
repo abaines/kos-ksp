@@ -5,7 +5,7 @@ global scriptEpoch to time:seconds.
 runOncePath("library").
 runOncePath("library_gui").
 
-librarysetup().
+librarysetup(false).
 
 when time:seconds > scriptEpoch + 10 then
 {
@@ -57,7 +57,7 @@ wait 0.
 
 safeStage.
 
-wait 8.
+wait 20.
 
 safeStage.
 

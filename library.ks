@@ -149,11 +149,14 @@ function max3
 
 function librarysetup
 {
+	PARAMETER OpenTerminal is true.
+
 	stopwarp().
 
 	CLEARSCREEN.
 
-	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
+	if OpenTerminal
+		CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 
 	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 
