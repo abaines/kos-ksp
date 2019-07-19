@@ -1039,6 +1039,14 @@ function getAllVessels
 
 
 
+// get a list of all the parts in this vessel
+function getAllParts
+{
+	local partList is list().
+	LIST PARTS IN partList.
+	return partList.
+}
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
