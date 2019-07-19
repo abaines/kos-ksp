@@ -16,14 +16,13 @@ when time:seconds > scriptEpoch + 10 then
 print "booster.ks 15".
 
 
-local heartGui is createHeartbeatGui().
-
 
 // wait until we are the only cpu core
 until getCpuCoreCount()<=1 { wait 0. }
 
 
 print("I'm in control now!").
+local heartGui is createHeartbeatGui().
 
 
 

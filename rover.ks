@@ -74,7 +74,7 @@ when true then
 	return true.
 }
 
-setLoadDistances(100).
+setLoadDistances(50).
 printLoadDistances().
 
 for ves in getAllVessels()

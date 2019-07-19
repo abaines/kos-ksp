@@ -222,6 +222,9 @@ function createHeartbeatGui
 	local loadPackLabel is heartGui:addlabel("loadPackLabel").
 	local statusLabel is heartGui:addlabel("statusLabel").
 	local typeLabel is heartGui:addlabel("typeLabel").
+	local partCountLabel is heartGui:addlabel("partCountLabel").
+	local speedLabel is heartGui:addlabel("speedLabel").
+	local radarLabel is heartGui:addlabel("radarLabel").
 
 	when true then
 	{
@@ -239,21 +242,27 @@ function createHeartbeatGui
 		local stringBuilder to "".
 		if ship:loaded
 		{
-			set stringBuilder to stringBuilder + " LOADED".
+			set stringBuilder to stringBuilder + "LOADED ".
 		}
 		if ship:unpacked
 		{
-			set stringBuilder to stringBuilder + " UNPACKED".
+			set stringBuilder to stringBuilder + "UNPACKED ".
 		}
 		if not ship:loaded and not ship:unpacked
 		{
-			set stringBuilder to stringBuilder + " not good".
+			set stringBuilder to stringBuilder + "not good -- derp ".
 		}
 		set loadPackLabel:text to stringBuilder.
 
 		set statusLabel:text to ship:status.
 
 		set typeLabel:text to ship:type.
+
+		set partCountLabel:text to ""+getAllParts():length.
+
+		set speedLabel:text to ""+ship:velocity:surface:mag.
+
+		set radarLabel:text to ""+min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
 		return true. //keep alive
 	}

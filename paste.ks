@@ -28,6 +28,7 @@ if core:tag<>"mastercpu"
 else
 {
 	print("I'm the Master CPU.").
+	local heartGui is createHeartbeatGui().
 }
 
 
