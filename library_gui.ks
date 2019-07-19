@@ -20,21 +20,6 @@ SET voice0:VOLUME TO 0.20.
 /// FUNCTIONS AND VARIBLES ONLY !
 
 
-function librarysetup
-{
-	stopwarp().
-
-	CLEARSCREEN.
-
-	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
-
-	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
-
-	CLEARVECDRAWS().
-
-	CLEARGUIS().
-}
-
 function beep
 {
 	parameter hertz is 1000, volume is 0.3, duration is 0.01, keyDownLength is 0.01.

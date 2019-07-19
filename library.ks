@@ -162,6 +162,8 @@ function librarysetup
 	if terminal:height<30 {set terminal:height to 30.}
 
 	CLEARVECDRAWS().
+
+	CLEARGUIS().
 }
 
 function beep
