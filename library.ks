@@ -1048,6 +1048,13 @@ function getAllParts
 }
 
 
+// return the number of cpu cores "kOSProcessor" on this ship|vessel
+function getCpuCoreCount
+{
+	return ship:MODULESNAMED("kOSProcessor"):length.
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

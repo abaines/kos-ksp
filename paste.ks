@@ -19,9 +19,14 @@ if core:tag<>"mastercpu"
 	run booster.
 	print("derpy town").
 }
+else
+{
+	print("I'm the Master CPU.").
+}
+
 
 sas off.
-rcs off.
+rcs on.
 abort off.
 
 lock simplePitch TO 90-((90/100)*((SHIP:APOAPSIS/45000)*100)).
@@ -33,8 +38,20 @@ lock throttle to 1.
 
 wait 3.
 
+
+wait 0.
 print("stage").
 stage.
+wait 0.
+
+
+when GetStageLowestResource("liquidfuel")<=0.01 then
+{
+	wait 0.
+	print("stage").
+	stage.
+	wait 0.
+}
 
 
 wait until abort.
