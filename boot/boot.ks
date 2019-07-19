@@ -20,7 +20,11 @@ CLEARGUIS().
 
 wait 0.
 
-run rover.
+
+if ship:SHIPNAME:STARTSWITH("CC Command and Control") { run rover. }
+else if ship:SHIPNAME:STARTSWITH("Smart Booster") { run paste. }
+else { print("Please select script for this vessel: " + ship:SHIPNAME). }
+
 
 print "end of boot file".
 

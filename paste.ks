@@ -1,60 +1,30 @@
 @LAZYGLOBAL off.
 
-runoncepath("library").
+global scriptEpoch to time:seconds.
+
+runOncePath("library").
+runOncePath("library_gui").
 
 librarysetup().
 
-print "paste.ks" at(0,0).
+print "paste.ks".
 
 wait 0.
 
 sas off.
-
 rcs off.
-
 abort off.
 
-// retrograde
-lock steering to -1*ship:srfprograde:vector.
 
-global prevAlt is ship:ALTITUDE.
+lock steering to ship:up:vector.
 
-when ship:ALTITUDE <= 10000 then
-{
-	lock steering to up.
-}
-
-when 1 then
-{
-
-	if ship:ALTITUDE <= 70000 and prevAlt >=70000
-	{
-		stopwarp().
-		RCS ON.
-		panels off.
-		setantenna(false).
-		print "entering air".
-	}
-	else if ship:ALTITUDE >= 70000 and prevAlt <=70000
-	{
-		stopwarp().
-		panels on.
-		setantenna(true).
-		print "leaving air".
-	}
-	else if ship:ALTITUDE <= 72000 and prevAlt >=72000
-	{
-		stopwarp().
-		print "nearing air".
-	}
-
-	set prevAlt to ship:ALTITUDE.
-	wait 0.
-	PRESERVE.
-}
+lock throttle to 1.
 
 
-//lock steering TO VCRS(SHIP:VELOCITY:ORBIT, BODY:POSITION).
+wait 1.
+
+stage.
+
 
 wait until abort.
 
