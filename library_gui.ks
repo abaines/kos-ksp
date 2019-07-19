@@ -209,6 +209,60 @@ function numberPositivity
 }
 
 
+// create heartbeat gui for tracking LOADED and UNPACKED
+function createHeartbeatGui
+{
+	local sliderSize is 60*3.
+
+	local heartGui is gui(200).
+	local shipNameLabel is heartGui:addlabel("shipNameLabel").
+
+	local heartbeatSlider is heartGui:ADDHSLIDER(sliderSize/2,0,sliderSize).
+
+	local loadPackLabel is heartGui:addlabel("loadPackLabel").
+	local statusLabel is heartGui:addlabel("statusLabel").
+	local typeLabel is heartGui:addlabel("typeLabel").
+
+	when true then
+	{
+		set shipNameLabel:text to ship:name.
+
+		if heartbeatSlider:value=0
+		{
+			set heartbeatSlider:value to sliderSize.
+		}
+		else
+		{
+			set heartbeatSlider:value to heartbeatSlider:value - 1.
+		}
+
+		local stringBuilder to "".
+		if ship:loaded
+		{
+			set stringBuilder to stringBuilder + " LOADED".
+		}
+		if ship:unpacked
+		{
+			set stringBuilder to stringBuilder + " UNPACKED".
+		}
+		if not ship:loaded and not ship:unpacked
+		{
+			set stringBuilder to stringBuilder + " not good".
+		}
+		set loadPackLabel:text to stringBuilder.
+
+		set statusLabel:text to ship:status.
+
+		set typeLabel:text to ship:type.
+
+		return true. //keep alive
+	}
+
+	heartGui:show().
+	return heartGui.
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

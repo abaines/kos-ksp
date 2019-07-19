@@ -7,6 +7,12 @@ runOncePath("library_gui").
 
 librarysetup().
 
+when time:seconds > scriptEpoch + 10 then
+{
+	set terminal:width  to 42.
+	set terminal:height to 20.
+}
+
 print("paste.ks 14").
 
 wait 0.

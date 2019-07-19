@@ -15,6 +15,8 @@ when time:seconds > scriptEpoch + 10 then
 
 print "rover.ks 13".
 
+local heartGui is createHeartbeatGui().
+
 print ship:geoposition.
 global experimentstate to lex().
 if exists("experiment.json")
