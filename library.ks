@@ -1055,6 +1055,21 @@ function getCpuCoreCount
 }
 
 
+// get the current total thrust of all engines
+function totalCurrentThrust
+{
+	local engineList is list().
+	list ENGINES in engineList.
+
+	local sum is 0.
+	FOR eng IN engineList
+	{
+		set sum to eng:thrust + sum.
+	}.
+	return sum.
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

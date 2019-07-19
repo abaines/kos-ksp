@@ -28,7 +28,7 @@ if core:tag<>"mastercpu"
 else
 {
 	print("I'm the Master CPU.").
-	local heartGui is createHeartbeatGui().
+	global heartGui is createHeartbeatGui().
 }
 
 
@@ -36,28 +36,51 @@ sas off.
 rcs on.
 abort off.
 
-lock simplePitch TO 90-((90/100)*((SHIP:APOAPSIS/45000)*100)).
+lock simplePitch TO 90-((90/100)*((SHIP:APOAPSIS/70000)*100)).
 
 lock steering to HEADING(90,max(0,simplePitch)).
+lock steering to ship:up:vector.
 
 lock throttle to 1.
 
-
-wait 3.
+function safeStage
+{
+	wait 0.
+	UNTIL STAGE:READY { WAIT 0. }
+	print("Staging: " + time:seconds).
+	stage.
+	wait 0.
+}
 
 
 wait 0.
-print("stage").
-stage.
-wait 0.
+
+safeStage.
+
+wait 8.
+
+safeStage.
 
 
-when GetStageLowestResource("liquidfuel")<=0.01 then
+local fuelLabel to heartGui:addLabel("").
+when true then
+{
+	set fuelLabel:text to "fuel: "+GetStageLowestResource("liquidfuel").
+	return true. //keep alive
+}
+
+
+local stageProtector to time:seconds + 2.
+when GetStageLowestResource("liquidfuel")<=0.1 and time:seconds>stageProtector then
 {
 	wait 0.
 	print("stage").
 	stage.
 	wait 0.
+
+	set stageProtector to time:seconds + 2.
+
+	return true. //keep alive
 }
 
 

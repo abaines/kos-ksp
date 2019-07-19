@@ -15,7 +15,7 @@ when time:seconds > scriptEpoch + 10 then
 
 print "rover.ks 13".
 
-local heartGui is createHeartbeatGui().
+local roverGui is createHeartbeatGui().
 
 print ship:geoposition.
 global experimentstate to lex().
@@ -94,7 +94,6 @@ for ves in getAllVessels()
 	}
 }
 
-local roverGui is gui(200).
 local roverGuiLabel is roverGui:addlabel("Rover Data").
 local launchpadLabel is roverGui:addlabel("launchpadLabel").
 local runwayStartLabel is roverGui:addlabel("runwayStartLabel").
