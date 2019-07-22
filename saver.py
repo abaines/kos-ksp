@@ -50,7 +50,7 @@ def findSave(name):
             num = int(digits[0])
             if num>maxFound:
                 maxFound = num
-                
+
     search = os.path.join( dirname , "$*_*.sfs" )
     for file in glob.glob(search):
         basename = os.path.basename(file)
@@ -59,7 +59,7 @@ def findSave(name):
             num = int(digits[0])
             if num>maxFound:
                 maxFound = num
-    
+
     maxFound = 1 + maxFound
     #print("maxFound :" , maxFound)
 
@@ -69,7 +69,7 @@ def findSave(name):
     new = os.path.join( dirname , newFile )
     return new
 
-    
+
 
 def scan():
     for key, value in files2watch.items():
@@ -77,7 +77,7 @@ def scan():
         #print(key)
 
         lastMod = lastModified(key)
-        
+
         currentFile = open(key,'rb').read()
         #print(type(currentFile))
 
@@ -87,7 +87,7 @@ def scan():
 
         if (value is None):
             files2watch[key] = sha1
-            
+
         elif (value != sha1):
             winsound.Beep(120,60)
             print( "change detected :", key )
@@ -95,7 +95,7 @@ def scan():
             print( "new save name   :" + newsave )
 
             #shutil.copy2(key,newsave)
-            
+
             fout = open(newsave, 'wb')
             fout.write(currentFile)
             fout.close()
