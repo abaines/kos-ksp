@@ -21,6 +21,8 @@ print "booster.ks 15".
 until getCpuCoreCount()<=1 { wait 0. }
 
 
+
+CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 print("I'm in control now!").
 local heartGui is createHeartbeatGui().
 
@@ -51,24 +53,35 @@ local vddLean is VECDRAW_DEL({return ship:position.}, { return leadDirection*10.
 local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
+local initialGeoPosition is SHIP:GEOPOSITION.
 
 
 
+lock steering to initialGeoPosition:ALTITUDEPOSITION(SHIP:ALTITUDE+900).
 
 
-lock steering to ship:up:vector.
+global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.75, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global altPID TO PIDLOOP(0.1, 0.01, 2, -10, 30). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 
-global twrPID TO PIDLOOP(500, 410, 400, 50, 100). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-set twrPID:SETPOINT to 1.25.
-lock throttle to twrPID:update(time:second,twr).
 
-local thrustSlider is heartGui:ADDHSLIDER(0,0,100).
+
+local thrustSlider is heartGui:ADDHSLIDER(0,0,1).
 when true then
 {
-	lock steering to ship:up:vector.
+	lock throttle to twrPID:update(time:second,twr).
+	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
+	set deltaAltPID:SETPOINT to altPID:update(time:second,dist2ground).
+	set altPID:SETPOINT to 100.
+
 	set thrustSlider:value to throttle.
+
 	return true. //keep alive
 }
+
+
+addPidInterfaceToGui(heartGui,twrPID).
+
 
 until 0 { wait 0. } // main loop wait forever
 

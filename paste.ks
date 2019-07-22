@@ -27,6 +27,7 @@ if core:tag<>"mastercpu"
 }
 else
 {
+	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("I'm the Master CPU.").
 	global heartGui is createHeartbeatGui().
 }
@@ -45,9 +46,11 @@ lock throttle to 1.
 
 function safeStage
 {
+	unlock steering.
+	unlock throttle.
 	wait 0.
 	UNTIL STAGE:READY { WAIT 0. }
-	print("Staging: " + time:seconds).
+	print("Safe Staging: " + time:seconds).
 	stage.
 	wait 0.
 }
@@ -56,10 +59,8 @@ function safeStage
 wait 0.
 
 safeStage.
-
-wait 20.
-
-safeStage.
+lock steering to ship:up:vector.
+lock throttle to 1.
 
 
 local fuelLabel to heartGui:addLabel("").

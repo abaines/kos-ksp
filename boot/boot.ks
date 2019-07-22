@@ -21,6 +21,7 @@ wait 0.
 
 if ship:SHIPNAME:STARTSWITH("CC Command and Control") { run rover. }
 else if ship:SHIPNAME:STARTSWITH("Smart Booster") { run paste. }
+else if ship:SHIPNAME:STARTSWITH("Multi Vessel Test") { run paste. }
 else {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("Please select script for this vessel: " + ship:SHIPNAME).
