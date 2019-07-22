@@ -301,59 +301,10 @@ set leanFullThrottlePID:SETPOINT to 6777. // kerbin highest mountain is 6767
 
 
 
-local guiPID to leanFullThrottlePID.
+// TODO: replaced with addPidInterfaceToGui, test and deal with fallout
 local pidGUI is GUI(200).
-pidGUI:ADDLABEL("PID Controller").
+addPidInterfaceToGui(pidGUI,leanFullThrottlePID).
 
-local guiP is addTextFieldDelegate(pidGUI, guiPID:KP, {parameter val. set guiPID:KP to val:tonumber().}).
-local pidHlayoutP to pidGUI:ADDHLAYOUT().
-addButtonDelegate(pidHlayoutP,"p-",{ set guiPID:KP to guiPID:KP / 1.2. set guiP:text to ""+guiPID:KP. }).
-addButtonDelegate(pidHlayoutP,"p+",{ set guiPID:KP to guiPID:KP * 1.2. set guiP:text to ""+guiPID:KP. }).
-
-local guiI is addTextFieldDelegate(pidGUI, guiPID:KI, {parameter val. set guiPID:KI to val:tonumber().}).
-local pidHlayoutI to pidGUI:ADDHLAYOUT().
-addButtonDelegate(pidHlayoutI,"i-",{ set guiPID:KI to guiPID:KI / 1.2. set guiI:text to ""+guiPID:KI. }).
-addButtonDelegate(pidHlayoutI,"i+",{ set guiPID:KI to guiPID:KI * 1.2. set guiI:text to ""+guiPID:KI. }).
-
-local guiD is addTextFieldDelegate(pidGUI, guiPID:KD, {parameter val. set guiPID:KD to val:tonumber().}).
-local pidHlayoutD to pidGUI:ADDHLAYOUT().
-addButtonDelegate(pidHlayoutD,"d-",{ set guiPID:KD to guiPID:KD / 1.2. set guiD:text to ""+guiPID:KD. }).
-addButtonDelegate(pidHlayoutD,"d+",{ set guiPID:KD to guiPID:KD * 1.2. set guiD:text to ""+guiPID:KD. }).
-
-local guiInputDesired is addTextFieldDelegate(pidGUI, guiPID:SETPOINT,
-	{parameter val. set guiPID:SETPOINT to val:tonumber().}
-).
-local pidHlayoutSP to pidGUI:ADDHLAYOUT().
-addButtonDelegate(pidHlayoutSP,"setpoint-",
-	{ set guiPID:SETPOINT to guiPID:SETPOINT - 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
-).
-addButtonDelegate(pidHlayoutSP,"setpoint+",
-	{ set guiPID:SETPOINT to guiPID:SETPOINT + 0.2. set guiInputDesired:text to ""+guiPID:SETPOINT. }
-).
-
-local guiInput is pidGUI:ADDLABEL("guiInput").
-local guiOutput is pidGUI:ADDLABEL("guiOutput").
-pidGUI:ADDSPACING(12).
-local guiPterm is pidGUI:ADDLABEL("guiPterm").
-local guiIterm is pidGUI:ADDLABEL("guiIterm").
-local guiDterm is pidGUI:ADDLABEL("guiDterm").
-local guiErrorSum is pidGUI:ADDLABEL("guiErrorSum").
-pidGUI:ADDSPACING(12).
-local guiPidSetPointError is pidGUI:ADDLABEL("guiPidSetPointError").
-when true then
-{
-	set guiInput:text to "in: "+round(guiPID:INPUT,6).
-	set guiOutput:text to "out: "+round(guiPID:OUTPUT,6).
-
-	set guiPterm:text to "pterm: "+guiPID:pterm.
-	set guiIterm:text to "iterm: "+guiPID:iterm.
-	set guiDterm:text to "dterm: "+guiPID:dterm.
-	set guiErrorSum:text to "ErrorSum: "+guiPID:ErrorSum.
-
-	set guiPidSetPointError:text to "Setpoint Err: " + round(guiPID:INPUT-guiPID:SETPOINT,6).
-	return true.
-}
-pidGUI:show().
 
 
 // landing gear logic
