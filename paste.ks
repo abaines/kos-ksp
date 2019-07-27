@@ -29,7 +29,9 @@ else
 {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("I'm the Master CPU.").
-	global heartGui is createHeartbeatGui().
+	global heartGui is gui(200).
+	addHeartbeatGui(heartGui).
+	heartGui:show().
 }
 
 

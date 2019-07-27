@@ -15,7 +15,8 @@ when time:seconds > scriptEpoch + 10 then
 
 print "rover.ks 13".
 
-local roverGui is createHeartbeatGui().
+local roverGui is gui(200).
+addHeartbeatGui(roverGui).
 
 print ship:geoposition.
 global experimentstate to lex().

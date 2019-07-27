@@ -24,7 +24,9 @@ until getCpuCoreCount()<=1 { wait 0. }
 
 // CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 print("I'm in control now!").
-local heartGui is createHeartbeatGui().
+local heartGui is gui(200).
+addHeartbeatGui(heartGui).
+heartGui:show().
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

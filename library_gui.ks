@@ -209,12 +209,13 @@ function numberPositivity
 }
 
 
-// create heartbeat gui for tracking LOADED and UNPACKED
-function createHeartbeatGui
+// add heartbeat gui for tracking LOADED and UNPACKED
+function addHeartbeatGui
 {
+	parameter heartGui. // the GUI
+
 	local sliderSize is 60*3.
 
-	local heartGui is gui(200).
 	local shipNameLabel is heartGui:addlabel("shipNameLabel").
 
 	local heartbeatSlider is heartGui:ADDHSLIDER(sliderSize/2,0,sliderSize).
@@ -272,7 +273,6 @@ function createHeartbeatGui
 		return true. //keep alive
 	}
 
-	heartGui:show().
 	return heartGui.
 }
 
