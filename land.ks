@@ -84,36 +84,40 @@ landGui:ADDLABEL("Land GUI").
 
 local modeLayout to landGui:ADDHLAYOUT().
 local progradeCheckbox to modeLayout:addcheckbox("Prograde",false).
+local retrogradeCheckbox to modeLayout:addcheckbox("Retrograde",false).
+local modeSlider to landGui:ADDHSLIDER(0.5,0,1).
+
 set progradeCheckbox:ontoggle to {
 	parameter newstate.
 	if newstate{
 		print("Prograde").
-		lock steering to ship:srfprograde:vector.
+		lock steering to RatioVector(ship:srfprograde:vector,VXCL(vec_up(),ship:srfprograde:vector),modeSlider:value).
 		set retrogradeCheckbox:pressed to false.
+		set vddSteeringVector:SHOW to true.
 	}
 	else if not retrogradeCheckbox:pressed
 	{
 		print("unlocking").
 		unlock steering.
+		set vddSteeringVector:SHOW to false.
 	}
 }.
-local retrogradeCheckbox to modeLayout:addcheckbox("Retrograde",false).
 set retrogradeCheckbox:ontoggle to {
 	parameter newstate.
 	if newstate{
 		print("Retrograde").
-		lock steering to -1*ship:srfprograde:vector.
+		lock steering to RatioVector(-1*ship:srfprograde:vector,stopVector(),modeSlider:value).
 		set progradeCheckbox:pressed to false.
+		set vddSteeringVector:SHOW to true.
 	}
 	else if not progradeCheckbox:pressed
 	{
 		print("unlocking").
 		unlock steering.
+		set vddSteeringVector:SHOW to false.
 	}
 }.
 
-
-local modeSlider to landGui:ADDHSLIDER(50,0,100).
 local landThrottleCheckbox to landGui:addcheckbox("Land Throttle",false).
 
 local gforceLabel to landGui:ADDLABEL("g-force").

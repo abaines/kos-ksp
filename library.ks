@@ -321,6 +321,23 @@ function BetweenVector
 	return r:normalized.
 }
 
+
+// calculate the vector between two others by a ratio
+function RatioVector
+{
+	parameter vec0. // vector 0
+	parameter vec1. // vector 1
+	parameter ratio. // a value between 0 and 1
+
+	local vec0n is vec0:normalized.
+	local vec1n is vec1:normalized.
+
+	local ratioC to clamp(ratio,0,1).
+
+	return (vec0*(1-ratioC) + vec1*(ratioC)):normalized.
+}
+
+
 function planierize
 {
 	// vec1 is planer vector
