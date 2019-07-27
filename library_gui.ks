@@ -328,6 +328,49 @@ function addPidInterfaceToGui
 }
 
 
+// add buttons to gui that allow reverting to launch | editor
+// buttons require double click to trigger revert
+function addRevertLaunchButton
+{
+	parameter _gui.
+
+	local _hlayout to _gui:ADDHLAYOUT().
+	local launchButton to _hlayout:addbutton("-> Launch").
+	local editorButton to _hlayout:addbutton("-> Editor").
+
+	local clickProtection to 0.
+
+	set launchButton:onclick to {
+		print("REVERT TO LAUNCH").
+		if time:seconds<clickProtection
+		{
+			wait 0.
+			KUNIVERSE:REVERTTOLAUNCH().
+		}
+		set clickProtection to time:seconds+2.
+	}.
+
+	set editorButton:onclick to {
+		print("REVERT TO EDITOR").
+		if time:seconds<clickProtection
+		{
+			wait 0.
+			KUNIVERSE:REVERTTOEDITOR().
+		}
+		set clickProtection to time:seconds+2.
+	}.
+
+	when true then
+	{
+		set launchButton:visible to KUniverse:CANREVERTTOLAUNCH.
+		set editorButton:visible to KUniverse:CANREVERTTOEDITOR.
+
+		return true. //keep alive
+	}
+
+	return _hlayout.
+}
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
