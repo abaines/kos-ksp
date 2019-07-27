@@ -1087,6 +1087,7 @@ function VesselAndPartCheck
 
 	local partCount is getAllParts():length.
 	local vesselCount is 1.
+	local loadedCount is 1.
 
 	for ves in getAllVessels()
 	{
@@ -1094,10 +1095,14 @@ function VesselAndPartCheck
 		{
 			set partCount to ves:PARTS:length + partCount.
 			set vesselCount to 1 + vesselCount.
+			if ves:loaded
+			{
+				set loadedCount to 1 + loadedCount.
+			}
 		}
 	}
 
-	return "# of Ships: " + vesselCount + "    # of Parts: " + partCount.
+	return "# of Ships: " + loadedCount + " / " + vesselCount + "   # of Parts: " + partCount.
 }
 
 

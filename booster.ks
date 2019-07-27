@@ -78,7 +78,7 @@ lock steering to stopVector().
 global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 
-local landRateInterceptLex to slopeInterceptLex2(50,-15,200,-5,true).
+local landRateInterceptLex to slopeInterceptLex2(25,-50,200,-15,true).
 
 local thrustSlider is heartGui:ADDHSLIDER(0,0,1).
 local maxTwrLabel to heartGui:addLabel("maxTwrLabel").
