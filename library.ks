@@ -1080,6 +1080,27 @@ function getAllVessels
 }
 
 
+// get a count of all vessels and their parts
+function VesselAndPartCheck
+{
+	parameter match is ship:name.
+
+	local partCount is getAllParts():length.
+	local vesselCount is 1.
+
+	for ves in getAllVessels()
+	{
+		if ves:name:contains(match)
+		{
+			set partCount to ves:PARTS:length + partCount.
+			set vesselCount to 1 + vesselCount.
+		}
+	}
+
+	return "# of Ships: " + vesselCount + "    # of Parts: " + partCount.
+}
+
+
 
 // get a list of all the parts in this vessel
 function getAllParts
@@ -1152,8 +1173,9 @@ function convertToVector
 	}
 	else
 	{
-		print("convertToVector unknown type:").
+		print("!! convertToVector unknown type:").
 		print(_input:INHERITANCE).
+		return V(0,0,0).
 	}
 }
 

@@ -79,6 +79,20 @@ function safeStage
 	wait 0.
 }
 
+
+global vesselAndPartCheckChecker to 0.
+when true then
+{
+	local vapc to VesselAndPartCheck().
+	if vesselAndPartCheckChecker<>vapc
+	{
+		print(vapc).
+	}
+	set vesselAndPartCheckChecker to vapc.
+	return true. //keep alive
+}
+
+
 global prevStageNumber to reallyBigNumber.
 when true then
 {
@@ -94,6 +108,13 @@ lock simplePitch TO 90-((90/100)*((SHIP:APOAPSIS/70000)*100)).
 
 lock steering to HEADING(90,max(0,89.9)).
 lock throttle to 1.
+
+
+local vddSteeringVector is VECDRAW_DEL({return ship:position.}, {
+	local steeringVec to convertToVector(steering).
+	return steeringVec:normalized*17.
+}, RGB(1,1,0)).
+
 
 wait 0.
 
@@ -214,10 +235,12 @@ abort off.
 
 unlock throttle.
 unlock steering.
+SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 
 
 
 
-print("end of file").
+print("End of Main Script --- Waiting forever.").
+until 0 { wait 0. } // main loop wait forever
 
 // kerbin Orbital velocity (m/s) 2296
