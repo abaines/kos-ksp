@@ -501,19 +501,24 @@ function HUD
 	// else we have hopefully have a string with areas to display in
 	if _style:CONTAINS("1")
 	{	// 1 = upper left
-		HUDTEXT(""+messagetext+"",_delaySeconds,1,_size,_colour,_doEcho).
+		HUDTEXT(""+messagetext+"",_delaySeconds,1,_size,_colour,false).
 	}
 	if _style:CONTAINS("2")
 	{	// 2 = upper center
-		HUDTEXT(""+messagetext+" ",_delaySeconds,2,_size,_colour,_doEcho).
+		HUDTEXT(""+messagetext+" ",_delaySeconds,2,_size,_colour,false).
 	}
 	if _style:CONTAINS("3")
 	{	// 3 = upper right
-		HUDTEXT(" "+messagetext+"",_delaySeconds,3,_size,_colour,_doEcho).
+		HUDTEXT(" "+messagetext+"",_delaySeconds,3,_size,_colour,false).
 	}
 	if _style:CONTAINS("4")
 	{	// 4 = lower center
-		HUDTEXT(" "+messagetext+" ",_delaySeconds,4,_size,_colour,_doEcho).
+		HUDTEXT(" "+messagetext+" ",_delaySeconds,4,_size,_colour,false).
+	}
+
+	if _doEcho
+	{
+		print("HUD: " + messagetext).
 	}
 }
 
