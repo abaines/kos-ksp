@@ -7,8 +7,11 @@ runOncePath("library_gui").
 
 librarysetup(false).
 
+CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 print("land.ks 16").
 print(CORE:tag).
+print(calculateGravity()).
+print(ship:sensors:grav:mag).
 
 when time:seconds > scriptEpoch + 10 then
 {
@@ -68,6 +71,9 @@ function stopVector
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*15. }, RGB(1,0.1,0.1)).
 
 
+local vddSteeringVector is VECDRAW_DEL({return ship:position.}, { return convertToVector(steering):normalized()*17. }, RGB(1,1,0)).
+
+
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 unlock steering.
 unlock throttle.
@@ -78,9 +84,45 @@ landGui:ADDLABEL("Land GUI").
 
 local modeLayout to landGui:ADDHLAYOUT().
 local progradeCheckbox to modeLayout:addcheckbox("Prograde",false).
+set progradeCheckbox:ontoggle to {
+	parameter newstate.
+	if newstate{
+		print("Prograde").
+		lock steering to ship:srfprograde:vector.
+		set retrogradeCheckbox:pressed to false.
+	}
+	else if not retrogradeCheckbox:pressed
+	{
+		print("unlocking").
+		unlock steering.
+	}
+}.
 local retrogradeCheckbox to modeLayout:addcheckbox("Retrograde",false).
+set retrogradeCheckbox:ontoggle to {
+	parameter newstate.
+	if newstate{
+		print("Retrograde").
+		lock steering to -1*ship:srfprograde:vector.
+		set progradeCheckbox:pressed to false.
+	}
+	else if not progradeCheckbox:pressed
+	{
+		print("unlocking").
+		unlock steering.
+	}
+}.
+
+
 local modeSlider to landGui:ADDHSLIDER(50,0,100).
 local landThrottleCheckbox to landGui:addcheckbox("Land Throttle",false).
+
+local gforceLabel to landGui:ADDLABEL("g-force").
+when true then
+{
+	set gforceLabel:text to "acc: " + RAP(ship:sensors:acc:mag/ship:sensors:grav:mag,3).
+
+	return true. //keep alive
+}
 
 addRevertLaunchButton(landGui).
 landGui:show().

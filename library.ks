@@ -1120,6 +1120,27 @@ function calculateGravity
 }
 
 
+// attempts to convert input to vector
+function convertToVector
+{
+	parameter _input.
+
+	if _input:ISTYPE("vector")
+	{
+		return _input.
+	}
+	else if _input:istype("direction")
+	{
+		return _input:vector.
+	}
+	else
+	{
+		print("convertToVector unknown type:").
+		print(_input:INHERITANCE).
+	}
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
