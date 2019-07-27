@@ -546,19 +546,46 @@ function getPartsResource
 }
 
 
+// get the max vaccume isp of any/all engines
+function maxVISP
+{
+	local m is -1.
+	for eng in listEngines()
+	{
+		set m to max(m,eng:visp).
+	}
+	return m.
+}
+
+
 FUNCTION MANEUVER_TIME
 {
-  PARAMETER dV.
+	PARAMETER dV.
 
-  LIST ENGINES IN en.
+	LOCAL f IS ship:MAXTHRUST * 1000.  // Engine Thrust (kg * m/s²)
+	LOCAL m IS SHIP:MASS * 1000.        // Starting mass (kg)
+	LOCAL e IS CONSTANT():E.            // Base of natural log
+	LOCAL p IS maxVISP().               // Engine ISP (s)
+	LOCAL g IS 9.80665.                 // Gravitational acceleration constant (m/s²)
 
-  LOCAL f IS en[0]:MAXTHRUST * 1000.  // Engine Thrust (kg * m/s²)
-  LOCAL m IS SHIP:MASS * 1000.        // Starting mass (kg)
-  LOCAL e IS CONSTANT():E.            // Base of natural log
-  LOCAL p IS en[0]:ISP.               // Engine ISP (s)
-  LOCAL g IS 9.80665.                 // Gravitational acceleration constant (m/s²)
+	RETURN g * m * p * (1 - e^(-dV/(g*p))) / f.
+}
 
-  RETURN g * m * p * (1 - e^(-dV/(g*p))) / f.
+
+// turn on sas to the given mode and unlock steering
+function setSasMode
+{
+	parameter _mode.
+	// "PROGRADE", "RETROGRADE",
+	// "NORMAL", "ANTINORMAL",
+	// "RADIALOUT", "RADIALIN",
+	// "TARGET", "ANTITARGET",
+	// "MANEUVER",
+	// "STABILITYASSIST", and "STABILITY"
+	sas on.
+	wait 0.
+	set sasmode to _mode.
+	unlock steering.
 }
 
 function setantenna

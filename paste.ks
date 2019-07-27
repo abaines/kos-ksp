@@ -57,6 +57,8 @@ lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
 lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
 
+lock orbitalSpeed to ship:velocity:ORBIT:mag.
+
 local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*25. }, RGB(0.1,0.1,0.1)).
 
@@ -130,9 +132,17 @@ when dist2ground>50 then
 
 
 local fuelLabel to heartGui:addLabel("").
+local MANEUVER_TIMELabel to heartGui:addLabel("").
+local eta_apoapsisLabel to heartGui:addLabel("").
+lock burnTime to MANEUVER_TIME(2296-orbitalSpeed).
+lock eta_burn to eta_apoapsis() - burnTime/2.0.
 when true then
 {
-	set fuelLabel:text to "fuel: "+GetStageLowestResource("liquidfuel").
+	local burnTime to MANEUVER_TIME(2296-orbitalSpeed).
+	set fuelLabel:text to "fuel: "+RAP(GetStageLowestResource("liquidfuel"),2).
+	set MANEUVER_TIMELabel:text to "burnTime: "+RAP(burnTime,2).
+	set eta_apoapsisLabel:text to "eta_burn: "+RAP(eta_burn,2).
+
 	return true. //keep alive
 }
 
@@ -166,22 +176,35 @@ when stage:number=0 then
 	wait 0.
 }
 
-wait until SHIP:APOAPSIS>85000.
+wait until SHIP:APOAPSIS>81000 or SHIP:ALTITUDE>70000.
 
+print("Cutting engines and wait for apo burn").
 lock throttle to 0.
 lock simplePitch to 0.
 
-print("TODO!").
+wait until eta_burn<=0.
 
-wait until eta_apoapsis() < 30.
+print("apo burning").
+lock throttle to 1.
+lock simplePitch to 0.
 
-print("TODO Harder!").
+wait until SHIP:PERIAPSIS>=70000.
 
+print("Orbit: " + RAP(SHIP:PERIAPSIS)).
+lock throttle to 0.
+lock simplePitch to 0.
 
+wait 0.
 
-wait until abort.
-
+rcs off.
+setSasMode("PROGRADE").
 abort off.
+
+unlock throttle.
+unlock steering.
+
+
+
 
 print("end of file").
 

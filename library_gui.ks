@@ -257,9 +257,9 @@ function createHeartbeatGui
 
 		set partCountLabel:text to "#parts: "+getAllParts():length.
 
-		set speedLabel:text to "speed: "+round(ship:velocity:surface:mag,6).
+		set speedLabel:text to "speed: "+RAP(ship:velocity:surface:mag,3).
 
-		set radarLabel:text to "radar: "+round(min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT),6).
+		set radarLabel:text to "radar: "+RAP(min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT),3).
 
 		return true. //keep alive
 	}
@@ -400,7 +400,7 @@ function createWaypointDropdownMenu
 // Round And Pad a number for printing
 function RAP
 {
-	parameter _number, _round, _pad.
+	parameter _number, _round is 0, _pad is 0.
 	// TODO: deal with decimal point moving so we always pad zeros to right
 	// number of digits to right of decimal point should be equal to _round, pad with zeros as needed
 	return round(_number,_round):toString:padLeft(_pad).
