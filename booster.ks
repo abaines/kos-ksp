@@ -41,16 +41,10 @@ lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAIN
 lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
 lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
 
-local vddUpwardMovement is VECDRAW_DEL({return ship:position.}, { return 10*upwardMovementVec. }, RGB(1,0,1)).
-
 lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
 lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
 
 local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
-local vddTravelFlat is VECDRAW_DEL({return ship:position.}, { return travelDirection*10. }, RGB(0,1,1)).
-local vddLean is VECDRAW_DEL({return ship:position.}, { return leadDirection*10. }, RGB(1,1,0)).
-
-local vddUp is VECDRAW_DEL({return ship:position.}, { return vec_up():normalized*7. }, RGB(1,1,1)).
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*10. }, RGB(0.1,0.1,0.1)).
 
 local initialGeoPosition is SHIP:GEOPOSITION.
@@ -61,8 +55,8 @@ lock steering to initialGeoPosition:ALTITUDEPOSITION(SHIP:ALTITUDE+900).
 
 
 global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.75, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-global altPID TO PIDLOOP(0.1, 0.01, 2, -10, 30). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global altPID TO PIDLOOP(0.1, 0.01, 2, -100, 300). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 
 
 
@@ -72,15 +66,13 @@ when true then
 	lock throttle to twrPID:update(time:second,twr).
 	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
 	set deltaAltPID:SETPOINT to altPID:update(time:second,dist2ground).
-	set altPID:SETPOINT to 100.
+	set altPID:SETPOINT to 1000.
 
 	set thrustSlider:value to throttle.
 
 	return true. //keep alive
 }
 
-
-addPidInterfaceToGui(heartGui,twrPID).
 
 
 until 0 { wait 0. } // main loop wait forever

@@ -221,7 +221,6 @@ function createHeartbeatGui
 
 	local loadPackLabel is heartGui:addlabel("loadPackLabel").
 	local statusLabel is heartGui:addlabel("statusLabel").
-	local typeLabel is heartGui:addlabel("typeLabel").
 	local partCountLabel is heartGui:addlabel("partCountLabel").
 	local speedLabel is heartGui:addlabel("speedLabel").
 	local radarLabel is heartGui:addlabel("radarLabel").
@@ -254,15 +253,13 @@ function createHeartbeatGui
 		}
 		set loadPackLabel:text to stringBuilder.
 
-		set statusLabel:text to ship:status.
+		set statusLabel:text to "S:" +  ship:status + "  T:" + ship:type.
 
-		set typeLabel:text to ship:type.
+		set partCountLabel:text to "#parts: "+getAllParts():length.
 
-		set partCountLabel:text to ""+getAllParts():length.
+		set speedLabel:text to "speed: "+round(ship:velocity:surface:mag,6).
 
-		set speedLabel:text to ""+ship:velocity:surface:mag.
-
-		set radarLabel:text to ""+min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
+		set radarLabel:text to "radar: "+round(min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT),6).
 
 		return true. //keep alive
 	}
@@ -398,6 +395,17 @@ function createWaypointDropdownMenu
 
 	return guiWaypointPopupMenu.
 }
+
+
+// Round And Pad a number for printing
+function RAP
+{
+	parameter _number, _round, _pad.
+	// TODO: deal with decimal point moving so we always pad zeros to right
+	// number of digits to right of decimal point should be equal to _round, pad with zeros as needed
+	return round(_number,_round):toString:padLeft(_pad).
+}
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
