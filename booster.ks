@@ -22,7 +22,6 @@ until getCpuCoreCount()<=1 { wait 0. }
 
 
 
-// CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 print("I'm in control now!").
 local heartGui is gui(200).
 addHeartbeatGui(heartGui).
@@ -78,9 +77,8 @@ lock steering to stopVector().
 
 global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-//global altPID TO PIDLOOP(0.1, 0.01, 2, -100, 300). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 
-local landRateInterceptLex to slopeInterceptLex2(25,-60,80,-20,true).
+local landRateInterceptLex to slopeInterceptLex2(50,-15,200,-5,true).
 
 local thrustSlider is heartGui:ADDHSLIDER(0,0,1).
 local maxTwrLabel to heartGui:addLabel("maxTwrLabel").
@@ -90,7 +88,6 @@ when true then
 	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
 	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
 	set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
-	//set altPID:SETPOINT to 1000.
 
 	set thrustSlider:value to throttle.
 	set maxTwrLabel:text to "maxTwr: " + RAP(maxTwr,3).
@@ -103,7 +100,6 @@ when ship:status<>"FLYING" then
 	HUD(ship:status+"! " + RAP(ship:velocity:surface:mag,3) + "  " + time:seconds).
 }
 
-//addPidInterfaceToGui(heartGui,deltaAltPID).
 
 
 until 0 { wait 0. } // main loop wait forever
