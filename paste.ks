@@ -191,7 +191,14 @@ print("apo burning").
 lock throttle to 1.
 lock simplePitch to 0.
 
-wait until SHIP:PERIAPSIS>=70000.
+
+when SHIP:PERIAPSIS>=70000 or ship:status="ORBITING" then
+{
+	HUD("ORBIT!").
+}
+
+wait until SHIP:PERIAPSIS>=70000 or ship:status="ORBITING".
+HUD("ORBITING!").
 
 print("Orbit: " + RAP(SHIP:PERIAPSIS)).
 lock throttle to 0.

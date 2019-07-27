@@ -466,6 +466,46 @@ function IsActiveVessel
 }
 
 
+// HUDText wrapper for making displaying HUDText easier
+// 1 = upper left
+// 2 = upper center
+// 3 = upper right
+// 4 = lower center
+function HUD
+{
+	parameter messagetext.
+	parameter _delaySeconds is 15.
+	parameter _style is "1234". // a string containing areas to display, or a scalar with the one area to display
+	parameter _size is 15.
+	parameter _colour is white.
+	parameter _doEcho is true.
+
+	if _style:ISTYPE("Scalar")
+	{
+		HUDTEXT(messagetext,_delaySeconds,_style,_size,_colour,_doEcho).
+		return.
+	}
+
+	// else we have hopefully have a string with areas to display in
+	if _style:CONTAINS("1")
+	{	// 1 = upper left
+		HUDTEXT(""+messagetext+"",_delaySeconds,1,_size,_colour,_doEcho).
+	}
+	if _style:CONTAINS("2")
+	{	// 2 = upper center
+		HUDTEXT(""+messagetext+" ",_delaySeconds,2,_size,_colour,_doEcho).
+	}
+	if _style:CONTAINS("3")
+	{	// 3 = upper right
+		HUDTEXT(" "+messagetext+"",_delaySeconds,3,_size,_colour,_doEcho).
+	}
+	if _style:CONTAINS("4")
+	{	// 4 = lower center
+		HUDTEXT(" "+messagetext+" ",_delaySeconds,4,_size,_colour,_doEcho).
+	}
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

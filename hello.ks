@@ -303,7 +303,7 @@ if scriptState["deployFairingAlt"]>0
 {
 	when SHIP:ALTITUDE>scriptState["deployFairingAlt"] then
 	{
-		hudtext("deploying fairings", 15, 4, 15, white, false).
+		HUDTEXT("deploying fairings", 15, 4, 15, white, false).
 
 		for modulefairing in ship:modulesnamed("moduleproceduralfairing")
 		{
@@ -331,10 +331,8 @@ when scriptState:HASKEY("engineModeAlt") and scriptState["engineModeAlt"]>0 and 
 	}.
 
 	local modeEnginesText to "modeEngines#" + modeEngines + "  " + SHIP:ALTITUDE.
-	HUDTEXT("" +modeEnginesText+"" , 15, 1, 15, YELLOW, false).
-	HUDTEXT("" +modeEnginesText+" ", 15, 2, 15, YELLOW, false).
-	HUDTEXT(" "+modeEnginesText+"" , 15, 3, 15, YELLOW, false).
-	HUDTEXT(" "+modeEnginesText+" ", 15, 4, 15, YELLOW, false).
+	HUD(modeEnginesText, 15, "1234", 15, YELLOW, false).
+
 
 	set scriptState["engineModeAlt"] to -1.
 	WRITEJSON(scriptState, "1:scriptState.json").

@@ -407,10 +407,7 @@ function managePanelsAndAntenna
 		else if alt>spaceAlt and not areDeployed
 		{
 			stopwarp().
-			HUDTEXT("Space!1", 15, 1, 15, BLUE, false).
-			HUDTEXT("Space!2", 15, 2, 15, BLUE, false).
-			HUDTEXT("Space!3", 15, 3, 15, BLUE, false).
-			HUDTEXT("Space!4", 15, 4, 15, BLUE, false).
+			HUD("Space!", 15, "1234", 15, BLUE, false).
 			panels on.
 			setantenna(true).
 			set areDeployed to true.
@@ -419,10 +416,7 @@ function managePanelsAndAntenna
 		else if alt<spaceAlt and areDeployed
 		{
 			stopwarp().
-			HUDTEXT("Air!1", 15, 1, 15, CYAN, false).
-			HUDTEXT("Air!2", 15, 2, 15, CYAN, false).
-			HUDTEXT("Air!3", 15, 3, 15, CYAN, false).
-			HUDTEXT("Air!4", 15, 4, 15, CYAN, false).
+			HUD("Air!", 15, "1234", 15, CYAN, false).
 			panels off.
 			setantenna(false).
 			set areDeployed to false.
@@ -933,7 +927,8 @@ function setupRemoteTechAntenna
 			gmodule:DOEVENT("activate").
 		}
 	}
-	hudtext("" + satelliteName + " #"+antennae:length, 15, 4, 15, white, false).
+	local text is "" + satelliteName + " #"+antennae:length.
+	HUDTEXT(text, 15, 4, 15, white, false).
 }
 
 
