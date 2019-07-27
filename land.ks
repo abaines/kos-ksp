@@ -4,7 +4,7 @@ runoncepath("library").
 
 librarysetup().
 
-print "lander.ks" at(45,0).
+print "land.ks 16".
 
 wait 0.
 
@@ -15,7 +15,7 @@ lock electricchargepercent to GetShipResourcePercent("electriccharge").
 when 1 then
 {
 	print electricchargepercent at (45,27).
-	
+
 	if electricchargepercent < 0.3333
 	{
 		FUELCELLS ON.
@@ -24,7 +24,7 @@ when 1 then
 	{
 		FUELCELLS OFF.
 	}
-	
+
 	print FUELCELLS at (45,28).
 
 	wait 0.
@@ -54,15 +54,15 @@ until vang(ship:facing:vector,-1*ship:prograde:vector) < 5 or ship:PERIAPSIS < 4
 
 global prevKscDist is 2147483646.
 
-until (geo_ksc:distance - prevKscDist < 0 
-		and prevKscDist < 2147483646 
+until (geo_ksc:distance - prevKscDist < 0
+		and prevKscDist < 2147483646
 		and geo_ksc:distance<1400000
 		and geo_ksc:distance>600000)
 		or ship:PERIAPSIS < 40000
 {
 	print geo_ksc:distance at (45,10).
 	print geo_ksc:distance - prevKscDist at (45,11).
-	
+
 	set prevKscDist to geo_ksc:distance.
 	wait 0.
 }
@@ -142,9 +142,9 @@ until happy>1000
 		print "speed   : " + ship:velocity:surface:mag at (45,21).
 		print "alt     : " + ship:ALTITUDE  at (45,22).
 	}
-	
+
 	print "d-speed : " + (ship:velocity:surface:mag-prevSpeed) at (45,24).
 	set prevSpeed to ship:velocity:surface:mag.
-	
+
 	wait 0.
 }
