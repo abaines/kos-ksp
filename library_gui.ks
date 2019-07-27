@@ -345,6 +345,7 @@ function addRevertLaunchButton
 	local _hlayout to _gui:ADDHLAYOUT().
 	local launchButton to _hlayout:addbutton("-> Launch").
 	local editorButton to _hlayout:addbutton("-> Editor").
+	local quickLoadButton to _hlayout:addbutton("-> Quick").
 
 	local clickProtection to 0.
 
@@ -368,10 +369,21 @@ function addRevertLaunchButton
 		set clickProtection to time:seconds+2.
 	}.
 
+	set quickLoadButton:onclick to {
+		print("QUICKLOAD").
+		if time:seconds<clickProtection
+		{
+			wait 0.
+			KUniverse:QUICKLOAD().
+		}
+		set clickProtection to time:seconds+2.
+	}.
+
 	when true then
 	{
 		set launchButton:visible to KUniverse:CANREVERTTOLAUNCH.
 		set editorButton:visible to KUniverse:CANREVERTTOEDITOR.
+		set quickLoadButton:visible to (not KUniverse:CANREVERTTOLAUNCH) or (not KUniverse:CANREVERTTOEDITOR).
 
 		return true. //keep alive
 	}
