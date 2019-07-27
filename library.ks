@@ -1113,6 +1113,13 @@ function listEngines
 }
 
 
+// alternate to ship:sensors:grav:mag
+function calculateGravity
+{
+	return body:mu / (altitude + body:radius)^2.
+}
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
