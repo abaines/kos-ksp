@@ -1097,6 +1097,18 @@ function totalCurrentThrust
 }
 
 
+// get the max thrust of all engines
+function totalMaxThrust
+{
+	local sum is 0.
+	FOR eng IN listEngines()
+	{
+		set sum to eng:MAXTHRUST + sum.
+	}.
+	return sum.
+}
+
+
 // get a list of all ENGINES
 function listEngines
 {
