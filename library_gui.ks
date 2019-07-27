@@ -231,7 +231,15 @@ function createHeartbeatGui
 
 		if heartbeatSlider:value=0
 		{
-			set heartbeatSlider:value to sliderSize.
+			set heartbeatSlider:value to sliderSize-1.
+		}
+		else if heartbeatSlider:value=sliderSize
+		{
+			set heartbeatSlider:value to 1.
+		}
+		else if IsActiveVessel()
+		{
+			set heartbeatSlider:value to heartbeatSlider:value + 1.
 		}
 		else
 		{
@@ -447,6 +455,14 @@ function RAP
 	// TODO: deal with decimal point moving so we always pad zeros to right
 	// number of digits to right of decimal point should be equal to _round, pad with zeros as needed
 	return round(_number,_round):toString:padLeft(_pad).
+}
+
+
+// is the current (or given) vessel the active vessel
+function IsActiveVessel
+{
+	parameter _ship is ship.
+	return KUniverse:ACTIVEVESSEL = _ship.
 }
 
 
