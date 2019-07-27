@@ -1,35 +1,103 @@
 @LAZYGLOBAL off.
 
-runoncepath("library").
+global scriptEpoch to time:seconds.
 
-librarysetup().
+runOncePath("library").
+runOncePath("library_gui").
 
-print "land.ks 16".
+librarysetup(false).
+
+print("land.ks 16").
+print(CORE:tag).
+
+when time:seconds > scriptEpoch + 10 then
+{
+	set terminal:width  to 42.
+	set terminal:height to 20.
+}
 
 wait 0.
 
 sas off.
+rcs on.
+abort off.
 
-lock electricchargepercent to GetShipResourcePercent("electriccharge").
+managePanelsAndAntenna().
+manageFuelCells().
 
-when 1 then
+
+
+// TODO: make library_vec.ks for vector math functions
+
+lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
+
+lock twr to totalCurrentThrust() / shipWeight.
+
+lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
+
+lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
+lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
+
+lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
+lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
+
+lock orbitalSpeed to ship:velocity:ORBIT:mag.
+
+local vddSrfPrograde is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
+local vddSrfProgradePlane is VECDRAW_DEL({return ship:position.}, { return VXCL(vec_up(),ship:srfprograde:vector):normalized*100. }, RGB(0,1,0.5)).
+local vddSrfRetroPlane is VECDRAW_DEL({return ship:position.}, { return VXCL(vec_up(),-1*ship:srfprograde:vector):normalized*100. }, RGB(1,0.5,0)).
+local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*25. }, RGB(0.1,0.1,0.1)).
+
+local initialGeoPosition is SHIP:GEOPOSITION.
+
+
+
+local stopInterceptLex to slopeInterceptLex2(3,0,40,1,true).
+function stopVector
 {
-	print electricchargepercent at (45,27).
+	// TODO: smarter stop: include small amount of goal
+	local sup to ship:up:vector:normalized.
 
-	if electricchargepercent < 0.3333
-	{
-		FUELCELLS ON.
-	}
-	else
-	{
-		FUELCELLS OFF.
-	}
+	local destabilizingStr to slopeInterceptCalc2(stopInterceptLex,ship:GROUNDSPEED).
 
-	print FUELCELLS at (45,28).
-
-	wait 0.
-	PRESERVE.
+	local retro to -1*ship:velocity:surface:normalized.
+	// reverse stabilization
+	local retroRatioStabilized to destabilizingStr*retro + sup.
+	return retroRatioStabilized:normalized.
 }
+local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*15. }, RGB(1,0.1,0.1)).
+
+
+SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
+unlock steering.
+unlock throttle.
+
+
+global landGui is gui(200).
+landGui:ADDLABEL("Land GUI").
+
+local modeLayout to landGui:ADDHLAYOUT().
+local progradeCheckbox to modeLayout:addcheckbox("Prograde",false).
+local retrogradeCheckbox to modeLayout:addcheckbox("Retrograde",false).
+local modeSlider to landGui:ADDHSLIDER(50,0,100).
+local landThrottleCheckbox to landGui:addcheckbox("Land Throttle",false).
+
+addRevertLaunchButton(landGui).
+landGui:show().
+
+
+
+
+
+until 0 { wait 0. } // main loop wait forever
+
+///////////////////////////////////////////////////////////////////////////////
+//// Wait Forever ///// Wait Forever ///// Wait Forever ///// Wait Forever ////
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 // target draw
 global geo_ksc to LATLNG(0,-74).
