@@ -67,11 +67,12 @@ local initialGeoPosition is SHIP:GEOPOSITION.
 
 function safeStage
 {
+	// Warning: Calling the Stage function on a vessel other than the active vessel will throw an exception.
 	unlock steering.
 	unlock throttle.
 	wait 0.
 	UNTIL STAGE:READY { WAIT 0. }
-	print("Safe Staging: " + RAP(time:seconds-scriptEpoch,2,6)).
+	print("Safe Staging: " + RAP(time:seconds-scriptEpoch,2,6) + "  " + IsActiveVessel()).
 	stage.
 	wait 0.
 }
@@ -145,6 +146,8 @@ when true then
 
 	return true. //keep alive
 }
+
+addRevertLaunchButton(heartGui).
 
 
 local stageProtector to time:seconds + 2.
