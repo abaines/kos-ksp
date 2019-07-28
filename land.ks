@@ -87,13 +87,38 @@ lock steering to "kill".
 local vddSteeringVector is VECDRAW_DEL({return ship:position.}, { return convertToVector(steering):normalized*17. }, RGB(1,1,0)).
 
 lock steeringError to vang(convertToVector(steering),ship:facing:vector).
+local prevSteeringError to 180.
+global steeringErrorDelta to 0.
+when true then
+{
+	set steeringErrorDelta to steeringError - prevSteeringError.
+	set prevSteeringError to steeringError.
+	return true. //keep alive
+}
 
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 unlock steering.
 unlock throttle.
 
 
-global landGui is gui(200).
+local HX_HPDs to ship:PARTSDUBBEDPATTERN("HX-HPD Heavy Propulsion Device").
+// [0] = "ClosedCycle"
+// [1] = "HybridPlasma"
+// ideal isp mode switch alt 634.278
+if HX_HPDs:length=1
+{
+	print("Detected: '" + "HX-HPD Heavy Propulsion Device" + "'").
+	global HX_HPD to HX_HPDs[0].
+}
+else
+{
+	print("HX-HPD Heavy Propulsion Device: " + HX_HPDs:length).
+	die.
+}
+
+
+
+global landGui is gui(220).
 set landGui:x to -400.
 set landGui:y to 100.
 landGui:ADDLABEL("Land GUI").
@@ -149,13 +174,17 @@ set landThrottleCheckbox:ontoggle to {
 	}
 }.
 
+local engineModeButton to landGui:addbutton("engineModeCheckbox").
+set engineModeButton:onclick to {
+	HX_HPD:TOGGLEMODE.
+}.
 
 local gforceLabel to landGui:ADDLABEL("g-force").
 local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 
 // TODO: auto RSC
 // TODO: engine mode toggle
-// TODO: landing math
+// TODO: adjust landing math
 // TODO: deploy heatshield
 // TODO: auto engine mode (detect engine mode?)
 // TODO: track acc, if over 2 trigger followed by less then 1 -> flip operation
@@ -175,7 +204,8 @@ local landRateInterceptLex to slopeInterceptLex2(25,-50,200,-12.5,true).
 when true then
 {
 	set gforceLabel:text to "acc: " + RAP(ship:sensors:acc:mag/ship:sensors:grav:mag,3).
-	set steeringErrorLabel:text to "steering err: " + RAP(steeringError,3).
+	set steeringErrorLabel:text to "steering err: " + RAP(steeringError,3,6) + "   " + RAP(steeringErrorDelta,3).
+	set engineModeButton:text to ""+HX_HPD:mode.
 
 	return true. //keep alive
 }
@@ -186,6 +216,28 @@ when landThrottleCheckbox:pressed then
 	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
 	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
 	set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
+
+	return true. //keep alive
+}
+
+when true then
+{
+	if steeringError<1 or steeringErrorDelta<0
+	{
+		rcs off.
+	}
+	else if SHIP:ALTITUDE > 60_000
+	{
+		rcs off.
+	}
+	else if progradeCheckbox:pressed or retrogradeCheckbox:pressed
+	{
+		rcs on.
+	}
+	else
+	{
+		rcs off.
+	}
 
 	return true. //keep alive
 }
