@@ -1183,6 +1183,7 @@ function convertToVector
 	{
 		print("!! convertToVector unknown type:").
 		print(_input:INHERITANCE).
+		print(_input:tostring).
 		return V(0,0,0).
 	}
 }

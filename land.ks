@@ -46,6 +46,7 @@ manageFuelCells().
 lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
 lock twr to totalCurrentThrust() / shipWeight.
+lock maxTwr to totalMaxThrust() / shipWeight.
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
@@ -82,8 +83,10 @@ function stopVector
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*15. }, RGB(1,0.1,0.1)).
 
 
+lock steering to "kill".
 local vddSteeringVector is VECDRAW_DEL({return ship:position.}, { return convertToVector(steering):normalized*17. }, RGB(1,1,0)).
 
+lock steeringError to vang(convertToVector(steering),ship:facing:vector).
 
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 unlock steering.
@@ -91,6 +94,8 @@ unlock throttle.
 
 
 global landGui is gui(200).
+set landGui:x to -400.
+set landGui:y to 100.
 landGui:ADDLABEL("Land GUI").
 
 local modeLayout to landGui:ADDHLAYOUT().
@@ -130,19 +135,30 @@ set retrogradeCheckbox:ontoggle to {
 }.
 
 local landThrottleCheckbox to landGui:addcheckbox("Land Throttle",false).
+set landThrottleCheckbox:ontoggle to {
+	parameter newstate.
+	if newstate
+	{
+		print("Land Throttle").
+	}
+	else
+	{
+		print("unlock throttle").
+		SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
+		unlock throttle.
+	}
+}.
+
 
 local gforceLabel to landGui:ADDLABEL("g-force").
-when true then
-{
-	set gforceLabel:text to "acc: " + RAP(ship:sensors:acc:mag/ship:sensors:grav:mag,3).
+local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 
-	return true. //keep alive
-}
-
-// TODO: steering "AOA"
 // TODO: auto RSC
 // TODO: engine mode toggle
 // TODO: landing math
+// TODO: deploy heatshield
+// TODO: auto engine mode (detect engine mode?)
+// TODO: track acc, if over 2 trigger followed by less then 1 -> flip operation
 // 0.005860315 x + 281.05406
 // 0.085114108x  + 230.78512
 // ideal isp mode switch alt 634.278
@@ -152,6 +168,37 @@ landGui:show().
 
 
 
+global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+local landRateInterceptLex to slopeInterceptLex2(25,-50,200,-12.5,true).
+
+when true then
+{
+	set gforceLabel:text to "acc: " + RAP(ship:sensors:acc:mag/ship:sensors:grav:mag,3).
+	set steeringErrorLabel:text to "steering err: " + RAP(steeringError,3).
+
+	return true. //keep alive
+}
+
+when landThrottleCheckbox:pressed then
+{
+	lock throttle to twrPID:update(time:second,twr).
+	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
+	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
+	set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
+
+	return true. //keep alive
+}
+
+
+
+local prevStatus is "".
+when ship:status<>prevStatus then
+{
+	pwset(ship:status).
+	set prevStatus to ship:status.
+	return true. //keep alive
+}
 
 
 until 0 { wait 0. } // main loop wait forever
