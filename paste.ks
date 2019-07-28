@@ -1,6 +1,17 @@
 @LAZYGLOBAL off.
 
 global scriptEpoch to time:seconds.
+lock scriptElapsedTime to time:seconds - scriptEpoch.
+lock PSET to " @ " + RAP(scriptElapsedTime,2).
+
+// print with @ script Elapsed Time
+function pwset
+{
+	parameter msg.
+	local _pset to PSET.
+	local padRequired to 42-_pset:length.
+	print(msg:toString:padRight(padRequired)+_pset).
+}
 
 runOncePath("library").
 runOncePath("library_gui").
@@ -24,6 +35,7 @@ if core:tag<>"mastercpu"
 	print("Switching to booster script").
 	run booster.
 	print("derpy town").
+	die. // TODO: something better
 }
 else
 {
@@ -76,7 +88,7 @@ function safeStage
 	unlock throttle.
 	wait 0.
 	UNTIL STAGE:READY { WAIT 0. }
-	print("Safe Staging: " + RAP(time:seconds-scriptEpoch,2,6) + "  " + IsActiveVessel()).
+	pwset("Safe Staging").
 	stage.
 	wait 0.
 }
@@ -100,7 +112,7 @@ when true then
 {
 	if stage:number<>prevStageNumber
 	{
-		print("Stage#: " + stage:number).
+		pwset("Stage #: " + stage:number).
 		set prevStageNumber to stage:number.
 	}
 	return true. //keep alive
@@ -136,14 +148,13 @@ when true then
 	{
 		set thrustIncreaseTime to time:seconds+1.5.
 	}
-	//print("$ "+RAP(ship:MAXTHRUST,2,7)+ "  " + RAP(tct,2,6) + "  " + RAP(time:seconds-thrustIncreaseTime,2,6)).
 	set prevThrust to tct.
 
 	return true. //keep alive
 }
 when time:seconds>thrustIncreaseTime then
 {
-	print("time:seconds>thrustIncreaseTime " + RAP(time:seconds-scriptEpoch,0,3)).
+	pwset("time:seconds>thrustIncreaseTime").
 	safeStage. // fire main engine for liftoff
 	lock steering to HEADING(90,max(0,89.9)).
 	lock throttle to 1.
@@ -152,7 +163,7 @@ when time:seconds>thrustIncreaseTime then
 
 when dist2ground>50 then
 {
-	print("dist2ground>50").
+	pwset("dist2ground>50").
 	lock steering to HEADING(90,max(0,simplePitch)).
 }
 
@@ -179,7 +190,7 @@ local stageProtector to time:seconds + 2.
 when GetStageLowestResource("liquidfuel")<=0.1 and time:seconds>stageProtector and STAGE:READY then
 {
 	wait 0.
-	print("stage").
+	pwset("Stage empty booster").
 	stage.
 	wait 0.
 
@@ -200,32 +211,33 @@ when stage:number=0 then
 			set modeEngines to 1 + modeEngines.
 		}
 	}.
-	print("modeEngines: "+modeEngines).
+	pwset("modeEngines: "+modeEngines).
 	wait 0.
 }
 
+pwset("Main script body").
+
 wait until SHIP:APOAPSIS>81000 or SHIP:ALTITUDE>70000.
 
-print("Cutting engines and wait for apo burn").
+pwset("Coasting to Apo Burn").
 lock throttle to 0.
 lock simplePitch to 0.
 
 wait until eta_burn<=0.
 
-print("apo burning").
+pwset("Apo Burning").
 lock throttle to 1.
 lock simplePitch to 0.
 
 
 when SHIP:PERIAPSIS>=70000 or ship:status="ORBITING" then
 {
-	HUD("ORBIT!").
+	HUD("ORBIT!" + PSET).
 }
 
 wait until SHIP:PERIAPSIS>=70000 or ship:status="ORBITING".
-HUD("ORBITING!").
 
-print("Orbit: " + RAP(SHIP:PERIAPSIS)).
+pwset("Orbit: " + RAP(SHIP:PERIAPSIS)).
 lock throttle to 0.
 lock simplePitch to 0.
 
@@ -243,7 +255,7 @@ set vddSteeringVector:SHOW to false.
 
 
 
-print("End of Main Script --- Waiting forever.").
+pwset("End of Main Script").
 until 0 { wait 0. } // main loop wait forever
 
 // kerbin Orbital velocity (m/s) 2296

@@ -1,6 +1,8 @@
 @LAZYGLOBAL off.
 
 global scriptEpoch to time:seconds.
+lock scriptElapsedTime to time:seconds - scriptEpoch.
+lock PSET to " @ " + RAP(scriptElapsedTime,2).
 
 runOncePath("library").
 runOncePath("library_gui").
@@ -99,7 +101,7 @@ when true then
 
 when ship:status<>"FLYING" then
 {
-	HUD(ship:status+"! " + RAP(ship:velocity:surface:mag,3) + "  " + time:seconds).
+	HUD(ship:status+"! " + RAP(ship:velocity:surface:mag,3) + PSET).
 }
 
 
