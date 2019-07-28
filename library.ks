@@ -650,6 +650,45 @@ function setantenna
 }
 
 
+// search for module callable (field/event/action) with search text.
+function searchForModuleCallablesByName
+{
+	parameter searchText.
+	parameter _parts is getAllParts().
+	parameter delegate is {
+		parameter partModule,text.
+		print(partModule:part:title).
+		print(" " + partModule:name).
+		print("  " + text).
+	}.
+
+	for partModule in getPartModulesForParts(_parts)
+	{
+		for text in partModule:ALLFIELDS
+		{
+			if text:contains(searchText)
+			{
+				delegate(partModule,text).
+			}
+		}
+		for text in partModule:ALLEVENTS
+		{
+			if text:contains(searchText)
+			{
+				delegate(partModule,text).
+			}
+		}
+		for text in partModule:ALLACTIONS
+		{
+			if text:contains(searchText)
+			{
+				delegate(partModule,text).
+			}
+		}
+	}
+}
+
+
 // given a partModule, return all of the fields/events/actions/names for it
 // returns SET<String>
 function modHelper
