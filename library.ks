@@ -1085,15 +1085,19 @@ function VesselAndPartCheck
 {
 	parameter match is ship:name.
 
-	local partCount is getAllParts():length.
-	local vesselCount is 1.
-	local loadedCount is 1.
+	local partCount is 0.
+	local vesselCount is 0.
+	local loadedCount is 0.
+	local partList is list().
 
-	for ves in getAllVessels()
+	function u
 	{
+		parameter ves.
 		if ves:name:contains(match)
 		{
-			set partCount to ves:PARTS:length + partCount.
+			local vesParts to ves:PARTS:length.
+			partList:add(vesParts).
+			set partCount to vesParts + partCount.
 			set vesselCount to 1 + vesselCount.
 			if ves:loaded
 			{
@@ -1102,7 +1106,13 @@ function VesselAndPartCheck
 		}
 	}
 
-	return "# of Ships: " + loadedCount + " / " + vesselCount + "   # of Parts: " + partCount.
+	u(ship).
+	for ves in getAllVessels()
+	{
+		u(ves).
+	}
+
+	return "Ships: " + loadedCount + " / " + vesselCount + "   Parts: " + partCount + " (" + partList:join("+") + ")".
 }
 
 
