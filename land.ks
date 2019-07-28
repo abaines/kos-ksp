@@ -126,7 +126,7 @@ landGui:ADDLABEL("Land GUI").
 local modeLayout to landGui:ADDHLAYOUT().
 local progradeCheckbox to modeLayout:addcheckbox("Prograde",false).
 local retrogradeCheckbox to modeLayout:addcheckbox("Retrograde",false).
-local modeSlider to landGui:ADDHSLIDER(0.5,0,1).
+local modeSlider to landGui:ADDHSLIDER(1,0,1).
 
 set progradeCheckbox:ontoggle to {
 	parameter newstate.
@@ -182,7 +182,6 @@ set engineModeButton:onclick to {
 local gforceLabel to landGui:ADDLABEL("g-force").
 local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 
-// TODO: auto RSC
 // TODO: engine mode toggle
 // TODO: adjust landing math
 // TODO: deploy heatshield
@@ -195,12 +194,15 @@ local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 addRevertLaunchButton(landGui).
 landGui:show().
 
+wait 0.
+set retrogradeCheckbox:pressed to true.
 
 
 global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 local landRateInterceptLex to slopeInterceptLex2(25,-50,200,-12.5,true).
 
+// GUI updates
 when true then
 {
 	set gforceLabel:text to "acc: " + RAP(ship:sensors:acc:mag/ship:sensors:grav:mag,3).
@@ -210,6 +212,7 @@ when true then
 	return true. //keep alive
 }
 
+// throttle PIDs
 when landThrottleCheckbox:pressed then
 {
 	lock throttle to twrPID:update(time:second,twr).
@@ -220,25 +223,34 @@ when landThrottleCheckbox:pressed then
 	return true. //keep alive
 }
 
-when true then
+
+// RCS controller
+function rcsController
 {
-	if steeringError<1 or steeringErrorDelta<0
+	if progradeCheckbox:pressed or retrogradeCheckbox:pressed
 	{
-		rcs off.
-	}
-	else if SHIP:ALTITUDE > 60_000
-	{
-		rcs off.
-	}
-	else if progradeCheckbox:pressed or retrogradeCheckbox:pressed
-	{
-		rcs on.
-	}
-	else
-	{
-		rcs off.
+		if SHIP:ALTITUDE < 60_000
+		{
+			if steeringError>1 and steeringErrorDelta>0
+			{
+				rcs on.
+				return.
+			}
+			else if steeringError>3
+			{
+				rcs on.
+				return.
+			}
+		}
 	}
 
+	// else
+	rcs off.
+}
+// RCS controller
+when true then
+{
+	rcsController().
 	return true. //keep alive
 }
 
@@ -253,6 +265,7 @@ when ship:status<>prevStatus then
 }
 
 
+pwset("Script loaded").
 until 0 { wait 0. } // main loop wait forever
 
 ///////////////////////////////////////////////////////////////////////////////
