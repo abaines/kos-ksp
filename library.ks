@@ -655,12 +655,25 @@ function searchForModuleCallablesByName
 {
 	parameter searchText.
 	parameter _parts is getAllParts().
-	parameter delegate is {
+
+	// partModule:part:title -> partModule:name -> text
+	local lex is lexicon().
+
+	function updateLex
+	{
 		parameter partModule,text.
-		print(partModule:part:title).
-		print(" " + partModule:name).
-		print("  " + text).
-	}.
+		local partTitle is partModule:part:title.
+		local moduleName is partModule:name.
+		if not lex:haskey(partTitle)
+		{
+			lex:add(partTitle,lexicon()).
+		}
+		if not lex[partTitle]:haskey(moduleName)
+		{
+			lex[partTitle]:add(moduleName,UniqueSet()).
+		}
+		lex[partTitle][moduleName]:add(text).
+	}
 
 	for partModule in getPartModulesForParts(_parts)
 	{
@@ -668,24 +681,26 @@ function searchForModuleCallablesByName
 		{
 			if text:contains(searchText)
 			{
-				delegate(partModule,text).
+				updateLex(partModule,text).
 			}
 		}
 		for text in partModule:ALLEVENTS
 		{
 			if text:contains(searchText)
 			{
-				delegate(partModule,text).
+				updateLex(partModule,text).
 			}
 		}
 		for text in partModule:ALLACTIONS
 		{
 			if text:contains(searchText)
 			{
-				delegate(partModule,text).
+				updateLex(partModule,text).
 			}
 		}
 	}
+
+	return lex.
 }
 
 
