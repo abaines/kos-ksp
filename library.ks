@@ -649,9 +649,12 @@ function setantenna
 	return antennaModules.
 }
 
+
+// given a partModule, return all of the fields/events/actions/names for it
+// returns SET<String>
 function modHelper
 {
-	parameter module.
+	parameter module, includeNames is true.
 
 	local us TO UNIQUESET().
 
@@ -659,30 +662,106 @@ function modHelper
 	{
 		us:add(f).
 	}
-	for fn in module:ALLFIELDNAMES
-	{
-		us:add(fn).
-	}
 	for e in module:ALLEVENTS
 	{
 		us:add(e).
-	}
-	for en in module:ALLEVENTNAMES
-	{
-		us:add(en).
 	}
 	for a in module:ALLACTIONS
 	{
 		us:add(a).
 	}
-	for an in module:ALLACTIONNAMES
+
+	if includeNames
 	{
-		us:add(an).
+		for fn in module:ALLFIELDNAMES
+		{
+			us:add(fn).
+		}
+		for en in module:ALLEVENTNAMES
+		{
+			us:add(en).
+		}
+		for an in module:ALLACTIONNAMES
+		{
+			us:add(an).
+		}
 	}
 
 	return us.
 }
 
+
+// get all of the modules for a given part
+// returns list<PartModule>
+function getPartModulesForPart
+{
+	parameter _part.
+	local partModules is list().
+
+	for module in _part:MODULES
+	{
+		partModules:add(_part:GETMODULE(module)).
+	}
+
+	return partModules.
+}
+
+
+// get all of the modules for a set of parts
+// returns list<PartModule>
+function getPartModulesForParts
+{
+	parameter _parts.
+	local partModules is list().
+
+	for _part in _parts
+	{
+		for module in _part:MODULES
+		{
+			partModules:add(_part:GETMODULE(module)).
+		}
+	}
+
+	return partModules.
+}
+
+
+// filter a list of PartModules to just those with a given field name
+// returns list<PartModule>
+function filterPartModulesWithField
+{
+	parameter partModules, fieldName.
+	local _partModules is list().
+
+	for partModule in partModules
+	{
+		if partModule:HasField(fieldName)
+		{
+			_partModules:add(partModule).
+		}
+	}
+
+	return _partModules.
+}
+
+
+// given a list<PartModule> calls SetField on each of them
+// return list<part> associated with fields that were set
+function setFieldOfPartModules
+{
+	parameter partModules, fieldName, fieldValue.
+	local _parts is list().
+
+	for partModule in partModules
+	{
+		if partModule:HasField(fieldName)
+		{
+			partModule:SETFIELD(fieldName,fieldValue).
+			_parts:add(partModule:part).
+		}
+	}
+	return _parts.
+}
 
 
 function IMNG
