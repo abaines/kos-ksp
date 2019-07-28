@@ -1,6 +1,17 @@
 @LAZYGLOBAL off.
 
 global scriptEpoch to time:seconds.
+lock scriptElapsedTime to time:seconds - scriptEpoch.
+lock PSET to " @ " + RAP(scriptElapsedTime,2).
+
+// print with @ script Elapsed Time
+function pwset
+{
+	parameter msg.
+	local _pset to PSET.
+	local padRequired to 42-_pset:length.
+	print(msg:toString:padRight(padRequired)+_pset).
+}
 
 runOncePath("library").
 runOncePath("library_gui").
@@ -71,7 +82,7 @@ function stopVector
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*15. }, RGB(1,0.1,0.1)).
 
 
-local vddSteeringVector is VECDRAW_DEL({return ship:position.}, { return convertToVector(steering):normalized()*17. }, RGB(1,1,0)).
+local vddSteeringVector is VECDRAW_DEL({return ship:position.}, { return convertToVector(steering):normalized*17. }, RGB(1,1,0)).
 
 
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
@@ -127,6 +138,14 @@ when true then
 
 	return true. //keep alive
 }
+
+// TODO: steering "AOA"
+// TODO: auto RSC
+// TODO: engine mode toggle
+// TODO: landing math
+// 0.005860315 x + 281.05406
+// 0.085114108x  + 230.78512
+// ideal isp mode switch alt 634.278
 
 addRevertLaunchButton(landGui).
 landGui:show().
