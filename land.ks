@@ -47,6 +47,7 @@ lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
 
 lock twr to totalCurrentThrust() / shipWeight.
 lock maxTwr to totalMaxThrust() / shipWeight.
+lock gforce to ship:sensors:acc:mag/ship:sensors:grav:mag.
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
 
@@ -57,6 +58,7 @@ lock travelDirection to VXCL(vec_up(),ship:srfprograde:vector):normalized.
 lock leadDirection to VXCL(vec_up(),ship:facing:vector):normalized.
 
 lock orbitalSpeed to ship:velocity:ORBIT:mag.
+lock surfaceSpeed to ship:velocity:SURFACE:mag.
 
 local vddSrfPrograde is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
 local vddSrfProgradePlane is VECDRAW_DEL({return ship:position.}, { return VXCL(vec_up(),ship:srfprograde:vector):normalized*100. }, RGB(0,1,0.5)).
@@ -179,9 +181,12 @@ set engineModeButton:onclick to {
 	HX_HPD:TOGGLEMODE.
 }.
 
+local altSpeedRatioLabel to landGui:ADDLABEL("altSpeedRatioLabel").
+
 local gforceLabel to landGui:ADDLABEL("g-force").
 local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 
+// TODO: enable rsc thruster
 // TODO: engine mode toggle
 // TODO: adjust landing math
 // TODO: deploy heatshield
@@ -200,14 +205,18 @@ set retrogradeCheckbox:pressed to true.
 
 global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-local landRateInterceptLex to slopeInterceptLex2(25,-50,200,-12.5,true).
+local landRateInterceptLex to slopeInterceptLex2(25,-20,300,-9,true).
+
+local maxgforce to 0.
 
 // GUI updates
 when true then
 {
-	set gforceLabel:text to "acc: " + RAP(ship:sensors:acc:mag/ship:sensors:grav:mag,3).
+	set maxgforce to max(maxgforce,gforce).
+	set gforceLabel:text to "acc: " + RAP(gforce,3) + " / " + RAP(maxgforce,3).
 	set steeringErrorLabel:text to "steering err: " + RAP(steeringError,3,6) + "   " + RAP(steeringErrorDelta,3).
 	set engineModeButton:text to ""+HX_HPD:mode.
+	set altSpeedRatioLabel:text to "Alt:Speed Ratio "+RAP(dist2ground / surfaceSpeed,3).
 
 	return true. //keep alive
 }
@@ -237,6 +246,11 @@ function rcsController
 				return.
 			}
 			else if steeringError>3
+			{
+				rcs on.
+				return.
+			}
+			else if dist2ground<100 and steeringError>0.5
 			{
 				rcs on.
 				return.
