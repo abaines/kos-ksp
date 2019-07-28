@@ -10,7 +10,7 @@ librarysetup(false).
 when time:seconds > scriptEpoch + 10 then
 {
 	set terminal:width  to 42.
-	set terminal:height to 20.
+	set terminal:height to 42.
 }
 
 print("paste.ks 14").
@@ -31,6 +31,8 @@ else
 	print("I'm the Master CPU.").
 	global heartGui is gui(200).
 	addHeartbeatGui(heartGui).
+	set heartGui:x to -400.
+	set heartGui:y to 100.
 	heartGui:show().
 }
 
@@ -236,6 +238,7 @@ abort off.
 unlock throttle.
 unlock steering.
 SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
+set vddSteeringVector:SHOW to false.
 
 
 
