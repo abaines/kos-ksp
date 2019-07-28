@@ -502,7 +502,6 @@ function GetStageLowestResource
 		{
 			if r:name = resourceType
 			{
-				//local perc is r:amount / r:capacity.
 				local perc is r:amount.
 
 				if perc < lowest
@@ -647,7 +646,6 @@ function setantenna
 		}
 	}
 
-	//print (time:seconds-startTime).
 	return antennaModules.
 }
 
@@ -804,7 +802,6 @@ function closestapproach
 	local minDist to 0.
 	local timeStep to 0.
 
-	//local i to 0.
 	for I IN RANGE(7)
 	{
 		local step to 7.
@@ -877,10 +874,8 @@ function EtaAscendingNode
 	if target:name = body:name { set tarN to ship:north:vector. }
 
 	local intersectV to vcrs(shipN,tarN):normalized * (target:position - body:position):mag.
-	//local mark_intersectV to VECDRAWARGS(body:position, intersectV, RGB(1.0,0,0), "intsctV", 1, true).
 
 	local shipVec is ship:position - body:position.
-	//local mark_shipVec to VECDRAWARGS(body:position, shipVec, RGB(0,0,1), "", 1, true).
 
 	local farTime is time:seconds + ship:orbit:period.
 	local nearTime is time:seconds.
@@ -900,8 +895,6 @@ function EtaAscendingNode
 		for t in timerange
 		{
 			local tShipVec to positionat(ship, t) - body:position.
-
-			//VECDRAWARGS(body:position, tShipVec, RGB(0,1/(5-i),1/(i+1)), "", 1, true).
 
 			local tAngl to vang(tShipVec,intersectV).
 
