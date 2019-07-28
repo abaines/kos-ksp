@@ -20,20 +20,18 @@ librarysetup(false).
 
 CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 print("land.ks 16").
-print(CORE:tag).
-print(calculateGravity()).
-print(ship:sensors:grav:mag).
+pwset(CORE:tag).
 
 when time:seconds > scriptEpoch + 10 then
 {
 	set terminal:width  to 42.
-	set terminal:height to 20.
+	set terminal:height to 30.
 }
 
 wait 0.
 
 sas off.
-rcs on.
+rcs off.
 abort off.
 
 managePanelsAndAntenna().
@@ -119,6 +117,10 @@ else
 }
 
 
+local vernorEngines to ship:PARTSDUBBED("Vernor Engine").
+pwset("RCSs enabled: " + setFieldOfPartModules(getPartModulesForParts(vernorEngines),"RCS",true):length ).
+
+
 
 global landGui is gui(220).
 set landGui:x to -400.
@@ -201,6 +203,10 @@ landGui:show().
 
 wait 0.
 set retrogradeCheckbox:pressed to true.
+if ship:status="ORBITING"
+{
+	set modeSlider:value to 0.
+}
 
 
 global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)

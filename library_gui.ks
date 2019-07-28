@@ -374,7 +374,9 @@ function addRevertLaunchButton
 		if time:seconds<clickProtection
 		{
 			wait 0.
+			print("KUniverse:QUICKLOAD()!").
 			KUniverse:QUICKLOAD().
+			print("KUniverse:QUICKLOAD()!").
 		}
 		set clickProtection to time:seconds+2.
 	}.
