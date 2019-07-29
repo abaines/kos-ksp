@@ -815,6 +815,48 @@ function setFieldOfPartModules
 }
 
 
+// does the given action exist on the given module on the given part?
+// return true if the action exists
+function doesPartWithModuleWithAction
+{
+	parameter _part.
+	parameter moduleName.
+	parameter actionName.
+
+	if _part:hasmodule(moduleName)
+	{
+		local module to _part:getmodule(moduleName).
+		if module:hasaction(actionName)
+		{
+			return true.
+		}
+	}
+	return false.
+}
+
+
+// fire an action on a module of a part
+// returns true if able to find|do action
+function fireActionOnModuleOnPart
+{
+	parameter _part.
+	parameter moduleName.
+	parameter actionName.
+	parameter actionValue.
+
+	if _part:hasmodule(moduleName)
+	{
+		local module to _part:getmodule(moduleName).
+		if module:hasaction(actionName)
+		{
+			module:doaction(actionName,actionValue).
+			return true.
+		}
+	}
+	return false.
+}
+
+
 function IMNG
 {
 	parameter dim.
