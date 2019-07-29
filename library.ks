@@ -650,7 +650,8 @@ function setantenna
 }
 
 
-// search for module callable (field/event/action) with search text.
+// search for module callable (field/event/action) with regex search text.
+// returns lex<part:title,lex<partModule:name,set<text>>>
 function searchForModuleCallablesByName
 {
 	parameter searchText.
@@ -662,41 +663,37 @@ function searchForModuleCallablesByName
 	function updateLex
 	{
 		parameter partModule,text.
-		local partTitle is partModule:part:title.
-		local moduleName is partModule:name.
-		if not lex:haskey(partTitle)
+
+		//  Regular Expression search
+		if text:MATCHESPATTERN(searchText)
 		{
-			lex:add(partTitle,lexicon()).
+			local partTitle is partModule:part:title.
+			local moduleName is partModule:name.
+			if not lex:haskey(partTitle)
+			{
+				lex:add(partTitle,lexicon()).
+			}
+			if not lex[partTitle]:haskey(moduleName)
+			{
+				lex[partTitle]:add(moduleName,UniqueSet()).
+			}
+			lex[partTitle][moduleName]:add(text).
 		}
-		if not lex[partTitle]:haskey(moduleName)
-		{
-			lex[partTitle]:add(moduleName,UniqueSet()).
-		}
-		lex[partTitle][moduleName]:add(text).
 	}
 
 	for partModule in getPartModulesForParts(_parts)
 	{
 		for text in partModule:ALLFIELDS
 		{
-			if text:contains(searchText)
-			{
-				updateLex(partModule,text).
-			}
+			updateLex(partModule,text).
 		}
 		for text in partModule:ALLEVENTS
 		{
-			if text:contains(searchText)
-			{
-				updateLex(partModule,text).
-			}
+			updateLex(partModule,text).
 		}
 		for text in partModule:ALLACTIONS
 		{
-			if text:contains(searchText)
-			{
-				updateLex(partModule,text).
-			}
+			updateLex(partModule,text).
 		}
 	}
 
