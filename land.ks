@@ -188,10 +188,19 @@ local altSpeedRatioLabel to landGui:ADDLABEL("altSpeedRatioLabel").
 local gforceLabel to landGui:ADDLABEL("g-force").
 local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 
-// TODO: enable rsc thruster
+local heatShieldButton to landGui:addbutton("Toggle Heat Shields").
+set heatShieldButton:onclick to {
+	for heatShield in ship:PARTSDUBBED("Heat Shield (10m)")
+	{
+		if fireActionOnModuleOnPart(heatShield,"ModuleAnimateGeneric","inflate heat shield",true)
+		{
+			print("Toggling Heat Shields").
+		}
+	}
+}.
+
 // TODO: engine mode toggle
 // TODO: adjust landing math
-// TODO: deploy heatshield
 // TODO: auto engine mode (detect engine mode?)
 // TODO: track acc, if over 2 trigger followed by less then 1 -> flip operation
 // 0.005860315 x + 281.05406
@@ -223,6 +232,7 @@ when true then
 	set steeringErrorLabel:text to "steering err: " + RAP(steeringError,3,6) + "   " + RAP(steeringErrorDelta,3).
 	set engineModeButton:text to ""+HX_HPD:mode.
 	set altSpeedRatioLabel:text to "Alt:Speed Ratio "+RAP(dist2ground / surfaceSpeed,3).
+	set heatShieldButton:VISIBLE to ship:PARTSDUBBED("Heat Shield (10m)"):length>0.
 
 	return true. //keep alive
 }
