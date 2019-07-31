@@ -240,7 +240,7 @@ when true then
 // throttle PIDs
 when landThrottleCheckbox:pressed then
 {
-	lock throttle to twrPID:update(time:second,twr).
+	set HX_HPD:thrustLimit to twrPID:update(time:second,twr)*100.
 	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
 	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
 	set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
@@ -266,7 +266,7 @@ function rcsController
 				rcs on.
 				return.
 			}
-			else if dist2ground<100 and steeringError>0.5
+			else if dist2ground<100 and steeringError>0.1
 			{
 				rcs on.
 				return.

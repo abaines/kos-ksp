@@ -259,3 +259,4 @@ pwset("End of Main Script").
 until 0 { wait 0. } // main loop wait forever
 
 // kerbin Orbital velocity (m/s) 2296
+// 35705.32
