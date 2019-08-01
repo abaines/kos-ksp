@@ -67,6 +67,7 @@ class Antenna:
       self.packetResourceCost = int(Antenna.parseGenericFloat(fileContents,"packetResourceCost"))
       self.packetSize = int(Antenna.parseGenericFloat(fileContents,"packetSize"))
       self.packetInterval = Antenna.parseGenericFloat(fileContents,"packetInterval")
+      self.mass = Antenna.parseGenericFloat(fileContents,"mass")
 
       try:
          self.attachRules = partAttachRules(fileContents)
@@ -82,7 +83,7 @@ class Antenna:
 
 
    def parseGeneric(fileContents,key):
-      search = re.findall(r''+key+'.*\n',fileContents)[0][:-1]
+      search = re.findall(r''+key+'.*=.*\n',fileContents)[0][:-1]
       search = search[search.rfind('=')+1:].strip()
       return search
 
@@ -263,6 +264,7 @@ def displayEngineData():
       print()
 
 
+print(" ")
 for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
    if antenna.antennaPower>=2e+9:
       print(antenna)
@@ -274,7 +276,7 @@ for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
 
 for antenna in sorted(relayAntennas,key=lambda antenna: antenna.ElectricChargePerMits):
    if antenna.antennaPower>=2e+9:
-      print(antenna, '%.0E' % antenna.antennaPower, antenna.ElectricChargePerMits, sep="\t")
+      print(antenna, '%.0E' % antenna.antennaPower, antenna.ElectricChargePerMits, antenna.mass, sep="\t")
 
 
 print('end of file')
