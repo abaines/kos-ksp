@@ -265,7 +265,7 @@ def displayEngineData():
 
 
 print(" ")
-for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
+for antenna in sorted(relayAntennas,key=lambda antenna: antenna.ElectricChargePerMits):
    if antenna.antennaPower>=2e+9:
       print(antenna)
       print('antennaPower', '%.0E' % antenna.antennaPower)
@@ -274,7 +274,7 @@ for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
       #print('Electric Charge/sec',antenna.ElectricChargePerSecond)
       print("")
 
-for antenna in sorted(relayAntennas,key=lambda antenna: antenna.ElectricChargePerMits):
+for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
    if antenna.antennaPower>=2e+9:
       print(antenna, '%.0E' % antenna.antennaPower, antenna.ElectricChargePerMits, antenna.mass, sep="\t")
 
