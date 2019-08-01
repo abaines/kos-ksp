@@ -48,6 +48,48 @@ class Engine:
       else:
          return "Unknown Title"
 
+
+class Antenna:
+   def __init__(self, filename, fileContents):
+      self.filename = filename
+
+      try:
+         self.title = partTitle(fileContents)
+      except:
+         pass         
+      self.name = partName(fileContents)
+
+      self.antennaPower = Antenna.parseAntennaPower(fileContents)
+      # TODO
+      # antennaType
+      # packetInterval
+      # packetSize
+      # packetResourceCost
+      # antennaPower
+      # antennaCombinable
+
+      try:
+         self.attachRules = partAttachRules(fileContents)
+      except:
+         pass
+
+   @staticmethod
+   def parseAntennaPower(fileContents):
+      search = re.findall(r'antennaPower.*\n',fileContents)[0][:-1]
+      search = search[search.rfind('=')+1:].strip()
+      commentPos = search.rfind('//')
+      if commentPos>0:
+         search = search[:search.rfind('//')].strip()
+      return float(search)
+
+   def __repr__(self):
+      if hasattr(self,'title'):
+         return self.title
+      else:
+         return "Unknown Title"
+
+
+
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
@@ -129,6 +171,8 @@ failedFiles = []
 
 engineObjects = []
 
+relayAntennas = []
+
 for filename in interestingParts:
    statinfo = os.stat(filename)
 
@@ -144,10 +188,18 @@ for filename in interestingParts:
       LiquidFuel_count = len(re.findall(r'name.*=.*LiquidFuel',fileContents))
       Oxidizer_count = len(re.findall(r'name.*=.*Oxidizer',fileContents))
 
+      # antennaType = RELAY
+      relayAntenna_count = len(re.findall(r'antennaType.*=.*RELAY',fileContents))
+      
+
       # and LiquidFuel_count>=Oxidizer_count 
       if ModuleEnginesFX_count>0 and LiquidFuel_count>0:
          engineObject = Engine(filename, fileContents, IntakeAir_count,LiquidFuel_count,Oxidizer_count)
          engineObjects.append(engineObject)
+
+      if relayAntenna_count>0:
+         relayAntenna = Antenna(filename,fileContents)
+         relayAntennas.append(relayAntenna)
 
    except Exception as e:
       if checkIfImportantFileName(filename):
@@ -175,27 +227,35 @@ def engine_compare(engine):
    return spaceIsp
 
 
-print("Engines:")
-for engine in sorted(engineObjects, key=lambda engine: engine_compare(engine)):
+def displayEngineData():
+   print("Engines:")
+   for engine in sorted(engineObjects, key=lambda engine: engine_compare(engine)):
 
-   print(engine)
-   print(engine.name)
-   print(shortname(engine.filename))
-   print(engine.IntakeAir_count, engine.LiquidFuel_count, engine.Oxidizer_count)
-   print(engine.engineAccelerationSpeed)
-   print(engine.engineDecelerationSpeed)
+      print(engine)
+      print(engine.name)
+      print(shortname(engine.filename))
+      print(engine.IntakeAir_count, engine.LiquidFuel_count, engine.Oxidizer_count)
+      print(engine.engineAccelerationSpeed)
+      print(engine.engineDecelerationSpeed)
 
-   try:
-      print(engine.gimbalRange)
-   except:
-      print("-")
-   try:
-      print(engine.attachRules)
-   except:
-      print("-")
+      try:
+         print(engine.gimbalRange)
+      except:
+         print("-")
+      try:
+         print(engine.attachRules)
+      except:
+         print("-")
 
-   print(engine.atmosphereCurve)
+      print(engine.atmosphereCurve)
 
-   print()
+      print()
+
+
+for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
+   print(antenna)
+   print(antenna.antennaPower)
+   print("")
+
 
 print('end of file')
