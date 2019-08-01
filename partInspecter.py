@@ -59,19 +59,27 @@ class Antenna:
          pass         
       self.name = partName(fileContents)
 
-      self.antennaPower = Antenna.parseGenericFloat(fileContents,"antennaPower")
       # TODO
       # antennaType
       # antennaCombinable
 
-      self.packetResourceCost = Antenna.parseGenericFloat(fileContents,"packetResourceCost")
-      self.packetSize = Antenna.parseGenericFloat(fileContents,"packetSize")
+      self.antennaPower = int(Antenna.parseGenericFloat(fileContents,"antennaPower"))
+      self.packetResourceCost = int(Antenna.parseGenericFloat(fileContents,"packetResourceCost"))
+      self.packetSize = int(Antenna.parseGenericFloat(fileContents,"packetSize"))
       self.packetInterval = Antenna.parseGenericFloat(fileContents,"packetInterval")
 
       try:
          self.attachRules = partAttachRules(fileContents)
       except:
          pass
+
+
+      # upper case fields for derived; lower case for raw
+      self.ElectricChargePerSecond = self.packetResourceCost / self.packetInterval
+      self.ElectricChargePerMits = self.packetResourceCost / self.packetSize
+      self.Bandwidth = self.packetSize / self.packetInterval
+
+
 
    def parseGeneric(fileContents,key):
       search = re.findall(r''+key+'.*\n',fileContents)[0][:-1]
@@ -256,14 +264,17 @@ def displayEngineData():
 
 
 for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
-   print(antenna)
-   print('antennaPower',antenna.antennaPower)
-   print('packetResourceCost',antenna.packetResourceCost)
-   print('packetSize',antenna.packetSize)
-   print('packetInterval',antenna.packetInterval)
-   print('Bandwidth',antenna.packetSize/antenna.packetInterval)
-   print('Electric Charge/sec',antenna.packetResourceCost/antenna.packetInterval)
-   print("")
+   if antenna.antennaPower>=2e+9:
+      print(antenna)
+      print('antennaPower', '%.0E' % antenna.antennaPower)
+      print('Electric/Mits',antenna.ElectricChargePerMits)
+      #print('Bandwidth',antenna.Bandwidth)
+      #print('Electric Charge/sec',antenna.ElectricChargePerSecond)
+      print("")
+
+for antenna in sorted(relayAntennas,key=lambda antenna: antenna.ElectricChargePerMits):
+   if antenna.antennaPower>=2e+9:
+      print(antenna, '%.0E' % antenna.antennaPower, antenna.ElectricChargePerMits, sep="\t")
 
 
 print('end of file')
