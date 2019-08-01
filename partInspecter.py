@@ -59,24 +59,27 @@ class Antenna:
          pass         
       self.name = partName(fileContents)
 
-      self.antennaPower = Antenna.parseAntennaPower(fileContents)
+      self.antennaPower = Antenna.parseGenericFloat(fileContents,"antennaPower")
       # TODO
       # antennaType
-      # packetInterval
-      # packetSize
-      # packetResourceCost
-      # antennaPower
       # antennaCombinable
+
+      self.packetResourceCost = Antenna.parseGenericFloat(fileContents,"packetResourceCost")
+      self.packetSize = Antenna.parseGenericFloat(fileContents,"packetSize")
+      self.packetInterval = Antenna.parseGenericFloat(fileContents,"packetInterval")
 
       try:
          self.attachRules = partAttachRules(fileContents)
       except:
          pass
 
-   @staticmethod
-   def parseAntennaPower(fileContents):
-      search = re.findall(r'antennaPower.*\n',fileContents)[0][:-1]
+   def parseGeneric(fileContents,key):
+      search = re.findall(r''+key+'.*\n',fileContents)[0][:-1]
       search = search[search.rfind('=')+1:].strip()
+      return search
+
+   def parseGenericFloat(fileContents,key):
+      search = Antenna.parseGeneric(fileContents,key)
       commentPos = search.rfind('//')
       if commentPos>0:
          search = search[:search.rfind('//')].strip()
@@ -254,7 +257,12 @@ def displayEngineData():
 
 for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
    print(antenna)
-   print(antenna.antennaPower)
+   print('antennaPower',antenna.antennaPower)
+   print('packetResourceCost',antenna.packetResourceCost)
+   print('packetSize',antenna.packetSize)
+   print('packetInterval',antenna.packetInterval)
+   print('Bandwidth',antenna.packetSize/antenna.packetInterval)
+   print('Electric Charge/sec',antenna.packetResourceCost/antenna.packetInterval)
    print("")
 
 
