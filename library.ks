@@ -1258,7 +1258,7 @@ function VesselAndPartCheck
 	function u
 	{
 		parameter ves.
-		if (not ves:ISDEAD) and ves:name:contains(match)
+		if (not ves:ISDEAD) and ves:name:contains(match) and ves:type<>"DEBRIS"
 		{
 			local vesParts to ves:PARTS:length.
 			partList:add(vesParts).

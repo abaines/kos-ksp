@@ -56,16 +56,19 @@ local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vec
 
 
 local stopInterceptLex to slopeInterceptLex2(3,0,40,1,true).
+local antiHeatInterceptLex to slopeInterceptLex2(200,0,400,1,true).
 function stopVector
 {
 	// TODO: smarter stop: include small amount of goal
 	local sup to ship:up:vector:normalized.
 
 	local destabilizingStr to slopeInterceptCalc2(stopInterceptLex,ship:GROUNDSPEED).
+	local antiHeatStr to slopeInterceptCalc2(antiHeatInterceptLex,ship:GROUNDSPEED).
 
 	local retro to -1*ship:velocity:surface:normalized.
 	// reverse stabilization
 	local retroRatioStabilized to destabilizingStr*retro + sup.
+	set retroRatioStabilized to RatioVector(retroRatioStabilized,retro,antiHeatStr).
 	return retroRatioStabilized:normalized.
 }
 local vddStopVector is VECDRAW_DEL({return ship:position.}, { return stopVector()*15. }, RGB(1,0.1,0.1)).

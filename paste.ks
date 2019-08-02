@@ -172,7 +172,7 @@ local fuelLabel to heartGui:addLabel("").
 local MANEUVER_TIMELabel to heartGui:addLabel("").
 local eta_apoapsisLabel to heartGui:addLabel("").
 lock burnTime to MANEUVER_TIME(2296-orbitalSpeed).
-lock eta_burn to eta_apoapsis() - burnTime/2.0.
+lock eta_burn to eta_apoapsis() - burnTime/1.75.
 when true then
 {
 	local burnTime to MANEUVER_TIME(2296-orbitalSpeed).
