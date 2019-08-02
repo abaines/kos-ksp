@@ -13,6 +13,79 @@ import traceback
 import sys
 
 
+class Parser:
+   def __init__(self):
+      raise Exception("Please do not init me!")
+   
+   def generic(fileContents,key):
+      search = re.findall(r''+key+'.*=.*\n',fileContents)[0][:-1]
+      search = search[search.rfind('=')+1:].strip()
+      return search
+
+   def genericFloat(fileContents,key):
+      search = Parser.generic(fileContents,key)
+      commentPos = search.rfind('//')
+      if commentPos>0:
+         search = search[:search.rfind('//')].strip()
+      return float(search)
+   
+   def shortname(filename):
+      key = "\\GameData\\"
+      idx = filename.find(key)+len(key)-1
+      return filename[idx:]
+
+
+   def partTitle(fileContents):
+      firstTitle = re.findall(r'title.*\n',fileContents)[0][:-1]
+      return firstTitle[firstTitle.rfind('=')+1:].strip()
+
+   def partName(fileContents):
+      firstName = re.findall(r'name.*\n',fileContents)[0][:-1]
+      return firstName[firstName.rfind('=')+1:].strip()
+
+   def partGimbalRange(fileContents):
+      firstName = re.findall(r'gimbalRange.*\n',fileContents)[0][:-1]
+      return [float(firstName[firstName.rfind('=')+1:].strip())]
+
+   def partAttachRules(fileContents):
+      # attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
+      firstName = re.findall(r'attachRules.*\n',fileContents)[0][:-1]
+      return firstName[firstName.rfind('=')+1:].strip()
+
+   def doubleValuesFromKeyValueAssignment(fileContents,key):
+      fa = re.findall(r'engineAccelerationSpeed.*=.*',fileContents)
+
+      doubles = []
+
+      for m in fa:
+         s = m[m.rfind('=')+1:].strip()
+         doubles.append(float(s))
+
+      return doubles
+
+   def partAtmosphereCurve(fileContents):
+      atmosphereCurveText = re.findall(r'atmosphereCurve[^\{]*?\{[^\}]*?\}',fileContents)
+
+      atmosphereCurveData = []
+      for multitext in atmosphereCurveText:
+         d = dict()
+         multiResult = re.findall(r'.*key.*=.*?[\d+]\w+[\d+]',multitext) # regex find all results
+         for line in multiResult:
+            line = line.strip()
+            if not set(line).issubset('key =1234567890.'):
+               print("!"+line)
+
+            linere = re.findall(r'[\d.]+',line)
+            if len(linere)!=2:
+               print("@"+linere)
+
+            d[float(linere[0])] = float(linere[1])
+
+         atmosphereCurveData.append(d)
+
+      return atmosphereCurveData
+
+
 class Engine:
    def __init__(self, filename, fileContents, IntakeAir_count, LiquidFuel_count, Oxidizer_count):
 
@@ -22,25 +95,25 @@ class Engine:
       self.Oxidizer_count = Oxidizer_count
 
       try:
-         self.title = partTitle(fileContents)
+         self.title = Parser.partTitle(fileContents)
       except:
          pass         
-      self.name = partName(fileContents)
+      self.name = Parser.partName(fileContents)
 
       try:
-         self.gimbalRange = partGimbalRange(fileContents)
+         self.gimbalRange = Parser.partGimbalRange(fileContents)
       except:
          pass
 
       try:
-         self.attachRules = partAttachRules(fileContents)
+         self.attachRules = Parser.partAttachRules(fileContents)
       except:
          pass
 
-      self.atmosphereCurve = partAtmosphereCurve(fileContents)
+      self.atmosphereCurve = Parser.partAtmosphereCurve(fileContents)
 
-      self.engineAccelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineAccelerationSpeed')
-      self.engineDecelerationSpeed = doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed')
+      self.engineAccelerationSpeed = Parser.doubleValuesFromKeyValueAssignment(fileContents,'engineAccelerationSpeed')
+      self.engineDecelerationSpeed = Parser.doubleValuesFromKeyValueAssignment(fileContents,'engineDecelerationSpeed')
 
    def __repr__(self):
       if hasattr(self,'title'):
@@ -54,23 +127,23 @@ class Antenna:
       self.filename = filename
 
       try:
-         self.title = partTitle(fileContents)
+         self.title = Parser.partTitle(fileContents)
       except:
          pass         
-      self.name = partName(fileContents)
+      self.name = Parser.partName(fileContents)
 
       # TODO
       # antennaType
       # antennaCombinable
 
-      self.antennaPower = int(Antenna.parseGenericFloat(fileContents,"antennaPower"))
-      self.packetResourceCost = int(Antenna.parseGenericFloat(fileContents,"packetResourceCost"))
-      self.packetSize = int(Antenna.parseGenericFloat(fileContents,"packetSize"))
-      self.packetInterval = Antenna.parseGenericFloat(fileContents,"packetInterval")
-      self.mass = Antenna.parseGenericFloat(fileContents,"mass")
+      self.antennaPower = int(Parser.genericFloat(fileContents,"antennaPower"))
+      self.packetResourceCost = int(Parser.genericFloat(fileContents,"packetResourceCost"))
+      self.packetSize = int(Parser.genericFloat(fileContents,"packetSize"))
+      self.packetInterval = Parser.genericFloat(fileContents,"packetInterval")
+      self.mass = Parser.genericFloat(fileContents,"mass")
 
       try:
-         self.attachRules = partAttachRules(fileContents)
+         self.attachRules = Parser.partAttachRules(fileContents)
       except:
          pass
 
@@ -80,25 +153,45 @@ class Antenna:
       self.ElectricChargePerMits = self.packetResourceCost / self.packetSize
       self.Bandwidth = self.packetSize / self.packetInterval
 
+   def __repr__(self):
+      if hasattr(self,'title'):
+         return self.title
+      else:
+         return "Unknown Title"
 
 
-   def parseGeneric(fileContents,key):
-      search = re.findall(r''+key+'.*=.*\n',fileContents)[0][:-1]
-      search = search[search.rfind('=')+1:].strip()
-      return search
+class FuelTank:
+   def __init__(self, filename, fileContents):
+      self.filename = filename
 
-   def parseGenericFloat(fileContents,key):
-      search = Antenna.parseGeneric(fileContents,key)
-      commentPos = search.rfind('//')
-      if commentPos>0:
-         search = search[:search.rfind('//')].strip()
-      return float(search)
+      try:
+         self.title = Parser.partTitle(fileContents)
+      except:
+         pass         
+      self.name = Parser.partName(fileContents)
+
+      try:
+         self.mass = Parser.genericFloat(fileContents,"mass")
+      except:
+         pass
+
+      try:
+         self.attachRules = Parser.partAttachRules(fileContents)
+      except:
+         pass
+
+
+
+
+
 
    def __repr__(self):
       if hasattr(self,'title'):
          return self.title
       else:
          return "Unknown Title"
+
+
 
 
 
@@ -111,61 +204,6 @@ for filename in glob.iglob('../../GameData/**/*.cfg', recursive=True):
    abspath = os.path.abspath(filename)
    interestingParts.append(abspath)
 
-def shortname(filename):
-   key = "\\GameData\\"
-   idx = filename.find(key)+1
-   return filename[idx:]
-
-
-def partTitle(fileContents):
-   firstTitle = re.findall(r'title.*\n',fileContents)[0][:-1]
-   return firstTitle[firstTitle.rfind('=')+1:].strip()
-
-def partName(fileContents):
-   firstName = re.findall(r'name.*\n',fileContents)[0][:-1]
-   return firstName[firstName.rfind('=')+1:].strip()
-
-def partGimbalRange(fileContents):
-   firstName = re.findall(r'gimbalRange.*\n',fileContents)[0][:-1]
-   return [float(firstName[firstName.rfind('=')+1:].strip())]
-
-def partAttachRules(fileContents):
-   # attachment rules: stack, srfAttach, allowStack, allowSrfAttach, allowCollision
-   firstName = re.findall(r'attachRules.*\n',fileContents)[0][:-1]
-   return firstName[firstName.rfind('=')+1:].strip()
-
-def doubleValuesFromKeyValueAssignment(fileContents,key):
-   fa = re.findall(r'engineAccelerationSpeed.*=.*',fileContents)
-
-   doubles = []
-
-   for m in fa:
-      s = m[m.rfind('=')+1:].strip()
-      doubles.append(float(s))
-
-   return doubles
-
-def partAtmosphereCurve(fileContents):
-   atmosphereCurveText = re.findall(r'atmosphereCurve[^\{]*?\{[^\}]*?\}',fileContents)
-
-   atmosphereCurveData = []
-   for multitext in atmosphereCurveText:
-      d = dict()
-      multiResult = re.findall(r'.*key.*=.*?[\d+]\w+[\d+]',multitext) # regex find all results
-      for line in multiResult:
-         line = line.strip()
-         if not set(line).issubset('key =1234567890.'):
-            print("!"+line)
-
-         linere = re.findall(r'[\d.]+',line)
-         if len(linere)!=2:
-            print("@"+linere)
-
-         d[float(linere[0])] = float(linere[1])
-
-      atmosphereCurveData.append(d)
-
-   return atmosphereCurveData
 
 
 def checkIfImportantFileName(filename):
@@ -185,6 +223,8 @@ engineObjects = []
 
 relayAntennas = []
 
+fuelTanks = []
+
 for filename in interestingParts:
    statinfo = os.stat(filename)
 
@@ -202,6 +242,8 @@ for filename in interestingParts:
 
       # antennaType = RELAY
       relayAntenna_count = len(re.findall(r'antennaType.*=.*RELAY',fileContents))
+
+      resource_count = len(re.findall(r'RESOURCE',fileContents))
       
 
       # and LiquidFuel_count>=Oxidizer_count 
@@ -213,10 +255,15 @@ for filename in interestingParts:
          relayAntenna = Antenna(filename,fileContents)
          relayAntennas.append(relayAntenna)
 
+      if LiquidFuel_count>0 and Oxidizer_count>0 and resource_count>=2 and ModuleEnginesFX_count is 0:
+         print(Parser.shortname(filename))
+         fuelTank = FuelTank(filename,fileContents)
+         fuelTanks.append(fuelTank)
+
    except Exception as e:
       if checkIfImportantFileName(filename):
-         failedFiles.append(shortname(filename))
-         eprint(shortname(filename))
+         failedFiles.append(Parser.shortname(filename))
+         eprint(Parser.shortname(filename))
          traceback.print_exc()
 
 
@@ -245,7 +292,7 @@ def displayEngineData():
 
       print(engine)
       print(engine.name)
-      print(shortname(engine.filename))
+      print(Parser.shortname(engine.filename))
       print(engine.IntakeAir_count, engine.LiquidFuel_count, engine.Oxidizer_count)
       print(engine.engineAccelerationSpeed)
       print(engine.engineDecelerationSpeed)
