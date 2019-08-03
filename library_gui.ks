@@ -226,6 +226,11 @@ function addHeartbeatGui
 	local speedLabel is heartGui:addlabel("speedLabel").
 	local radarLabel is heartGui:addlabel("radarLabel").
 
+	local focusButton is heartGui:addButton("Focus").
+	set focusButton:onclick to {
+		KUniverse:FORCESETACTIVEVESSEL(ship).
+	}.
+
 	when true then
 	{
 		set shipNameLabel:text to ship:name.
@@ -269,6 +274,8 @@ function addHeartbeatGui
 		set speedLabel:text to "speed: "+RAP(ship:velocity:surface:mag,3).
 
 		set radarLabel:text to "radar: "+RAP(min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT),3).
+
+		set focusButton:visible to not IsActiveVessel().
 
 		return true. //keep alive
 	}
