@@ -83,12 +83,11 @@ local initialGeoPosition is SHIP:GEOPOSITION.
 
 function safeStage
 {
+	parameter msg is "Safe Staging".
 	// Warning: Calling the Stage function on a vessel other than the active vessel will throw an exception.
-	unlock steering.
-	unlock throttle.
 	wait 0.
 	UNTIL STAGE:READY { WAIT 0. }
-	pwset("Safe Staging").
+	pwset(msg).
 	stage.
 	wait 0.
 }
@@ -120,7 +119,7 @@ when true then
 
 lock simplePitch TO 90-((90/100)*((SHIP:APOAPSIS/70000)*100)).
 
-lock steering to HEADING(90,max(0,89.9)).
+lock steering to HEADING(90,max(0,simplePitch)).
 lock throttle to 1.
 
 
@@ -130,13 +129,8 @@ local vddSteeringVector is VECDRAW_DEL({return ship:position.}, {
 }, RGB(1,1,0)).
 
 
-wait 0.
+safeStage(). // warm up nuclear turbojets
 
-safeStage. // warm up nuclear turbojets
-lock steering to HEADING(90,max(0,89.9)).
-lock throttle to 1.
-
-wait 0.
 
 global thrustIncreaseTime to time:seconds+1.5.
 global prevThrust to 0.
@@ -154,23 +148,15 @@ when true then
 }
 when time:seconds>thrustIncreaseTime then
 {
-	pwset("time:seconds>thrustIncreaseTime").
-	safeStage. // fire main engine for liftoff
-	lock steering to HEADING(90,max(0,89.9)).
-	lock throttle to 1.
-	wait 0.
+	safeStage("time:seconds>thrustIncreaseTime"). // fire main engine for liftoff
 }
 
-when dist2ground>50 then
-{
-	pwset("dist2ground>50").
-	lock steering to HEADING(90,max(0,simplePitch)).
-}
 
 
 local fuelLabel to heartGui:addLabel("").
 local MANEUVER_TIMELabel to heartGui:addLabel("").
 local eta_apoapsisLabel to heartGui:addLabel("").
+local pitchLabel to heartGui:addLabel("").
 lock burnTime to MANEUVER_TIME(2296-orbitalSpeed).
 lock eta_burn to eta_apoapsis() - burnTime/1.75.
 when true then
@@ -179,6 +165,7 @@ when true then
 	set fuelLabel:text to "fuel: "+RAP(GetStageLowestResource("liquidfuel"),2).
 	set MANEUVER_TIMELabel:text to "burnTime: "+RAP(burnTime,2).
 	set eta_apoapsisLabel:text to "eta_burn: "+RAP(eta_burn,2).
+	set pitchLabel:text to "simplePitch: "+RAP(simplePitch,2).
 
 	return true. //keep alive
 }
@@ -189,10 +176,7 @@ addRevertLaunchButton(heartGui).
 local stageProtector to time:seconds + 2.
 when GetStageLowestResource("liquidfuel")<=0.1 and time:seconds>stageProtector and STAGE:READY then
 {
-	wait 0.
-	pwset("Stage empty booster").
-	stage.
-	wait 0.
+	safeStage("Stage empty booster").
 
 	set stageProtector to time:seconds + 2.
 
@@ -218,6 +202,11 @@ when stage:number=0 then
 pwset("Main script body").
 
 wait until SHIP:APOAPSIS>81000 or SHIP:ALTITUDE>70000.
+
+if stage:ready
+{
+	safeStage("Stage space booster").
+}
 
 pwset("Coasting to Apo Burn").
 lock throttle to 0.
