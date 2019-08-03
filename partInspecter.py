@@ -16,7 +16,7 @@ import sys
 class Parser:
    def __init__(self):
       raise Exception("Please do not init me!")
-   
+
    def generic(fileContents,key):
       search = re.findall(r''+key+'.*=.*\n',fileContents)[0][:-1]
       search = search[search.rfind('=')+1:].strip()
@@ -28,7 +28,7 @@ class Parser:
       if commentPos>0:
          search = search[:search.rfind('//')].strip()
       return float(search)
-   
+
    def shortname(filename):
       key = "\\GameData\\"
       idx = filename.find(key)+len(key)-1
@@ -97,7 +97,7 @@ class Engine:
       try:
          self.title = Parser.partTitle(fileContents)
       except:
-         pass         
+         pass
       self.name = Parser.partName(fileContents)
 
       try:
@@ -129,7 +129,7 @@ class Antenna:
       try:
          self.title = Parser.partTitle(fileContents)
       except:
-         pass         
+         pass
       self.name = Parser.partName(fileContents)
 
       # TODO
@@ -167,7 +167,7 @@ class FuelTank:
       try:
          self.title = Parser.partTitle(fileContents)
       except:
-         pass         
+         pass
       self.name = Parser.partName(fileContents)
 
       try:
@@ -180,7 +180,16 @@ class FuelTank:
       except:
          pass
 
+      try:
+         self.maxTemp = Parser.genericFloat(fileContents,"maxTemp")
+      except:
+         self.maxTemp = None
 
+      try:
+         self.skinMaxTemp = Parser.genericFloat(fileContents,"skinMaxTemp")
+         print("skinMaxTemp!",filename)
+      except:
+         self.skinMaxTemp = None
 
 
 
@@ -189,7 +198,7 @@ class FuelTank:
       if hasattr(self,'title'):
          return self.title
       else:
-         return "Unknown Title"
+         return "Unknown Title: " + self.name
 
 
 
@@ -244,9 +253,9 @@ for filename in interestingParts:
       relayAntenna_count = len(re.findall(r'antennaType.*=.*RELAY',fileContents))
 
       resource_count = len(re.findall(r'RESOURCE',fileContents))
-      
 
-      # and LiquidFuel_count>=Oxidizer_count 
+
+      # and LiquidFuel_count>=Oxidizer_count
       if ModuleEnginesFX_count>0 and LiquidFuel_count>0:
          engineObject = Engine(filename, fileContents, IntakeAir_count,LiquidFuel_count,Oxidizer_count)
          engineObjects.append(engineObject)
@@ -256,7 +265,6 @@ for filename in interestingParts:
          relayAntennas.append(relayAntenna)
 
       if LiquidFuel_count>0 and Oxidizer_count>0 and resource_count>=2 and ModuleEnginesFX_count is 0:
-         print(Parser.shortname(filename))
          fuelTank = FuelTank(filename,fileContents)
          fuelTanks.append(fuelTank)
 
@@ -310,20 +318,34 @@ def displayEngineData():
 
       print()
 
+def displayRelayAntennaData():
+   print(" ")
+   for antenna in sorted(relayAntennas,key=lambda antenna: antenna.ElectricChargePerMits):
+      if antenna.antennaPower>=2e+9:
+         print(antenna)
+         print('antennaPower', '%.0E' % antenna.antennaPower)
+         print('Electric/Mits',antenna.ElectricChargePerMits)
+         #print('Bandwidth',antenna.Bandwidth)
+         #print('Electric Charge/sec',antenna.ElectricChargePerSecond)
+         print("")
 
-print(" ")
-for antenna in sorted(relayAntennas,key=lambda antenna: antenna.ElectricChargePerMits):
-   if antenna.antennaPower>=2e+9:
-      print(antenna)
-      print('antennaPower', '%.0E' % antenna.antennaPower)
-      print('Electric/Mits',antenna.ElectricChargePerMits)
-      #print('Bandwidth',antenna.Bandwidth)
-      #print('Electric Charge/sec',antenna.ElectricChargePerSecond)
+   for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
+      if antenna.antennaPower>=2e+9:
+         print(antenna, '%.0E' % antenna.antennaPower, antenna.ElectricChargePerMits, antenna.mass, sep="\t")
+
+
+
+def displayFuelTankData():
+   for fuelTank in sorted(fuelTanks,key=lambda fuelTank: fuelTank.maxTemp or -1):
+      if fuelTank.skinMaxTemp is None:
+         pass
+      print(fuelTank)
+      print(Parser.shortname(fuelTank.filename))
+      print(fuelTank.maxTemp)
       print("")
 
-for antenna in sorted(relayAntennas,key=lambda antenna: antenna.antennaPower):
-   if antenna.antennaPower>=2e+9:
-      print(antenna, '%.0E' % antenna.antennaPower, antenna.ElectricChargePerMits, antenna.mass, sep="\t")
 
 
+
+displayFuelTankData()
 print('end of file')
