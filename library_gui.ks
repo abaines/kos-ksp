@@ -401,6 +401,28 @@ function addRevertLaunchButton
 }
 
 
+// add REBOOT button to gui. Has click protection and requires double click.
+function addRebootButton
+{
+	parameter _gui.
+
+	local clickProtection to 0.
+
+	local rebootButton is addButtonDelegate(nodeGui,"Reboot CPU",{
+		print("REBOOT").
+		if time:seconds<clickProtection
+		{
+			wait 0.
+			print("REBOOT!").
+			REBOOT.
+			print("REBOOT!").
+		}
+		set clickProtection to time:seconds+2.
+	}).
+}
+
+
+
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
