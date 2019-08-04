@@ -29,6 +29,8 @@ local heartGui is gui(200).
 addHeartbeatGui(heartGui).
 set heartGui:x to 400.
 set heartGui:y to 100.
+local daPidLabel is heartGui:addlabel("daPidLabel").
+local tPidLabel is heartGui:addlabel("tPidLabel").
 heartGui:show().
 
 
@@ -44,6 +46,9 @@ lock twr to totalCurrentThrust() / shipWeight.
 lock maxTwr to totalMaxThrust() / shipWeight.
 
 lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
+
+lock orbitalSpeed to ship:velocity:ORBIT:mag.
+lock surfaceSpeed to ship:velocity:SURFACE:mag.
 
 lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
 lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
@@ -82,22 +87,23 @@ local initialGeoPosition is SHIP:GEOPOSITION.
 lock steering to stopVector().
 
 
-global twrPID TO PIDLOOP(17, 8, 1, 0, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
+global twrPID TO PIDLOOP(17, 8, 1, 0.1, 1). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
 global deltaAltPID TO PIDLOOP(0.1, 0.005, 0.025, 0.1, 10). // (KP, KI, KD, MINOUTPUT, MAXOUTPUT)
-
-local landRateInterceptLex to slopeInterceptLex2(25,-50,200,-12.5,true).
 
 local thrustSlider is heartGui:ADDHSLIDER(0,0,1).
 local maxTwrLabel to heartGui:addLabel("maxTwrLabel").
 when true then
 {
 	lock throttle to twrPID:update(time:second,twr).
-	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
 	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
-	set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
+	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
+	set deltaAltPID:SETPOINT to clamp(dist2ground/-20,-1.5,-400).
 
 	set thrustSlider:value to throttle.
 	set maxTwrLabel:text to "maxTwr: " + RAP(maxTwr,3).
+
+	set daPidLabel:text to "PID: " + RAP(deltaAltPID:SETPOINT,3) + " : " + RAP(deltaAltPID:INPUT,3).
+	set tPidLabel:text to "PID: " + RAP(twrPID:SETPOINT,3) + " : " + RAP(twrPID:INPUT,3).
 
 	return true. //keep alive
 }
