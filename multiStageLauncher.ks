@@ -24,7 +24,7 @@ when time:seconds > scriptEpoch + 10 then
 	set terminal:height to 42.
 }
 
-print("paste.ks 14").
+print("multiStageLauncher.ks 14").
 
 wait 0.
 
@@ -249,3 +249,4 @@ until 0 { wait 0. } // main loop wait forever
 
 // kerbin Orbital velocity (m/s) 2296
 // 35705.32
+
