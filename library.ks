@@ -488,6 +488,23 @@ function manageFuelCells
 	}
 }
 
+
+// toggle inflatable heat shields
+function ToggleHeatShields
+{
+	parameter heatShields is ship:PARTSDUBBED("Heat Shield (10m)").
+	parameter value is true.
+
+	for heatShield in heatShields
+	{
+		if fireActionOnModuleOnPart(heatShield,"ModuleAnimateGeneric","inflate heat shield",value)
+		{
+			print("Toggling Heat Shields").
+		}
+	}
+}
+
+
 function GetStageLowestResource
 {
 	parameter resourceType.

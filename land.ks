@@ -25,7 +25,7 @@ pwset(CORE:tag).
 when time:seconds > scriptEpoch + 10 then
 {
 	set terminal:width  to 42.
-	set terminal:height to 30.
+	set terminal:height to 50.
 }
 
 wait 0.
@@ -169,6 +169,13 @@ set landThrottleCheckbox:ontoggle to {
 	if newstate
 	{
 		print("Land Throttle").
+		lock throttle to 1.
+		set retrogradeCheckbox:pressed to true.
+		set modeSlider:value to 1.
+		if HX_HPD:mode<>"ClosedCycle"
+		{
+			HX_HPD:toggleMode().
+		}
 	}
 	else
 	{
@@ -190,13 +197,7 @@ local steeringErrorLabel to landGui:ADDLABEL("steeringErrorLabel").
 
 local heatShieldButton to landGui:addbutton("Toggle Heat Shields").
 set heatShieldButton:onclick to {
-	for heatShield in ship:PARTSDUBBED("Heat Shield (10m)")
-	{
-		if fireActionOnModuleOnPart(heatShield,"ModuleAnimateGeneric","inflate heat shield",true)
-		{
-			print("Toggling Heat Shields").
-		}
-	}
+	ToggleHeatShields().
 }.
 
 // TODO: engine mode toggle
@@ -243,7 +244,7 @@ when landThrottleCheckbox:pressed then
 	set HX_HPD:thrustLimit to twrPID:update(time:second,twr)*100.
 	set deltaAltPID:MAXOUTPUT to maxTwr*1.1.
 	set twrPID:SETPOINT to deltaAltPID:update(time:second,upwardMovement).
-	set deltaAltPID:SETPOINT to dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground).
+	set deltaAltPID:SETPOINT to clamp(dist2ground/slopeInterceptCalc2(landRateInterceptLex,dist2ground),-1,-400).
 
 	return true. //keep alive
 }
@@ -290,6 +291,10 @@ local prevStatus is "".
 when ship:status<>prevStatus then
 {
 	pwset(ship:status).
+	if ship:status="Flying" and prevStatus="SUB_ORBITAL"
+	{
+		ToggleHeatShields().
+	}
 	set prevStatus to ship:status.
 	return true. //keep alive
 }
