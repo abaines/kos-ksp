@@ -296,71 +296,71 @@ function EtaAscendingNode
 
 
 
-function IMNG
-{
-	parameter dim.
-
-	set dim to dim:tolower.
-
-	if dim:contains("pro")
-	{
-		return nextnode:prograde.
-	}
-	else if dim:contains("rad")
-	{
-		return nextnode:radialout.
-	}
-	else if dim:contains("nor")
-	{
-		return nextnode:normal.
-	}
-	else if dim:contains("eta")
-	{
-		return nextnode:eta.
-	}
-	else
-	{
-		print "invalid dimension : " + dim.
-		wait 0.
-	}
-}
-
-
-function IMNS
-{
-	parameter dim, value.
-
-	set dim to dim:tolower.
-
-	if dim:contains("pro")
-	{
-		set nextnode:prograde to value.
-	}
-	else if dim:contains("rad")
-	{
-		set  nextnode:radialout to value.
-	}
-	else if dim:contains("nor")
-	{
-		set  nextnode:normal to value.
-	}
-	else if dim:contains("eta")
-	{
-		set  nextnode:eta to value.
-	}
-	else
-	{
-		print "invalid dimension : " + dim.
-		wait 0.
-	}
-}
-
-
 function ImproveManeuverNode
 {
 	parameter dim, stepsize.
 
 	local startTime to time:seconds.
+
+	// TODO: needs testing: was refactor from file method to local method
+	function IMNG
+	{
+		parameter dim.
+
+		set dim to dim:tolower.
+
+		if dim:contains("pro")
+		{
+			return nextnode:prograde.
+		}
+		else if dim:contains("rad")
+		{
+			return nextnode:radialout.
+		}
+		else if dim:contains("nor")
+		{
+			return nextnode:normal.
+		}
+		else if dim:contains("eta")
+		{
+			return nextnode:eta.
+		}
+		else
+		{
+			print "invalid dimension : " + dim.
+			wait 0.
+		}
+	}
+
+	// TODO: needs testing: was refactor from file method to local method
+	function IMNS
+	{
+		parameter dim, value.
+
+		set dim to dim:tolower.
+
+		if dim:contains("pro")
+		{
+			set nextnode:prograde to value.
+		}
+		else if dim:contains("rad")
+		{
+			set  nextnode:radialout to value.
+		}
+		else if dim:contains("nor")
+		{
+			set  nextnode:normal to value.
+		}
+		else if dim:contains("eta")
+		{
+			set  nextnode:eta to value.
+		}
+		else
+		{
+			print "invalid dimension : " + dim.
+			wait 0.
+		}
+	}
 
 	local initNode to IMNG(dim).
 	local initCA to closestapproach(ship,target).
@@ -398,6 +398,34 @@ function closestapproach
 	parameter ves1, ves2, t1 is -1, t2 is -2, step1 is 30.
 
 	local startTime to time:seconds.
+
+	function closestapproachHelper
+	{
+		parameter ves1, ves2, t1, t2, steps is 12.
+
+		local timeStep is abs(t1 - t2)/steps.
+
+		local minDist to 2147483646.
+		local minTime to -1.
+
+		for i in range(steps)
+		{
+			local tr is t1 + i*timeStep.
+			local distanc is (positionat(ves1, tr) - positionat(ves2, tr)):mag.
+
+			if distanc < minDist
+			{
+				set minDist to distanc.
+				set minTime to tr.
+			}
+		}
+
+		return lex(
+			"minDist",minDist,
+			"minTime",minTime,
+			"timeStep",timeStep
+		).
+	}
 
 	if t1 < 0
 	{
@@ -440,35 +468,6 @@ function closestapproach
 		"minDist",minDist,
 		"timeStep",timeStep,
 		"computeTime", (time:seconds-startTime)
-	).
-}
-
-
-function closestapproachHelper
-{
-	parameter ves1, ves2, t1, t2, steps is 12.
-
-	local timeStep is abs(t1 - t2)/steps.
-
-	local minDist to 2147483646.
-	local minTime to -1.
-
-	for i in range(steps)
-	{
-		local tr is t1 + i*timeStep.
-		local distanc is (positionat(ves1, tr) - positionat(ves2, tr)):mag.
-
-		if distanc < minDist
-		{
-			set minDist to distanc.
-			set minTime to tr.
-		}
-	}
-
-	return lex(
-		"minDist",minDist,
-		"minTime",minTime,
-		"timeStep",timeStep
 	).
 }
 
