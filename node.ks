@@ -51,8 +51,54 @@ set nodeGui:x to -400.
 set nodeGui:y to 100.
 local nodeGuiLabel is nodeGui:addlabel("Node GUI").
 
+local nodeEtaLabel is nodeGui:addlabel("nodeEtaLabel").
+
+local nodeProLabel is nodeGui:addlabel("nodeProLabel").
+local nodeRadLabel is nodeGui:addlabel("nodeRadLabel").
+local nodeNorLabel is nodeGui:addlabel("nodeNorLabel").
+
+local nodeOrbitPeriodLabel is nodeGui:addlabel("nodeOrbitPeriodLabel").
+
+local nodeClosestApproachLabel is nodeGui:addlabel("nodeClosestApproachLabel").
+local nodeClosestApproachTLabel is nodeGui:addlabel("nodeClosestApproachTLabel").
+local nodeClosestApproachCTLabel is nodeGui:addlabel("nodeClosestApproachCTLabel").
 
 
+
+addRebootButton(nodeGui).
+
+
+when true then
+{
+	local nodes is ALLNODES.
+	if nodes:length>0
+	{
+		local nodeZero is nodes[0].
+		set nodeEtaLabel:text to ""+formatTime(nodeZero:ETA).
+
+		set nodeProLabel:text to ""+RAP(nodeZero:PROGRADE,2).
+		set nodeRadLabel:text to ""+RAP(nodeZero:RADIALOUT,2).
+		set nodeNorLabel:text to ""+RAP(nodeZero:NORMAL,2).
+
+		set nodeOrbitPeriodLabel:text to ""+formatTime(nodeZero:ORBIT:PERIOD).
+
+		if HASTARGET
+		{
+			local caLex to closestapproach(ship,target,time:seconds,time:seconds+nodeZero:ORBIT:PERIOD+nodeZero:ETA).
+
+			set nodeClosestApproachLabel:text to ""+RAP(caLex["minDist"],2).
+			set nodeClosestApproachTLabel:text to ""+formatTime(caLex["minTime"]-time:seconds).
+			set nodeClosestApproachCTLabel:text to ""+RAP(caLex["computeTime"],2).
+		}
+		else
+		{
+			set nodeClosestApproachLabel:text to "NO TARGET".
+		}
+
+	}
+
+	return true. //keep alive
+}
 
 nodeGui:show().
 

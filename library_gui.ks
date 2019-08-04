@@ -501,6 +501,51 @@ function RAP
 }
 
 
+// formats raw seconds into human readable string, examples:
+// 3d 4h 2m 15s
+// 60d 3m 42s
+// 58m 2s
+function formatTime
+{
+	parameter numberOfSeconds to time:seconds.
+
+	local secondsPerDay to 6*60*60.
+	local secondsPerHour to 60*60.
+	local secondsPerMinute to 60.
+
+	local days to floor(numberOfSeconds/secondsPerDay).
+	set numberOfSeconds to numberOfSeconds - (days*secondsPerDay).
+
+	local hours to floor(numberOfSeconds/secondsPerHour).
+	set numberOfSeconds to numberOfSeconds - (hours*secondsPerHour).
+
+	local minutes to  floor(numberOfSeconds/secondsPerMinute).
+	set numberOfSeconds to numberOfSeconds - (minutes*secondsPerMinute).
+
+	set numberOfSeconds to floor(numberOfSeconds).
+
+	local stringBuilder to "".
+
+	if days>0
+	{
+		set stringBuilder to stringBuilder + "" + days +"d ".
+	}
+	if hours>0
+	{
+		set stringBuilder to stringBuilder + "" + hours +"h ".
+	}
+	if minutes>0
+	{
+		set stringBuilder to stringBuilder + "" + minutes +"m ".
+	}
+	if numberOfSeconds>0
+	{
+		set stringBuilder to stringBuilder + "" + numberOfSeconds +"s ".
+	}
+
+	return stringBuilder.
+}
+
 // is the current (or given) vessel the active vessel
 function IsActiveVessel
 {
