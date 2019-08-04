@@ -472,6 +472,100 @@ function closestapproach
 }
 
 
+// setup configuration lexicon for binary closest approach
+function binaryClosestApproachLex
+{
+	parameter timeEnd.
+	parameter timeStart is time:seconds.
+	parameter oribital1 is ship.
+	parameter oribital2 is target.
+	parameter stopConditionDistance is 1.
+	parameter stopConditionTime is 1.
+	parameter computeTime is time:seconds.
+
+	return lex(
+		"timeEnd",timeEnd,
+		"timeStart",timeStart,
+		"oribital1",oribital1,
+		"oribital2", oribital2,
+		"stopConditionDistance", stopConditionDistance,
+		"stopConditionTime", stopConditionTime,
+		"computeTime", computeTime
+	).
+}
+
+
+// binary closest approach
+// use binary search to find closest approach
+function binaryClosestApproach
+{
+	parameter bcaLex.
+
+	//print("timespan: "+formattime(bcaLex["timeEnd"]-bcaLex["timeStart"])).
+
+	local ves1 is bcaLex["oribital1"].
+	local ves2 is bcaLex["oribital2"].
+
+	function calcDistance
+	{
+		parameter ti.
+		//print(""+ti+" "+ves1:name+" " + ves2:name).
+
+		local sub to positionat(ves1, ti) - positionat(ves2, ti).
+		//print("calcDistance: "+RAP(sub:mag)).
+		return sub:mag.
+	}
+
+	function updateLex
+	{
+		local t0 to 0+bcaLex["timeStart"].
+		local t1 to (bcaLex["timeStart"]+bcaLex["timeEnd"])/2.
+		local t2 to 0+bcaLex["timeEnd"].
+
+		//print("T0: " + t0).
+		//print("T2: " + t2).
+		//print("TD: " + (t2-t1)).
+
+		local d0 to calcDistance(t0).
+		local d2 to calcDistance(t2).
+
+		//print("d0: " + d0).
+		//print("d2: " + d2).
+		//print("dd: " + (d2-d0)).
+
+		if d0<d2
+		{
+			set bcaLex["timeEnd"] to t1.
+		}
+		else if d0>d2
+		{
+			set bcaLex["timeStart"] to t1.
+		}
+		else
+		{
+			print("GG?").
+			wait 0.
+		}
+	}
+
+	for I IN RANGE(50)
+	{
+		updateLex().
+		local deltaTime is bcaLex["timeEnd"]-bcaLex["timeStart"].
+		if deltaTime < bcaLex["stopConditionTime"]
+		{
+			print(" ").
+			print("i"+i).
+			local t1 to (bcaLex["timeStart"]+bcaLex["timeEnd"])/2.
+			print("t1: " + formatTime(t1-time:seconds)).
+			print("computeTime: "+ RAP(time:seconds - bcaLex["computeTime"],3)).
+			print("ca: " + RAP(calcDistance(t1)/1000,2)).
+			return bcaLex.
+		}
+	}
+}
+
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

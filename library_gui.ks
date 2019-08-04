@@ -513,6 +513,13 @@ function formatTime
 	local secondsPerHour to 60*60.
 	local secondsPerMinute to 60.
 
+	local stringBuilder to "".
+	if numberOfSeconds<0
+	{
+		set stringBuilder to "neg: ".
+		set numberOfSeconds to -1*numberOfSeconds.
+	}
+
 	local days to floor(numberOfSeconds/secondsPerDay).
 	set numberOfSeconds to numberOfSeconds - (days*secondsPerDay).
 
@@ -523,8 +530,6 @@ function formatTime
 	set numberOfSeconds to numberOfSeconds - (minutes*secondsPerMinute).
 
 	set numberOfSeconds to floor(numberOfSeconds).
-
-	local stringBuilder to "".
 
 	if days>0
 	{
