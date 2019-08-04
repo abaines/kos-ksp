@@ -23,7 +23,7 @@ if ship:SHIPNAME:STARTSWITH("CC Command and Control") { run rover. }
 else if ship:SHIPNAME:STARTSWITH("Smart Booster") { run multiStageLauncher. }
 else if ship:SHIPNAME:STARTSWITH("Multi Vessel Test") { run multiStageLauncher. }
 else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="PRELAUNCH" { run multiStageLauncher. }
-else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="ORBITING" { run land. }
+else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="ORBITING" { run node. }
 else {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("Please select script for this vessel:").

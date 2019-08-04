@@ -54,6 +54,28 @@ function ang_facingFromUp { return vang(ship:facing:vector,ship:up:vector). }
 
 
 
+lock shipWeight to Ship:Mass * ship:sensors:GRAV:mag.
+
+lock twr to totalCurrentThrust() / shipWeight.
+lock maxTwr to totalMaxThrust() / shipWeight.
+lock gforce to ship:sensors:acc:mag/ship:sensors:grav:mag.
+
+lock dist2ground to min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT).
+
+lock upwardMovementVec to vector_projection(vec_up():normalized,ship:velocity:surface).
+lock upwardMovement to vdot(vec_up():normalized,upwardMovementVec).
+
+lock orbitalSpeed to ship:velocity:ORBIT:mag.
+lock surfaceSpeed to ship:velocity:SURFACE:mag.
+
+
+
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+/// FUNCTIONS AND VARIBLES ONLY !
+
+
+
 function VECDRAW_DEL
 {
 	parameter start_, vec_, color_ is White, label_ is "", scale_ is 1.0, show_ is true, width_ is 0.2.
