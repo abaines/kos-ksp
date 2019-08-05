@@ -554,13 +554,19 @@ function binaryClosestApproach
 		local deltaTime is bcaLex["timeEnd"]-bcaLex["timeStart"].
 		if deltaTime < bcaLex["stopConditionTime"]
 		{
-			print(" ").
-			print("i"+i).
+			//print(" ").
+			//print("i"+i).
 			local t1 to (bcaLex["timeStart"]+bcaLex["timeEnd"])/2.
-			print("t1: " + formatTime(t1-time:seconds)).
-			print("computeTime: "+ RAP(time:seconds - bcaLex["computeTime"],3)).
-			print("ca: " + RAP(calcDistance(t1)/1000,2)).
-			return bcaLex.
+			local d1 to calcDistance(t1).
+			//print("t1: " + formatTime(t1-time:seconds)).
+			//print("computeTime: "+ RAP(time:seconds - bcaLex["computeTime"],3)).
+			//print("ca: " + RAP(calcDistance(t1)/1000,2)).
+			return lex(
+				"iterations",i,
+				"minTime",t1,
+				"minDist",d1,
+				"computeTime", (time:seconds-bcaLex["computeTime"])
+			).
 		}
 	}
 }

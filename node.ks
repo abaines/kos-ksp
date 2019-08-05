@@ -59,10 +59,15 @@ local nodeNorLabel is nodeGui:addlabel("nodeNorLabel").
 
 local nodeOrbitPeriodLabel is nodeGui:addlabel("nodeOrbitPeriodLabel").
 
+nodeGui:ADDSPACING(12).
 local nodeClosestApproachLabel is nodeGui:addlabel("nodeClosestApproachLabel").
 local nodeClosestApproachTLabel is nodeGui:addlabel("nodeClosestApproachTLabel").
 local nodeClosestApproachCTLabel is nodeGui:addlabel("nodeClosestApproachCTLabel").
 
+nodeGui:ADDSPACING(12).
+local nodeClosestApproachLabel2 is nodeGui:addlabel("nodeClosestApproachLabel2").
+local nodeClosestApproachTLabel2 is nodeGui:addlabel("nodeClosestApproachTLabel2").
+local nodeClosestApproachCTLabel2 is nodeGui:addlabel("nodeClosestApproachCTLabel2").
 
 
 addRebootButton(nodeGui).
@@ -85,10 +90,20 @@ when true then
 		if HASTARGET
 		{
 			local caLex to closestapproach(ship,target,time:seconds,time:seconds+nodeZero:ORBIT:PERIOD+nodeZero:ETA).
-
-			set nodeClosestApproachLabel:text to ""+RAP(caLex["minDist"],2).
+			set nodeClosestApproachLabel:text to ""+RAP(caLex["minDist"]/1000,3).
 			set nodeClosestApproachTLabel:text to ""+formatTime(caLex["minTime"]-time:seconds).
-			set nodeClosestApproachCTLabel:text to ""+RAP(caLex["computeTime"],2).
+			set nodeClosestApproachCTLabel:text to ""+RAP(caLex["computeTime"],6).
+
+			local bcaLex is binaryClosestApproachLex(
+				time:seconds+nodeZero:ETA+(0.5*nodeZero:ORBIT:PERIOD),
+				time:seconds+nodeZero:ETA+(0.0*nodeZero:ORBIT:PERIOD)
+				//time:seconds+4*3600,
+				//time:seconds+3*3600
+			).
+			local bCaResult to binaryClosestApproach(bcaLex).
+			set nodeClosestApproachLabel2:text to ""+RAP(bCaResult["minDist"]/1000,3).
+			set nodeClosestApproachTLabel2:text to ""+formatTime(bCaResult["minTime"]-time:seconds).
+			set nodeClosestApproachCTLabel2:text to ""+RAP(bCaResult["computeTime"],6).
 		}
 		else
 		{
