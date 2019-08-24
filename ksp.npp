@@ -1,0 +1,194 @@
+<NotepadPlus>
+    <Session activeView="0">
+        <mainView activeIndex="6">
+            <File firstVisibleLine="84" xOffset="0" scrollWidth="1" startPos="3331" endPos="3331" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\node.ks" backupFilePath="" originalFileLastModifTimestamp="1564963528" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="6881348" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="84" xOffset="0" scrollWidth="1458" startPos="3125" endPos="3099" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\land.ks" backupFilePath="" originalFileLastModifTimestamp="1564947015" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1143275520" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="9" xOffset="0" scrollWidth="1062" startPos="267" endPos="267" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\boot\boot.ks" backupFilePath="" originalFileLastModifTimestamp="1564951567" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="0" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="8" xOffset="0" scrollWidth="1246" startPos="382" endPos="385" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\rover.ks" backupFilePath="" originalFileLastModifTimestamp="1564257398" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1142325248" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="335" xOffset="0" scrollWidth="1390" startPos="8595" endPos="8595" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\GameData\ModuleManager.Physics" backupFilePath="" originalFileLastModifTimestamp="1564940086" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="3211312" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="321" xOffset="0" scrollWidth="390" startPos="21652" endPos="21655" selMode="0" lang="Normal Text" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Physics.cfg" backupFilePath="" originalFileLastModifTimestamp="1536548638" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="0" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="3" xOffset="0" scrollWidth="1695" startPos="504" endPos="504" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\research.ks" backupFilePath="" originalFileLastModifTimestamp="1561853224" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1142784000" mapWrapIndentMode="-1" mapIsWrap="no" />
+        </mainView>
+        <subView activeIndex="10">
+            <File firstVisibleLine="79" xOffset="0" scrollWidth="1" startPos="3361" endPos="3361" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\booster.ks" backupFilePath="" originalFileLastModifTimestamp="1564943322" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="16777217" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="36" xOffset="0" scrollWidth="1174" startPos="762" endPos="762" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\multiStageLauncher.ks" backupFilePath="" originalFileLastModifTimestamp="1564949254" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="3014698" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="544" xOffset="0" scrollWidth="2537" startPos="13419" endPos="13419" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\library_vec.ks" backupFilePath="" originalFileLastModifTimestamp="1564963196" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1142177792" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="296" xOffset="0" scrollWidth="2537" startPos="8131" endPos="8131" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\library_gui.ks" backupFilePath="" originalFileLastModifTimestamp="1564961062" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="16777217" mapWrapIndentMode="-1" mapIsWrap="no">
+                <Fold line="23" />
+                <Fold line="52" />
+                <Fold line="62" />
+                <Fold line="71" />
+                <Fold line="76" />
+                <Fold line="83" />
+                <Fold line="101" />
+                <Fold line="104" />
+                <Fold line="121" />
+                <Fold line="136" />
+                <Fold line="138" />
+                <Fold line="144" />
+                <Fold line="154" />
+                <Fold line="158" />
+                <Fold line="162" />
+                <Fold line="164" />
+                <Fold line="168" />
+                <Fold line="173" />
+                <Fold line="175" />
+                <Fold line="179" />
+                <Fold line="189" />
+                <Fold line="193" />
+                <Fold line="197" />
+                <Fold line="201" />
+                <Fold line="205" />
+                <Fold line="213" />
+                <Fold line="229" />
+                <Fold line="234" />
+                <Fold line="238" />
+                <Fold line="242" />
+                <Fold line="246" />
+                <Fold line="250" />
+                <Fold line="256" />
+                <Fold line="260" />
+                <Fold line="264" />
+                <Fold line="330" />
+                <Fold line="358" />
+                <Fold line="361" />
+                <Fold line="368" />
+                <Fold line="371" />
+                <Fold line="391" />
+                <Fold line="431" />
+                <Fold line="442" />
+                <Fold line="446" />
+                <Fold line="452" />
+                <Fold line="456" />
+                <Fold line="463" />
+                <Fold line="468" />
+                <Fold line="474" />
+                <Fold line="478" />
+                <Fold line="484" />
+                <Fold line="495" />
+                <Fold line="567" />
+                <Fold line="576" />
+                <Fold line="583" />
+                <Fold line="587" />
+                <Fold line="591" />
+                <Fold line="595" />
+                <Fold line="600" />
+            </File>
+            <File firstVisibleLine="778" xOffset="0" scrollWidth="2537" startPos="17619" endPos="17619" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\library.ks" backupFilePath="" originalFileLastModifTimestamp="1564951356" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1569291392" mapWrapIndentMode="-1" mapIsWrap="no">
+                <Fold line="17" />
+                <Fold line="24" />
+                <Fold line="31" />
+                <Fold line="44" />
+                <Fold line="67" />
+                <Fold line="75" />
+                <Fold line="81" />
+                <Fold line="90" />
+                <Fold line="92" />
+                <Fold line="111" />
+                <Fold line="116" />
+                <Fold line="125" />
+                <Fold line="135" />
+                <Fold line="137" />
+                <Fold line="141" />
+                <Fold line="150" />
+                <Fold line="159" />
+                <Fold line="169" />
+                <Fold line="179" />
+                <Fold line="181" />
+                <Fold line="185" />
+                <Fold line="193" />
+                <Fold line="200" />
+                <Fold line="211" />
+                <Fold line="216" />
+                <Fold line="218" />
+                <Fold line="226" />
+                <Fold line="234" />
+                <Fold line="236" />
+                <Fold line="238" />
+                <Fold line="242" />
+                <Fold line="254" />
+                <Fold line="261" />
+                <Fold line="263" />
+                <Fold line="270" />
+                <Fold line="279" />
+                <Fold line="283" />
+                <Fold line="285" />
+                <Fold line="295" />
+                <Fold line="298" />
+                <Fold line="307" />
+                <Fold line="323" />
+                <Fold line="329" />
+                <Fold line="333" />
+                <Fold line="340" />
+                <Fold line="344" />
+                <Fold line="348" />
+                <Fold line="350" />
+                <Fold line="359" />
+                <Fold line="361" />
+                <Fold line="377" />
+                <Fold line="385" />
+                <Fold line="390" />
+                <Fold line="394" />
+                <Fold line="398" />
+                <Fold line="406" />
+                <Fold line="408" />
+                <Fold line="412" />
+                <Fold line="416" />
+                <Fold line="428" />
+                <Fold line="434" />
+                <Fold line="438" />
+                <Fold line="442" />
+                <Fold line="447" />
+                <Fold line="449" />
+                <Fold line="453" />
+                <Fold line="457" />
+                <Fold line="469" />
+                <Fold line="474" />
+                <Fold line="485" />
+                <Fold line="490" />
+                <Fold line="492" />
+                <Fold line="504" />
+                <Fold line="509" />
+                <Fold line="511" />
+                <Fold line="523" />
+                <Fold line="528" />
+                <Fold line="530" />
+                <Fold line="542" />
+                <Fold line="548" />
+                <Fold line="551" />
+                <Fold line="562" />
+                <Fold line="569" />
+                <Fold line="572" />
+                <Fold line="582" />
+                <Fold line="589" />
+                <Fold line="593" />
+                <Fold line="611" />
+                <Fold line="660" />
+                <Fold line="707" />
+                <Fold line="716" />
+                <Fold line="725" />
+                <Fold line="728" />
+                <Fold line="734" />
+                <Fold line="742" />
+                <Fold line="753" />
+                <Fold line="762" />
+                <Fold line="769" />
+                <Fold line="772" />
+                <Fold line="781" />
+                <Fold line="784" />
+                <Fold line="793" />
+                <Fold line="802" />
+                <Fold line="809" />
+                <Fold line="813" />
+                <Fold line="817" />
+                <Fold line="821" />
+            </File>
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="590" startPos="76" endPos="76" selMode="0" lang="Python" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\saver.py" backupFilePath="" originalFileLastModifTimestamp="1563761510" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="3145776" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="249" xOffset="0" scrollWidth="1322" startPos="7104" endPos="7116" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\hello.ks" backupFilePath="" originalFileLastModifTimestamp="1564250938" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="512" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="421" xOffset="0" scrollWidth="1422" startPos="13239" endPos="13257" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\quad.ks" backupFilePath="" originalFileLastModifTimestamp="1563766876" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="677505747" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1195" startPos="1067" endPos="1067" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\measure.ks" backupFilePath="" originalFileLastModifTimestamp="1553377550" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="16777217" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="115" xOffset="0" scrollWidth="1160" startPos="2492" endPos="2511" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\OptManNode.ks" backupFilePath="" originalFileLastModifTimestamp="1537159226" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1142407168" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="145" xOffset="0" scrollWidth="565" startPos="0" endPos="0" selMode="0" lang="Kerboscript Bright" encoding="-1" filename="C:\Games\Steam\steamapps\common\Kerbal Space Program\Ships\Script\orbiter1.ks" backupFilePath="" originalFileLastModifTimestamp="1537159226" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="1142407168" mapWrapIndentMode="-1" mapIsWrap="no" />
+        </subView>
+    </Session>
+</NotepadPlus>
