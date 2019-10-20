@@ -167,40 +167,13 @@ when GetStageLowestResource("liquidfuel")<=0.1 and time:seconds>stageProtector a
 	return true. //keep alive
 }
 
-when stage:number=0 then
-{
-	wait 0.
-	local modeEngines to 0.
-	FOR eng IN listEngines()
-	{
-		if eng:MULTIMODE
-		{
-			eng:TOGGLEMODE.
-			set modeEngines to 1 + modeEngines.
-		}
-	}.
-	pwset("modeEngines: "+modeEngines).
-	wait 0.
-}
 
 pwset("Main script body").
 
 wait until SHIP:APOAPSIS>81000 or SHIP:ALTITUDE>70000.
 
-if stage:ready
-{
-	safeStage("Stage space booster").
-}
-
-pwset("Coasting to Apo Burn").
-lock throttle to 0.
 lock simplePitch to 0.
 
-wait until eta_burn<=0.
-
-pwset("Apo Burning").
-lock throttle to 1.
-lock simplePitch to 0.
 
 
 when SHIP:PERIAPSIS>=70000 or ship:status="ORBITING" then
@@ -210,9 +183,6 @@ when SHIP:PERIAPSIS>=70000 or ship:status="ORBITING" then
 
 wait until SHIP:PERIAPSIS>=70000 or ship:status="ORBITING".
 
-pwset("Orbit: " + RAP(SHIP:PERIAPSIS)).
-lock throttle to 0.
-lock simplePitch to 0.
 
 wait 0.
 
