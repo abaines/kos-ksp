@@ -170,19 +170,33 @@ when GetStageLowestResource("liquidfuel")<=0.1 and time:seconds>stageProtector a
 
 pwset("Main script body").
 
-wait until SHIP:APOAPSIS>81000 or SHIP:ALTITUDE>70000.
+wait until SHIP:APOAPSIS>68000 or SHIP:ALTITUDE>68000.
 
+pwset("Level off").
 lock simplePitch to 0.
 
 
+wait until SHIP:APOAPSIS>81000 or SHIP:ALTITUDE>70000.
 
-when SHIP:PERIAPSIS>=70000 or ship:status="ORBITING" then
-{
-	HUD("ORBIT!" + PSET).
-}
+pwset("Coasting to Apo Burn").
+lock throttle to 0.
+lock simplePitch to 0.
+
+lock burnTime to MANEUVER_TIME(2296-orbitalSpeed).
+lock eta_burn to eta_apoapsis() - burnTime/1.75.
+
+wait until eta_burn<=0.
+
+pwset("Apo Burning").
+lock throttle to 1.
+lock simplePitch to 0.
 
 wait until SHIP:PERIAPSIS>=70000 or ship:status="ORBITING".
 
+pwset("Orbit: " + RAP(SHIP:PERIAPSIS)).
+lock throttle to 0.
+lock simplePitch to 0.
+HUD("ORBIT!" + PSET).
 
 wait 0.
 
