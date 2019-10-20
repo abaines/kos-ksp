@@ -15,6 +15,7 @@ function pwset
 
 runOncePath("library").
 runOncePath("library_gui").
+runOncePath("library_vec").
 
 librarysetup(false).
 
