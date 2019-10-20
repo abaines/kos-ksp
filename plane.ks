@@ -19,7 +19,7 @@ runOncePath("library_vec").
 
 librarysetup(false).
 
-set terminal:height to 80.
+set terminal:height to 70.
 
 when time:seconds > scriptEpoch + 10 then
 {
@@ -48,7 +48,6 @@ heartGui:show().
 /// Plane control /// Plane control /// Plane control /// Plane control ///
 ///////////////////////////////////////////////////////////////////////////////
 
-setLoadDistances(32).
 
 sas off.
 rcs on.
@@ -75,6 +74,8 @@ local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograd
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*25. }, RGB(0.1,0.1,0.1)).
 
 local initialGeoPosition is SHIP:GEOPOSITION.
+
+lock surfaceSpeed to ship:velocity:SURFACE:mag.
 
 
 function safeStage
@@ -113,7 +114,7 @@ when true then
 	return true. //keep alive
 }
 
-lock simplePitch TO 0.
+lock simplePitch TO 1.
 
 lock steering to HEADING(90,max(0,simplePitch)).
 lock throttle to 1.
@@ -121,30 +122,24 @@ lock throttle to 1.
 
 local vddSteeringVector is VECDRAW_DEL({return ship:position.}, {
 	local steeringVec to convertToVector(steering).
-	return steeringVec:normalized*17.
+	return steeringVec:normalized*27.
 }, RGB(1,1,0)).
 
 
 safeStage(). // warm up nuclear turbojets
 
-
-global thrustIncreaseTime to time:seconds+1.5.
-global prevThrust to 0.
-when true then
+when surfaceSpeed>30 then
 {
-	local tct to totalCurrentThrust().
-
-	if tct>prevThrust+0.1
-	{
-		set thrustIncreaseTime to time:seconds+1.5.
-	}
-	set prevThrust to tct.
-
-	return true. //keep alive
+	BRAKES off.
+	lock simplePitch TO 4.
+	pwset("Brakes off @ " + surfaceSpeed).
 }
-when time:seconds>thrustIncreaseTime then
+
+when dist2ground>15 then
 {
-	safeStage("time:seconds>thrustIncreaseTime"). // fire main engine for liftoff
+	gear off.
+	lock simplePitch TO 15.
+	pwset("Gear off @ " + dist2ground).
 }
 
 

@@ -231,6 +231,10 @@ function addHeartbeatGui
 		KUniverse:FORCESETACTIVEVESSEL(ship).
 	}.
 
+	lock speed to ship:velocity:surface:mag.
+	local lastTime to time:seconds.
+	local lastSpeed to speed.
+
 	when true then
 	{
 		set shipNameLabel:text to ship:name.
@@ -271,11 +275,16 @@ function addHeartbeatGui
 
 		set partCountLabel:text to "#parts: "+getAllParts():length.
 
-		set speedLabel:text to "speed: "+RAP(ship:velocity:surface:mag,3).
+		local dspeed to (speed-lastSpeed) / (time:seconds - lastTime).
+
+		set speedLabel:text to "speed: "+RAP(ship:velocity:surface:mag,3) + "     " + RAP(dspeed,3).
 
 		set radarLabel:text to "radar: "+RAP(min(SHIP:ALTITUDE , SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT),3).
 
 		set focusButton:visible to not IsActiveVessel().
+
+		set lastTime to time:seconds.
+		set lastSpeed to speed.
 
 		return true. //keep alive
 	}
