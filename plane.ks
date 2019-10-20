@@ -50,7 +50,7 @@ heartGui:show().
 
 
 sas off.
-rcs on.
+rcs off.
 abort off.
 BRAKES on.
 
@@ -116,13 +116,13 @@ when true then
 
 lock simplePitch TO 1.
 
-lock steering to HEADING(90,max(0,simplePitch)).
+lock steering to HEADING(90.4,max(0,simplePitch)).
 lock throttle to 1.
 
 
 local vddSteeringVector is VECDRAW_DEL({return ship:position.}, {
 	local steeringVec to convertToVector(steering).
-	return steeringVec:normalized*27.
+	return steeringVec:normalized*77.
 }, RGB(1,1,0)).
 
 
@@ -139,6 +139,7 @@ when dist2ground>15 then
 {
 	gear off.
 	lock simplePitch TO 15.
+	lock steering to HEADING(90.0,max(0,simplePitch)).
 	pwset("Gear off @ " + dist2ground).
 }
 
@@ -168,7 +169,16 @@ when GetStageLowestResource("liquidfuel")<=0.1 and time:seconds>stageProtector a
 }
 
 
+autoDecoupleFuel().
+
+
 pwset("Main script body").
+
+
+wait until upwardMovement<5 and SHIP:ALTITUDE>1000.
+
+safeStage("No longer gaining altitude").
+
 
 wait until SHIP:APOAPSIS>68000 or SHIP:ALTITUDE>68000.
 

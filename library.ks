@@ -372,6 +372,40 @@ function setantenna
 }
 
 
+// auto decouple fuel tanks that have self-contained decouplers
+function autoDecoupleFuel
+{
+	parameter autoTankParts to ship:PARTSDUBBEDPATTERN("IFS Cryogenic Dual Tank ").
+
+	when true then
+	{
+		local decoupled to 0.
+
+		for tankPart in autoTankParts
+		{
+			local liquidfuel is getPartsResource(tankPart,"liquidfuel").
+			if liquidfuel < 0.1
+			{
+				set decoupled to 1 + decoupled.
+				tankPart:getmodule("ModuleAnchoredDecoupler"):Doevent("Decouple").
+			}
+			else if liquidfuel < 588
+			{
+				HIGHLIGHT(tankPart,RGB(1,0.5,0)).
+			}
+		}
+
+		if decoupled>0
+		{
+			print("decoupled: "  + decoupled).
+			wait 0.
+		}
+
+		return autoTankParts:length>0.
+	}
+}
+
+
 // search for module callable (field/event/action) with regex search text.
 // returns lex<part:title,lex<partModule:name,set<text>>>
 function searchForModuleCallablesByName
