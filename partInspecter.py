@@ -347,5 +347,6 @@ def displayFuelTankData():
 
 
 
+displayEngineData()
 displayFuelTankData()
 print('end of file')

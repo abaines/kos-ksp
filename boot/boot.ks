@@ -24,6 +24,7 @@ else if ship:SHIPNAME:STARTSWITH("Smart Booster") { run multiStageLauncher. }
 else if ship:SHIPNAME:STARTSWITH("Multi Vessel Test") { run multiStageLauncher. }
 else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="PRELAUNCH" { run multiStageLauncher. }
 else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="ORBITING" { run node. }
+else if ship:SHIPNAME:STARTSWITH("Airboat 2") and ship:status="PRELAUNCH" { run plane. }
 else {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("Please select script for this vessel:").

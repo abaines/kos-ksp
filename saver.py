@@ -16,7 +16,9 @@ files2watch = dict.fromkeys([
     r"..\..\saves\2018 Sept 16a\quicksave.sfs",
     r"..\..\saves\2018 Sept 16a\persistent.sfs",
     r"..\..\saves\CHEAT 2018 Sept 16a CHEAT\quicksave.sfs",
-    r"..\..\saves\CHEAT 2018 Sept 16a CHEAT\persistent.sfs"
+    r"..\..\saves\CHEAT 2018 Sept 16a CHEAT\persistent.sfs",
+    r"..\..\saves\2018 Sept 16a SHOW ME THE MONEY\quicksave.sfs",
+    r"..\..\saves\2018 Sept 16a SHOW ME THE MONEY\persistent.sfs",
     ])
 
 def lastModified(path):
