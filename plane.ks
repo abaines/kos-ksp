@@ -15,8 +15,11 @@ function pwset
 
 runOncePath("library").
 runOncePath("library_gui").
+runOncePath("library_vec").
 
 librarysetup(false).
+
+set terminal:height to 80.
 
 when time:seconds > scriptEpoch + 10 then
 {
@@ -24,33 +27,25 @@ when time:seconds > scriptEpoch + 10 then
 	set terminal:height to 42.
 }
 
-print("multiStageLauncher.ks 14").
+// find: print.*ks.*\d+
+print("plane.ks 18").
 
 wait 0.
 
 print(CORE:tag).
 
-if core:tag<>"mastercpu"
-{
-	print("Switching to booster script").
-	run booster.
-	print("derpy town").
-	die. // TODO: something better
-}
-else
-{
-	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
-	print("I'm the Master CPU.").
-	global heartGui is gui(200).
-	addHeartbeatGui(heartGui).
-	set heartGui:x to -400.
-	set heartGui:y to 100.
-	heartGui:show().
-}
+
+CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
+print("I'm the Plane CPU.").
+global heartGui is gui(200).
+addHeartbeatGui(heartGui).
+set heartGui:x to -400.
+set heartGui:y to 100.
+heartGui:show().
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Master control /// Master control /// Master control /// Master control ///
+/// Plane control /// Plane control /// Plane control /// Plane control ///
 ///////////////////////////////////////////////////////////////////////////////
 
 setLoadDistances(32).
@@ -58,6 +53,7 @@ setLoadDistances(32).
 sas off.
 rcs on.
 abort off.
+BRAKES on.
 
 managePanelsAndAntenna().
 
@@ -117,7 +113,7 @@ when true then
 	return true. //keep alive
 }
 
-lock simplePitch TO 90-((90/100)*((SHIP:APOAPSIS/70000)*100)).
+lock simplePitch TO 0.
 
 lock steering to HEADING(90,max(0,simplePitch)).
 lock throttle to 1.
@@ -154,17 +150,10 @@ when time:seconds>thrustIncreaseTime then
 
 
 local fuelLabel to heartGui:addLabel("").
-local MANEUVER_TIMELabel to heartGui:addLabel("").
-local eta_apoapsisLabel to heartGui:addLabel("").
 local pitchLabel to heartGui:addLabel("").
-lock burnTime to MANEUVER_TIME(2296-orbitalSpeed).
-lock eta_burn to eta_apoapsis() - burnTime/1.75.
 when true then
 {
-	local burnTime to MANEUVER_TIME(2296-orbitalSpeed).
 	set fuelLabel:text to "fuel: "+RAP(GetStageLowestResource("liquidfuel"),2).
-	set MANEUVER_TIMELabel:text to "burnTime: "+RAP(burnTime,2).
-	set eta_apoapsisLabel:text to "eta_burn: "+RAP(eta_burn,2).
 	set pitchLabel:text to "simplePitch: "+RAP(simplePitch,2).
 
 	return true. //keep alive
