@@ -381,6 +381,8 @@ function autoDecoupleFuel
 	{
 		local decoupled to 0.
 
+		local nextList to list().
+
 		for tankPart in autoTankParts
 		{
 			local liquidfuel is getPartsResource(tankPart,"liquidfuel").
@@ -389,7 +391,11 @@ function autoDecoupleFuel
 				set decoupled to 1 + decoupled.
 				tankPart:getmodule("ModuleAnchoredDecoupler"):Doevent("Decouple").
 			}
-			else if liquidfuel < 588
+			else
+			{
+				nextList:add(tankPart).
+			}
+			if liquidfuel < 588
 			{
 				HIGHLIGHT(tankPart,RGB(1,0.5,0)).
 			}
@@ -400,6 +406,8 @@ function autoDecoupleFuel
 			print("decoupled: "  + decoupled).
 			wait 0.
 		}
+
+		set autoTankParts to nextList.
 
 		return autoTankParts:length>0.
 	}

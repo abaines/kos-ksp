@@ -116,7 +116,7 @@ when true then
 
 lock simplePitch TO 1.
 
-lock steering to HEADING(90.4,max(0,simplePitch)).
+lock steering to HEADING(90.37,max(0,simplePitch)).
 lock throttle to 1.
 
 
