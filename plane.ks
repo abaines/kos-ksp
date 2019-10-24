@@ -147,10 +147,12 @@ when dist2ground>15 then
 
 local fuelLabel to heartGui:addLabel("").
 local pitchLabel to heartGui:addLabel("").
+local megajoulesLabel to heartGui:addLabel("").
 when true then
 {
 	set fuelLabel:text to "fuel: "+RAP(GetStageLowestResource("liquidfuel"),2).
 	set pitchLabel:text to "simplePitch: "+RAP(simplePitch,2).
+	set megajoulesLabel:text to "Megajoules: "+ RAP(GetShipResourcePercent("Megajoules")*100,3) + " %".
 
 	return true. //keep alive
 }
@@ -175,7 +177,8 @@ autoDecoupleFuel().
 pwset("Main script body").
 
 
-wait until upwardMovement<5 and SHIP:ALTITUDE>1000.
+wait until upwardMovement<5 and SHIP:ALTITUDE>1000 and GetShipResourcePercent("Megajoules")>=0.999.
+
 
 safeStage("No longer gaining altitude").
 
