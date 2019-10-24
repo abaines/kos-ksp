@@ -617,3 +617,9 @@ function HUD
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !
 
+
+// Steam\steamapps\common\Kerbal Space Program\settings.cfg
+// SCREEN_RESOLUTION_WIDTH = 1828
+// SCREEN_RESOLUTION_HEIGHT = 1008
+// FULLSCREEN = False
+
