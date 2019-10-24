@@ -254,7 +254,7 @@ when landThrottleCheckbox:pressed then
 // RCS controller
 function rcsController
 {
-	if progradeCheckbox:pressed or retrogradeCheckbox:pressed
+	if progradeCheckbox:pressed or retrogradeCheckbox:pressed or landThrottleCheckbox:pressed
 	{
 		if SHIP:ALTITUDE < 60_000
 		{
@@ -274,10 +274,9 @@ function rcsController
 				return.
 			}
 		}
+		// else
+		rcs off.
 	}
-
-	// else
-	rcs off.
 }
 // RCS controller
 when true then
