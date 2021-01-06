@@ -26,6 +26,7 @@ else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="PRELAUNCH"
 else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="ORBITING" { run node. }
 else if ship:SHIPNAME:STARTSWITH("Airboat ") and ship:status="PRELAUNCH" { run plane. }
 else if ship:SHIPNAME:STARTSWITH("For Science") and ship:status="PRELAUNCH" { run guiSas. }
+else if ship:SHIPNAME:STARTSWITH("For Contracts") and ship:status="PRELAUNCH" { run guiSas. }
 else {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("Please select script for this vessel:").

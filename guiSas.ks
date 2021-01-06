@@ -31,11 +31,11 @@ when time:seconds > scriptEpoch + 10 then
 }
 
 CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
-print("guiSas.ks 00").
+pwset("guiSas.ks 00").
 
 wait 0.
 
-print(CORE:tag).
+pwset(CORE:tag).
 
 setLoadDistances(32).
 
@@ -64,9 +64,10 @@ if 0
 // main gui for lean angle (manual gravity turn)
 local sasGui is GUI(1900).
 set sasGui:y to 1400.
+local box1 to sasGui:AddHLayout().
 
 // slider with range from 0 (horizon) to 90 (straight up)
-local slider is sasGui:AddHSlider.
+local slider is box1:AddHSlider.
 set slider:min to 0.
 set slider:max to 90.
 
@@ -80,6 +81,16 @@ local vddSliderSteerHeading is VECDRAW_DEL(
 	RGB(0.0,0.9,0.5)
 ).
 
+// disable automatic quest throttle control if needed
+local manualOverrideButton to box1:addButton("Manual").
+set manualOverrideButton:style:hstretch to false.
+set manualOverrideButton:ONCLICK to {
+	pwset("Manual Override Button").
+	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
+	lock throttle to 0.
+	unlock throttle.
+}.
+
 sasGui:show().
 
 // lock steering to slider bar
@@ -87,8 +98,8 @@ lock steering to steerHeading.
 
 
 // quest throttle
-local maxQuestSpeed to 190.
-local minQuestSpeed to 40.
+local maxQuestSpeed to 300.
+local minQuestSpeed to 190.
 
 local questLex to slopeInterceptLex2(maxQuestSpeed,0,minQuestSpeed,1,true).
 
