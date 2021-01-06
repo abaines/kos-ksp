@@ -10,7 +10,7 @@ SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 
 if terminal:width<42 {set terminal:width to 42.}
 
-set Terminal:CHARHEIGHT to 10.
+set Terminal:CHARHEIGHT to 20.
 
 CLEARVECDRAWS().
 
@@ -25,6 +25,7 @@ else if ship:SHIPNAME:STARTSWITH("Multi Vessel Test") { run multiStageLauncher. 
 else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="PRELAUNCH" { run multiStageLauncher. }
 else if ship:SHIPNAME:STARTSWITH("KD White Rainbow") and ship:status="ORBITING" { run node. }
 else if ship:SHIPNAME:STARTSWITH("Airboat ") and ship:status="PRELAUNCH" { run plane. }
+else if ship:SHIPNAME:STARTSWITH("For Science") and ship:status="PRELAUNCH" { run guiSas. }
 else {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
 	print("Please select script for this vessel:").
