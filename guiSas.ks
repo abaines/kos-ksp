@@ -98,3 +98,8 @@ lock throttle to slopeInterceptCalc2(questLex,ship:velocity:surface:mag).
 pwset("End of Main Script").
 until 0 { wait 0. } // main loop wait forever
 
+// Steam\steamapps\common\Kerbal Space Program\settings.cfg
+// SCREEN_RESOLUTION_WIDTH = 3830
+// SCREEN_RESOLUTION_HEIGHT = 2050
+// FULLSCREEN = False
+
