@@ -50,12 +50,16 @@ local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograd
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*25. }, RGB(0.1,0.1,0.1)).
 
 
-// draw vector to waypoint
-local vddWaypoint is VECDRAW_DEL(
-	{ return ship:position. },
-	{ return waypoint("Kraken's Awe"):position. },
-	RGB(0.9,0.1,0.1)
-).
+if 0
+{
+	// draw vector to waypoint
+	local vddWaypoint is VECDRAW_DEL(
+		{ return ship:position. },
+		{ return waypoint("Kraken's Awe"):position. },
+		RGB(0.9,0.1,0.1)
+	).
+}
+
 
 // main gui for lean angle (manual gravity turn)
 local sasGui is GUI(1900).
@@ -70,7 +74,7 @@ set slider:max to 90.
 lock steerHeading to HEADING(90,max(0,90-slider:value)).
 
 // draw vector to slider lean (manual gravity turn)
-local vddWaypoint is VECDRAW_DEL(
+local vddSliderSteerHeading is VECDRAW_DEL(
 	{ return ship:position. },
 	{ return 35*convertToVector(steerHeading). },
 	RGB(0.0,0.9,0.5)
@@ -81,6 +85,14 @@ sasGui:show().
 // lock steering to slider bar
 lock steering to steerHeading.
 
+
+// quest throttle
+local maxQuestSpeed to 190.
+local minQuestSpeed to 40.
+
+local questLex to slopeInterceptLex2(maxQuestSpeed,0,minQuestSpeed,1,true).
+
+lock throttle to slopeInterceptCalc2(questLex,ship:velocity:surface:mag).
 
 
 pwset("End of Main Script").
