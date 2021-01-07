@@ -70,6 +70,7 @@ local box1 to sasGui:AddHLayout().
 local slider is box1:AddHSlider.
 set slider:min to 0.
 set slider:max to 90.
+set slider:value to 1.
 
 // steering heading based on slider value
 lock steerHeading to HEADING(90,max(0,90-slider:value)).
