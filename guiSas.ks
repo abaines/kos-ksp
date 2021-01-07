@@ -97,13 +97,16 @@ sasGui:show().
 lock steering to steerHeading.
 
 
-// quest throttle
-local maxQuestSpeed to 300.
-local minQuestSpeed to 190.
+if 0
+{
+	// quest throttle
+	local maxQuestSpeed to 1610.
+	local minQuestSpeed to 480.
 
-local questLex to slopeInterceptLex2(maxQuestSpeed,0,minQuestSpeed,1,true).
+	local questLex to slopeInterceptLex2(maxQuestSpeed,0,minQuestSpeed,1,true).
 
-lock throttle to slopeInterceptCalc2(questLex,ship:velocity:surface:mag).
+	lock throttle to slopeInterceptCalc2(questLex,ship:velocity:surface:mag).
+}
 
 
 pwset("End of Main Script").
