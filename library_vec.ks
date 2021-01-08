@@ -47,6 +47,11 @@ function ang_orbitaoa { return vang(ship:facing:vector,prograde:vector). } //abs
 function ang_facingFromUp { return vang(ship:facing:vector,ship:up:vector). }
 
 
+// normal and anti-normal
+function vec_ship_normal { return vcrs(ship:velocity:orbit:normalized,-1*body:position:normalized):normalized. }
+// radial in and radial out
+function vec_ship_radial { return vcrs(-1*ship:velocity:orbit:normalized,vec_ship_normal):normalized. }
+
 
 /// FUNCTIONS AND VARIBLES ONLY !
 /// FUNCTIONS AND VARIBLES ONLY !

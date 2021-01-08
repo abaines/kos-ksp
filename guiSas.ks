@@ -27,7 +27,7 @@ librarysetup(false).
 when time:seconds > scriptEpoch + 10 then
 {
 	set terminal:width  to 42.
-	set terminal:height to 42.
+	set terminal:height to 12.
 }
 
 CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
@@ -48,6 +48,10 @@ abort off.
 local vddTravel is VECDRAW_DEL({return ship:position.}, { return ship:srfprograde:vector*100. }, RGB(0,0,1)).
 // facing vector
 local vddFacing is VECDRAW_DEL({return ship:position.}, { return ship:facing:vector:normalized*25. }, RGB(0.1,0.1,0.1)).
+// normal vector
+local vddNormal is VECDRAW_DEL({return ship:position.}, { return vec_ship_normal()*25. }, RGB(0.7,0.1,0.7)).
+// radial vector
+local vddRadial is VECDRAW_DEL({return ship:position.}, { return vec_ship_radial()*20. }, RGB(0.5,0.5,0.9)).
 
 
 if 0
@@ -82,14 +86,48 @@ local vddSliderSteerHeading is VECDRAW_DEL(
 	RGB(0.0,0.9,0.5)
 ).
 
+
+// basic SAS options
+local boxBasicSas to sasGui:AddHLayout().
+
+local retro_button to boxBasicSas:addButton("retro orbit").
+set retro_button:style:hstretch to false.
+set retro_button:ONCLICK to {
+	pwset("retro orbit").
+	lock steering to -1*ship:prograde:vector.
+}.
+
+local retro_button to boxBasicSas:addButton("retro surface").
+set retro_button:style:hstretch to false.
+set retro_button:ONCLICK to {
+	pwset("retro surface").
+	lock steering to -1*ship:srfprograde:vector.
+}.
+
+local normal_button to boxBasicSas:addButton("normal").
+set normal_button:style:hstretch to false.
+set normal_button:ONCLICK to {
+	pwset("normal").
+	lock steering to vec_ship_normal().
+}.
+
+local antinormal_button to boxBasicSas:addButton("anti-normal").
+set antinormal_button:style:hstretch to false.
+set antinormal_button:ONCLICK to {
+	pwset("anti-normal").
+	lock steering to -1*vec_ship_normal().
+}.
+
+
 // disable automatic quest throttle control if needed
-local manualOverrideButton to box1:addButton("Manual").
+local manualOverrideButton to boxBasicSas:addButton("Unlock Throttle").
 set manualOverrideButton:style:hstretch to false.
 set manualOverrideButton:ONCLICK to {
 	pwset("Manual Override Button").
 	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 	lock throttle to 0.
 	unlock throttle.
+	manualOverrideButton:hide().
 }.
 
 sasGui:show().
