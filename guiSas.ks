@@ -150,7 +150,7 @@ local radial_out_button to boxBasicSas:addButton("radial out").
 set radial_out_button:style:hstretch to false.
 set radial_out_button:ONCLICK to {
 	pwset("radial out").
-	lock steering to vec_ship_normal().
+	lock steering to vec_ship_radial().
 	sas off.
 }.
 
