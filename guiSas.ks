@@ -95,6 +95,7 @@ set unlock_steering_button:style:hstretch to false.
 set unlock_steering_button:ONCLICK to {
 	pwset("unlock steering").
 	unlock steering.
+	sas on.
 }.
 
 local prograde_button to boxBasicSas:addButton("prograde").
@@ -102,6 +103,7 @@ set prograde_button:style:hstretch to false.
 set prograde_button:ONCLICK to {
 	pwset("prograde").
 	lock steering to ship:prograde:vector.
+	sas off.
 }.
 
 local retro_orbit_button to boxBasicSas:addButton("retro orbit").
@@ -109,6 +111,7 @@ set retro_orbit_button:style:hstretch to false.
 set retro_orbit_button:ONCLICK to {
 	pwset("retro orbit").
 	lock steering to -1*ship:prograde:vector.
+	sas off.
 }.
 
 local retro_button to boxBasicSas:addButton("retro surface").
@@ -116,6 +119,7 @@ set retro_button:style:hstretch to false.
 set retro_button:ONCLICK to {
 	pwset("retro surface").
 	lock steering to -1*ship:srfprograde:vector.
+	sas off.
 }.
 
 local normal_button to boxBasicSas:addButton("normal").
@@ -123,6 +127,7 @@ set normal_button:style:hstretch to false.
 set normal_button:ONCLICK to {
 	pwset("normal").
 	lock steering to vec_ship_normal().
+	sas off.
 }.
 
 local antinormal_button to boxBasicSas:addButton("anti-normal").
@@ -130,6 +135,23 @@ set antinormal_button:style:hstretch to false.
 set antinormal_button:ONCLICK to {
 	pwset("anti-normal").
 	lock steering to -1*vec_ship_normal().
+	sas off.
+}.
+
+local radial_in_button to boxBasicSas:addButton("radial in").
+set radial_in_button:style:hstretch to false.
+set radial_in_button:ONCLICK to {
+	pwset("radial in").
+	lock steering to -1*vec_ship_radial().
+	sas off.
+}.
+
+local radial_out_button to boxBasicSas:addButton("radial out").
+set radial_out_button:style:hstretch to false.
+set radial_out_button:ONCLICK to {
+	pwset("radial out").
+	lock steering to vec_ship_normal().
+	sas off.
 }.
 
 

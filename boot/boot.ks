@@ -32,8 +32,10 @@ else if ship:SHIPNAME:STARTSWITH("For Awards") and ship:status="PRELAUNCH" { run
 else if ship:SHIPNAME:STARTSWITH("Ferryman") and ship:status="PRELAUNCH" { run guiSas. }
 else {
 	CORE:PART:GETMODULE("kOSProcessor"):DOEVENT("Open Terminal").
-	print("Please select script for this vessel:").
+	print("Using default script for this vessel:").
 	print(ship:SHIPNAME + "   " + ship:status).
+	// default to guiSas
+	run guiSas.
 }
 
 
