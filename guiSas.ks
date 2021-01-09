@@ -90,9 +90,23 @@ local vddSliderSteerHeading is VECDRAW_DEL(
 // basic SAS options
 local boxBasicSas to sasGui:AddHLayout().
 
-local retro_button to boxBasicSas:addButton("retro orbit").
-set retro_button:style:hstretch to false.
-set retro_button:ONCLICK to {
+local unlock_steering_button to boxBasicSas:addButton("unlock").
+set unlock_steering_button:style:hstretch to false.
+set unlock_steering_button:ONCLICK to {
+	pwset("unlock steering").
+	unlock steering.
+}.
+
+local prograde_button to boxBasicSas:addButton("prograde").
+set prograde_button:style:hstretch to false.
+set prograde_button:ONCLICK to {
+	pwset("prograde").
+	lock steering to ship:prograde:vector.
+}.
+
+local retro_orbit_button to boxBasicSas:addButton("retro orbit").
+set retro_orbit_button:style:hstretch to false.
+set retro_orbit_button:ONCLICK to {
 	pwset("retro orbit").
 	lock steering to -1*ship:prograde:vector.
 }.
@@ -119,17 +133,6 @@ set antinormal_button:ONCLICK to {
 }.
 
 
-// disable automatic quest throttle control if needed
-local manualOverrideButton to boxBasicSas:addButton("Unlock Throttle").
-set manualOverrideButton:style:hstretch to false.
-set manualOverrideButton:ONCLICK to {
-	pwset("Manual Override Button").
-	SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
-	lock throttle to 0.
-	unlock throttle.
-	manualOverrideButton:hide().
-}.
-
 sasGui:show().
 
 // lock steering to slider bar
@@ -138,6 +141,17 @@ lock steering to steerHeading.
 
 if 0
 {
+	// disable automatic quest throttle control if needed
+	local manualOverrideButton to boxBasicSas:addButton("Unlock Throttle").
+	set manualOverrideButton:style:hstretch to false.
+	set manualOverrideButton:ONCLICK to {
+		pwset("Manual Override Button").
+		SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
+		lock throttle to 0.
+		unlock throttle.
+		manualOverrideButton:hide().
+	}.
+
 	// quest throttle
 	local maxQuestSpeed to 1610.
 	local minQuestSpeed to 480.
