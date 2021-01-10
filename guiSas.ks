@@ -154,6 +154,25 @@ set radial_out_button:ONCLICK to {
 	sas off.
 }.
 
+function maneuver_node
+{
+	if hasnode
+	{
+		return nextnode:BURNVECTOR.
+	}
+	unlock steering.
+	pwset("lost node").
+	return "KILL".
+}
+
+local maneuver_button to boxBasicSas:addButton("maneuver").
+set maneuver_button:style:hstretch to false.
+set maneuver_button:ONCLICK to {
+	pwset("maneuver").
+	lock steering to maneuver_node().
+	sas off.
+}.
+
 
 sasGui:show().
 
