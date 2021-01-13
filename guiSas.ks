@@ -108,12 +108,12 @@ set sliderRoll:ONCHANGE to {
 	parameter newValue.
 	set labelRoll:text to RAP(newValue,3).
 }.
-set sliderRoll:value to 0.
+set sliderRoll:value to 0. // -90 for default VAB; 0 for "Q" rotation in VAB.
 
 
 // steering heading based on slider values
-lock steerHeading to HEADING(sliderEquator:value,max(0,90-sliderPitch:value),sliderRoll:value).
-//lock steerHeading to Up + R(sliderEquator:value,(-sliderPitch:value),sliderRoll:value).
+lock steerHeading to HEADING(sliderEquator:value,90-sliderPitch:value,sliderRoll:value).
+
 
 // draw vector to slider lean (manual gravity turn)
 local vddSliderSteerHeading is VECDRAW_DEL(
