@@ -209,6 +209,8 @@ set maneuver_button:ONCLICK to {
 	sas off.
 }.
 
+// TODO: TARGET:FACING  https://ksp-kos.github.io/KOS/math/direction.html
+// TODO: rendezvous
 
 sasGui:show().
 
