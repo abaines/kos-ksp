@@ -68,16 +68,52 @@ if 0
 // main gui for lean angle (manual gravity turn)
 local sasGui is GUI(1900).
 set sasGui:y to 1400.
-local box1 to sasGui:AddHLayout().
+
+local sliderLabelWidth to 60.
 
 // slider with range from 0 (horizon) to 90 (straight up)
-local slider is box1:AddHSlider.
-set slider:min to 0.
-set slider:max to 90.
-set slider:value to 1.
+local boxPitch to sasGui:AddHLayout().
+local sliderPitch is boxPitch:AddHSlider.
+local labelPitch is boxPitch:AddLabel.
+set labelPitch:style:width to sliderLabelWidth.
+set sliderPitch:min to 0.
+set sliderPitch:max to 90.
+set sliderPitch:ONCHANGE to {
+	parameter newValue.
+	set labelPitch:text to RAP(newValue,3).
+}.
+set sliderPitch:value to 1.
 
-// steering heading based on slider value
-lock steerHeading to HEADING(90,max(0,90-slider:value)).
+
+local boxEquator to sasGui:AddHLayout().
+local sliderEquator is boxEquator:AddHSlider.
+local labelEquator is boxEquator:AddLabel.
+set labelEquator:style:width to sliderLabelWidth.
+set sliderEquator:min to 90-180.
+set sliderEquator:max to 90+180.
+set sliderEquator:ONCHANGE to {
+	parameter newValue.
+	set labelEquator:text to RAP(newValue,3).
+}.
+set sliderEquator:value to 90.
+
+
+local boxRoll to sasGui:AddHLayout().
+local sliderRoll is boxRoll:AddHSlider.
+local labelRoll is boxRoll:AddLabel.
+set labelRoll:style:width to sliderLabelWidth.
+set sliderRoll:min to 0-180.
+set sliderRoll:max to 0+180.
+set sliderRoll:ONCHANGE to {
+	parameter newValue.
+	set labelRoll:text to RAP(newValue,3).
+}.
+set sliderRoll:value to 0.
+
+
+// steering heading based on slider values
+lock steerHeading to HEADING(sliderEquator:value,max(0,90-sliderPitch:value),sliderRoll:value).
+//lock steerHeading to Up + R(sliderEquator:value,(-sliderPitch:value),sliderRoll:value).
 
 // draw vector to slider lean (manual gravity turn)
 local vddSliderSteerHeading is VECDRAW_DEL(
