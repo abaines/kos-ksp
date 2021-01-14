@@ -118,7 +118,7 @@ lock steerHeading to HEADING(sliderEquator:value,90-sliderPitch:value,sliderRoll
 // draw vector to slider lean (manual gravity turn)
 local vddSliderSteerHeading is VECDRAW_DEL(
 	{ return ship:position. },
-	{ return 35*convertToVector(steerHeading). },
+	{ return 35*convertToVector(steering):normalized. },
 	RGB(0.0,0.9,0.5)
 ).
 
@@ -190,7 +190,7 @@ set radial_out_button:ONCLICK to {
 	sas off.
 }.
 
-function maneuver_node
+function maneuver_node_vector
 {
 	if hasnode
 	{
@@ -205,11 +205,68 @@ local maneuver_button to boxBasicSas:addButton("maneuver").
 set maneuver_button:style:hstretch to false.
 set maneuver_button:ONCLICK to {
 	pwset("maneuver").
-	lock steering to maneuver_node().
+	lock steering to maneuver_node_vector().
 	sas off.
 }.
 
-// TODO: TARGET:FACING  https://ksp-kos.github.io/KOS/math/direction.html
+function target_stop_vector
+{
+	if HASTARGET
+	{
+		return target:velocity:orbit - ship:velocity:orbit.
+	}
+	unlock steering.
+	pwset("lost target").
+	return "KILL".
+}
+
+local target_stop_button to boxBasicSas:addButton("target stop").
+set target_stop_button:style:hstretch to false.
+set target_stop_button:ONCLICK to {
+	pwset("target stop").
+	lock steering to target_stop_vector().
+	sas off.
+}.
+
+function target_facing_vector
+{
+	if HASTARGET
+	{
+		return target:facing:vector.
+	}
+	unlock steering.
+	pwset("lost target").
+	return "KILL".
+}
+
+local target_facing_button to boxBasicSas:addButton("target facing").
+set target_facing_button:style:hstretch to false.
+set target_facing_button:ONCLICK to {
+	pwset("target facing").
+	lock steering to target_facing_vector().
+	sas off.
+}.
+
+function anti_target_facing_vector
+{
+	if HASTARGET
+	{
+		return -1*target:facing:vector.
+	}
+	unlock steering.
+	pwset("lost target").
+	return "KILL".
+}
+
+local target_facing_button to boxBasicSas:addButton("anti target facing").
+set target_facing_button:style:hstretch to false.
+set target_facing_button:ONCLICK to {
+	pwset("anti target facing").
+	lock steering to anti_target_facing_vector().
+	sas off.
+}.
+
+
 // TODO: rendezvous
 
 sasGui:show().
