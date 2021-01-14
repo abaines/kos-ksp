@@ -111,17 +111,6 @@ set sliderRoll:ONCHANGE to {
 set sliderRoll:value to 0. // -90 for default VAB; 0 for "Q" rotation in VAB.
 
 
-// steering heading based on slider values
-lock steerHeading to HEADING(sliderEquator:value,90-sliderPitch:value,sliderRoll:value).
-
-
-// draw vector to slider lean (manual gravity turn)
-local vddSliderSteerHeading is VECDRAW_DEL(
-	{ return ship:position. },
-	{ return 35*convertToVector(steering):normalized. },
-	RGB(0.0,0.9,0.5)
-).
-
 
 // basic SAS options
 local boxBasicSas to sasGui:AddHLayout().
@@ -190,6 +179,9 @@ set radial_out_button:ONCLICK to {
 	sas off.
 }.
 
+// advanced SAS buttons
+
+// maneuver node
 function maneuver_node_vector
 {
 	if hasnode
@@ -208,6 +200,8 @@ set maneuver_button:ONCLICK to {
 	lock steering to maneuver_node_vector().
 	sas off.
 }.
+
+// advanced target buttons
 
 function target_stop_vector
 {
@@ -232,7 +226,7 @@ function target_facing_vector
 {
 	if HASTARGET
 	{
-		return target:facing:vector.
+		return target:position - ship:position.
 	}
 	unlock steering.
 	pwset("lost target").
@@ -251,7 +245,7 @@ function anti_target_facing_vector
 {
 	if HASTARGET
 	{
-		return -1*target:facing:vector.
+		return ship:position - target:position.
 	}
 	unlock steering.
 	pwset("lost target").
@@ -269,10 +263,21 @@ set target_facing_button:ONCLICK to {
 
 // TODO: rendezvous
 
-sasGui:show().
+// steering heading based on slider values
+lock steerHeading to HEADING(sliderEquator:value,90-sliderPitch:value,sliderRoll:value).
 
 // lock steering to slider bar
 lock steering to steerHeading.
+
+// draw vector to slider lean (manual gravity turn)
+local vddSliderSteerHeading is VECDRAW_DEL(
+	{ return ship:position. },
+	{ return convertToVector(steering):vec:normalized*35. },
+	RGB(0.0,0.9,0.5)
+).
+
+
+sasGui:show().
 
 
 if 0
