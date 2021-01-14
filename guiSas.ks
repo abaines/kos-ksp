@@ -261,6 +261,28 @@ set target_facing_button:ONCLICK to {
 }.
 
 
+function unknown_target_vector
+{
+	if HASTARGET
+	{
+		local facing_vector is (target:position - ship:position):normalized.
+		local stop_vector is (target:velocity:orbit - ship:velocity:orbit):normalized.
+		return planierize(facing_vector,stop_vector):normalized + (facing_vector:normalized)*3.
+	}
+	unlock steering.
+	pwset("lost target").
+	return "KILL".
+}
+
+local target_unknown_button to boxBasicSas:addButton("target unknown").
+set target_unknown_button:style:hstretch to false.
+set target_unknown_button:ONCLICK to {
+	pwset("target unknown").
+	lock steering to unknown_target_vector().
+	sas off.
+}.
+
+
 // TODO: rendezvous
 
 // steering heading based on slider values
