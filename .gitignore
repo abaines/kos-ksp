@@ -1,2 +1,13 @@
 
+/*
+/*/
+
+!.gitignore
+!/.gitignore
+
+!/Ships/Script/
+!*/Ships/Script/*
+
+!*.ks
+
 *.ods#
