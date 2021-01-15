@@ -1,13 +1,21 @@
 
-/*
+
+# Ignore everything except...
+/**
 /*/
 
-!.gitignore
+
 !/.gitignore
+!.gitignore
+
+
+!/Ships/
+/Ships/*
 
 !/Ships/Script/
-!*/Ships/Script/*
+!/Ships/Script/**
+#!/Ships/Script/screenshots**
 
-!*.ks
+# !*.ks
 
 *.ods#
