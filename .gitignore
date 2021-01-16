@@ -23,23 +23,4 @@
 !/saves/2021B/Subassemblies/
 !/saves/2021B/Subassemblies/**
 
-##########  /saves/scenarios
-##########  /saves/training
-##########  /saves/steam_autocloud.vdf
-##########
-##########  !/saves/*/Ships
-##########  !/saves/*/Ships/
-##########  !/saves/*/Ships/**
-##########  #/saves/*/*
-##########  #!/saves/**/*.craft
-
-### /saves/**/*.sfs
-### /saves/**/*.loadmeta
-### /saves/**/*.data
-### /saves/**/*.dat
-###
-### !/saves/**/*.craft
-###
-### #!/saves/**/Ships/**
-
 *.ods#
