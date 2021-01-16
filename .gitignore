@@ -23,4 +23,5 @@
 !/saves/2021B/Subassemblies/
 !/saves/2021B/Subassemblies/**
 
+*.loadmeta
 *.ods#
