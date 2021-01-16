@@ -299,6 +299,11 @@ local vddSliderSteerHeading is VECDRAW_DEL(
 ).
 
 
+// TODO: target distance
+// TODO: target stop time?
+// TODO: target vector arrow?
+
+
 sasGui:show().
 
 
