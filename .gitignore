@@ -1,2 +1,27 @@
 
+
+# Ignore everything except...
+/**
+
+!/.gitignore
+
+!/Ships/
+/Ships/*
+
+!/Ships/Script/
+!/Ships/Script/**
+
+!/saves/
+/saves/*
+
+!/saves/2021B/
+/saves/2021B/*
+
+!/saves/2021B/Ships/
+!/saves/2021B/Ships/**
+
+!/saves/2021B/Subassemblies/
+!/saves/2021B/Subassemblies/**
+
+*.loadmeta
 *.ods#
