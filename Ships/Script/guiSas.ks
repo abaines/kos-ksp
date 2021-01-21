@@ -71,6 +71,10 @@ set sasGui:y to 1400.
 
 local sliderLabelWidth to 60.
 
+// basic SAS options
+local boxBasicSas to sasGui:AddHLayout().
+
+
 // slider with range from 0 (horizon) to 90 (straight up)
 local boxPitch to sasGui:AddHLayout().
 local sliderPitch is boxPitch:AddHSlider.
@@ -112,9 +116,6 @@ set sliderRoll:value to 0. // -90 for default VAB; 0 for "Q" rotation in VAB.
 
 
 
-// basic SAS options
-local boxBasicSas to sasGui:AddHLayout().
-
 local unlock_steering_button to boxBasicSas:addButton("unlock").
 set unlock_steering_button:style:hstretch to false.
 set unlock_steering_button:ONCLICK to {
@@ -146,6 +147,15 @@ set retro_button:ONCLICK to {
 	lock steering to -1*ship:srfprograde:vector.
 	sas off.
 }.
+
+local aoa_label to boxBasicSas:addLabel().
+set aoa_label:tooltip to "Angle of Attack".
+set aoa_label:style:width to sliderLabelWidth.
+when true then
+{
+	set aoa_label:text to RAP(ang_absaoa(),3).
+	PRESERVE.
+}
 
 local normal_button to boxBasicSas:addButton("normal").
 set normal_button:style:hstretch to false.
@@ -274,10 +284,10 @@ function unknown_target_vector
 	return "KILL".
 }
 
-local target_unknown_button to boxBasicSas:addButton("target unknown").
+local target_unknown_button to boxBasicSas:addButton("target ~rendezvous").
 set target_unknown_button:style:hstretch to false.
 set target_unknown_button:ONCLICK to {
-	pwset("target unknown").
+	pwset("target ~rendezvous").
 	lock steering to unknown_target_vector().
 	sas off.
 }.
