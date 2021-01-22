@@ -124,6 +124,14 @@ set unlock_steering_button:ONCLICK to {
 	sas on.
 }.
 
+local slider_steering_button to boxBasicSas:addButton("sliders").
+set slider_steering_button:style:hstretch to false.
+set slider_steering_button:ONCLICK to {
+	pwset("sliders").
+	lock steering to steerHeading.
+	sas off.
+}.
+
 local prograde_button to boxBasicSas:addButton("prograde").
 set prograde_button:style:hstretch to false.
 set prograde_button:ONCLICK to {
