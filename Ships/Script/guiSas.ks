@@ -322,30 +322,36 @@ local vddSliderSteerHeading is VECDRAW_DEL(
 // TODO: target vector arrow?
 
 
-sasGui:show().
 
+// quest mission throttle
+local minQuestSpeed to 250.
+local maxQuestSpeed to 260.
 
-if 0
-{
-	// disable automatic quest throttle control if needed
-	local manualOverrideButton to boxBasicSas:addButton("Unlock Throttle").
-	set manualOverrideButton:style:hstretch to false.
-	set manualOverrideButton:ONCLICK to {
-		pwset("Manual Override Button").
+local questLex to slopeInterceptLex2(maxQuestSpeed,0,minQuestSpeed,1,true).
+
+// disable automatic quest throttle control if needed
+local manualOverrideButton to boxBasicSas:AddCheckBox("Quest Throttle",false).
+set manualOverrideButton:style to sasGui:skin:button.
+set manualOverrideButton:style:hstretch to false.
+set manualOverrideButton:ONTOGGLE to {
+	parameter toggleState.
+	if toggleState
+	{
+		pwset("Activate Quest Throttle").
+		lock throttle to slopeInterceptCalc2(questLex,ship:velocity:surface:mag).
+	}
+	else
+	{
+		pwset("Manual Throttle").
 		SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
 		lock throttle to 0.
 		unlock throttle.
-		manualOverrideButton:hide().
-	}.
+	}
+}.
 
-	// quest throttle
-	local maxQuestSpeed to 1610.
-	local minQuestSpeed to 480.
 
-	local questLex to slopeInterceptLex2(maxQuestSpeed,0,minQuestSpeed,1,true).
 
-	lock throttle to slopeInterceptCalc2(questLex,ship:velocity:surface:mag).
-}
+sasGui:show().
 
 
 pwset("End of Main Script").
